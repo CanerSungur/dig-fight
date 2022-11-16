@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74654b171ce5644d3afae8fc9fd8837e, type: 3}
+  m_Name: MoneySpend2D
+  m_EditorClassIdentifier: 
+  PoolStamp: 2
+  Prefabs:
+  - {fileID: 6853699254165699102, guid: 9732bacf67005fa49a184ee81646e28d, type: 3}
+  Size: 50
