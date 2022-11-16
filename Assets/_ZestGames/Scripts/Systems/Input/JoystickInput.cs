@@ -16,6 +16,12 @@ namespace ZestGames
         private float _delayedTime;
         private readonly float _delayRate = 1f;
 
+        private float _verticalInput;
+
+        #region PROPERTIES
+        public bool IsMovingUp => _verticalInput > 0.1f;
+        #endregion
+
         public void Init(Player player)
         {
             _player = player;
@@ -31,7 +37,13 @@ namespace ZestGames
         private void Update()
         {
             if (CanTakeInput)
-                InputValue = new Vector3(joystick.Horizontal, 0f, joystick.Vertical);
+            {
+                _verticalInput = joystick.Vertical;
+                if (_verticalInput <= 0.1f)
+                    _verticalInput = 0f;
+
+                InputValue = new Vector3(joystick.Horizontal, _verticalInput, 0f);
+            }
             else
                 InputValue = Vector3.zero;
         }

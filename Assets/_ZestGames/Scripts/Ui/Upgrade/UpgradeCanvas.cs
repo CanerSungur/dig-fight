@@ -138,7 +138,7 @@ namespace ZestGames
         #region ANIMATOR FUNCTIONS
         private void EnableCanvas()
         {
-            AudioManager.PlayAudio(Enums.AudioType.UpgradeMenu);
+            //AudioManager.PlayAudio(Enums.AudioType.UpgradeMenu);
             
             if (_currentType == Type.Idle)
                 _closeButton.interactable = _emptySpaceButton.interactable = true;
