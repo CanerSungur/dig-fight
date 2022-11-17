@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using System;
+using DigFight;
 
 namespace ZestGames
 {
@@ -32,12 +33,17 @@ namespace ZestGames
         public PlayerAudio AudioHandler => _audioHandler == null ? _audioHandler = GetComponent<PlayerAudio>() : _audioHandler;
         private PlayerEffectHandler _effectHandler;
         public PlayerEffectHandler EffectHandler => _effectHandler == null ? _effectHandler = GetComponent<PlayerEffectHandler>() : _effectHandler;
+        private PlayerRotationHandler _rotationHandler;
+        public PlayerRotationHandler RotationHandler => _rotationHandler == null ? _rotationHandler = GetComponent<PlayerRotationHandler>() : _rotationHandler;
         #endregion
 
         #region PROPERTIES
         public bool IsDead { get; private set; }
         public bool IsUpgrading { get; private set; }
+        public bool UpwardsIsEmpty => !Physics.Raycast(Collider.bounds.center, Vector3.up, Collider.bounds.extents.y + 0.75f, walkableLayer);
+        public bool IsTooHigh => !Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 2f, walkableLayer);
         public bool IsGrounded => Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 0.01f, walkableLayer);
+        public bool CanFly => UpwardsIsEmpty && InputHandler.IsMovingUp;
         public TimerForAction TimerForAction => timerForAction;
         #endregion
 
@@ -60,6 +66,7 @@ namespace ZestGames
             AudioHandler.Init(this);
             EffectHandler.Init(this);
             timerForAction.Init();
+            RotationHandler.Init(this);
 
             PlayerUpgradeEvents.OnOpenCanvas += HandleUpgradeStart;
             PlayerUpgradeEvents.OnCloseCanvas += HandleUpgradeEnd;

@@ -14,6 +14,9 @@ namespace ZestGames
         private readonly int _loseID = Animator.StringToHash("Lose");
         private readonly int _cheerID = Animator.StringToHash("Cheer");
         private readonly int _cheerIndexID = Animator.StringToHash("CheerIndex");
+        private readonly int _groundedID = Animator.StringToHash("Grounded");
+        private readonly int _flyingID = Animator.StringToHash("Flying");
+        private readonly int _tooHighID = Animator.StringToHash("TooHigh");
         #endregion
 
         public void Init(Player player)
@@ -24,12 +27,17 @@ namespace ZestGames
                 _animator = GetComponent<Animator>();
             }
 
+            Land();
+
             PlayerEvents.OnMove += Move;
             PlayerEvents.OnIdle += Idle;
             PlayerEvents.OnDie += Die;
             PlayerEvents.OnWin += Win;
             PlayerEvents.OnLose += Lose;
             PlayerEvents.OnCheer += Cheer;
+            PlayerEvents.OnFly += Fly;
+            PlayerEvents.OnFall += Fall;
+            PlayerEvents.OnLand += Land;
         }
 
         private void OnDisable()
@@ -42,6 +50,9 @@ namespace ZestGames
             PlayerEvents.OnWin -= Win;
             PlayerEvents.OnLose -= Lose;
             PlayerEvents.OnCheer -= Cheer;
+            PlayerEvents.OnFly -= Fly;
+            PlayerEvents.OnFall -= Fall;
+            PlayerEvents.OnLand -= Land;
         }
 
         #region BASIC ANIM FUNCTIONS
@@ -55,6 +66,31 @@ namespace ZestGames
         {
             SelectRandomCheer();
             _animator.SetTrigger(_cheerID);
+        }
+        #endregion
+
+        #region EVENT HANDLER FUNCTIONS
+        private void Fly()
+        {
+            _animator.SetBool(_groundedID, false);
+            _animator.SetBool(_flyingID, true);
+        }
+        private void Fall()
+        {
+            CheckForHeight();
+            _animator.SetBool(_groundedID, false);
+            _animator.SetBool(_flyingID, false);
+        }
+        private void Land()
+        {
+            _animator.SetBool(_groundedID, true);
+        }
+        #endregion
+
+        #region HELPERS
+        private void CheckForHeight()
+        {
+            _animator.SetBool(_tooHighID, _player.IsTooHigh);
         }
         #endregion
     }

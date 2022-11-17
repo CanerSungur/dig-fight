@@ -7,5 +7,6 @@ namespace ZestGames
         public enum PoolStamp { Something, MoneyCollect2D, MoneySpend2D }
         public enum AudioType { Testing_PlayerMove, Button_Click, UpgradeMenu, CollectMoney, SpendMoney }
         public enum AiStateType { Idle, WalkRandom, GetInQueue }
+        public enum MovementDirection { None, Left, Right }
     }
 }

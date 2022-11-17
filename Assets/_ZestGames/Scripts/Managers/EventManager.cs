@@ -12,10 +12,11 @@ namespace ZestGames
 
     public static class PlayerEvents 
     {
-        public static Action OnMove, OnIdle, OnDie, OnWin, OnLose, OnCheer;
+        public static Action OnMove, OnIdle, OnDie, OnWin, OnLose, OnCheer, OnFly, OnFall, OnLand;
         public static Action OnSetCurrentMovementSpeed, OnSetCurrentMoneyValue;
         public static Action OnOpenedUpgradeCanvas, OnClosedUpgradeCanvas;
         public static Action OnEmptyNextInQueue, OnStopSpendingMoney;
+        public static Action OnRotateLeft, OnRotateRight, OnResetRotation;
     }
 
     public static class PlayerUpgradeEvents
