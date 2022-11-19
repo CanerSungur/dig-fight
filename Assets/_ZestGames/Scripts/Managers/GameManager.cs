@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using DigFight;
 
 namespace ZestGames
 {
@@ -14,6 +15,7 @@ namespace ZestGames
         private SettingsManager _settingsManager;
         private DataManager _dataManager;
         private QueueManager _queueManager;
+        private BoxSpawnManager _boxSpawnManager;
 
         private void Init()
         {
@@ -30,6 +32,8 @@ namespace ZestGames
             _uiManager.Init(this);
             _queueManager = GetComponent<QueueManager>();
             _queueManager.Init(this);
+            _boxSpawnManager = GetComponent<BoxSpawnManager>();
+            _boxSpawnManager.Init(this);
 
             UiEvents.OnUpdateCollectableText?.Invoke(DataManager.TotalMoney);
             UiEvents.OnUpdateLevelText?.Invoke(LevelHandler.Level);

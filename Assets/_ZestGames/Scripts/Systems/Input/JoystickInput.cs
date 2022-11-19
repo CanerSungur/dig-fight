@@ -13,7 +13,7 @@ namespace ZestGames
         private float _delayedTime;
         private readonly float _delayRate = 1f;
 
-        private const float FLY_INPUT_THRESHOLD = 0.3f;
+        private const float FLY_INPUT_THRESHOLD = 0.1f;
         private bool _highFall = false;
 
         #region PROPERTIES

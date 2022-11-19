@@ -35,11 +35,16 @@ namespace ZestGames
         public PlayerEffectHandler EffectHandler => _effectHandler == null ? _effectHandler = GetComponent<PlayerEffectHandler>() : _effectHandler;
         private PlayerRotationHandler _rotationHandler;
         public PlayerRotationHandler RotationHandler => _rotationHandler == null ? _rotationHandler = GetComponent<PlayerRotationHandler>() : _rotationHandler;
+        private PlayerDigHandler _digHandler;
+        public PlayerDigHandler DigHandler => _digHandler == null ? _digHandler = GetComponent<PlayerDigHandler>() : _digHandler;
         #endregion
 
         #region PROPERTIES
         public bool IsDead { get; private set; }
         public bool IsUpgrading { get; private set; }
+        public bool IsInDigZone { get; private set; }
+        public bool IsDigging { get; private set; }
+        public bool IsFlying { get; private set; }
         public bool UpwardsIsEmpty => !Physics.Raycast(Collider.bounds.center, Vector3.up, Collider.bounds.extents.y + 0.75f, walkableLayer);
         public bool IsTooHigh => !Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 2f, walkableLayer);
         public bool IsGrounded => Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 0.01f, walkableLayer);
@@ -56,7 +61,7 @@ namespace ZestGames
         private void Start()
         {
             CharacterTracker.SetPlayerTransform(transform);
-            IsDead = IsUpgrading = false;
+            IsDead = IsUpgrading = IsInDigZone = IsDigging = IsFlying = false;
 
             InputHandler.Init(this);
             PlayerMovement.Init(this);
@@ -67,15 +72,20 @@ namespace ZestGames
             EffectHandler.Init(this);
             timerForAction.Init();
             RotationHandler.Init(this);
+            DigHandler.Init(this);
 
             PlayerUpgradeEvents.OnOpenCanvas += HandleUpgradeStart;
             PlayerUpgradeEvents.OnCloseCanvas += HandleUpgradeEnd;
+            PlayerEvents.OnFly += StartFlying;
+            PlayerEvents.OnFall += StopFlying;
         }
 
         private void OnDisable()
         {
             PlayerUpgradeEvents.OnOpenCanvas -= HandleUpgradeStart;
             PlayerUpgradeEvents.OnCloseCanvas -= HandleUpgradeEnd;
+            PlayerEvents.OnFly -= StartFlying;
+            PlayerEvents.OnFall -= StopFlying;
         }
 
         #region EVENT HANDLER FUNCTIONS
@@ -89,6 +99,23 @@ namespace ZestGames
             IsUpgrading = false;
             DeleteUpgradeRotationSequence();
         }
+        private void StartFlying() => IsFlying = true;
+        private void StopFlying() => IsFlying = false;
+        #endregion
+
+        #region PUBLICS
+        public void StartedDigging()
+        {
+            IsDigging = true;
+            PlayerEvents.OnStartDigging?.Invoke();
+        }
+        public void StoppedDigging()
+        {
+            IsDigging = false;
+            PlayerEvents.OnStopDigging?.Invoke();
+        }
+        public void EnteredDigZone() => IsInDigZone = true;
+        public void ExitedDigZone() => IsInDigZone = false;
         #endregion
 
         private void StartUpgradeRotationSequence()

@@ -1,4 +1,5 @@
 using UnityEngine;
+using DigFight;
 
 namespace ZestGames
 {
@@ -27,6 +28,20 @@ namespace ZestGames
                 examplePoint.PlayerIsInArea = true;
                 _player.MoneyHandler.StartSpending(examplePoint);
             }
+
+            #region DIGGING
+            if (other.TryGetComponent(out BoxDigTrigger boxDigTrigger) && !_player.IsInDigZone)
+            {
+                _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
+
+                //if (boxDigTrigger.TriggerDirection == Enums.BoxTriggerDirection.Top)
+                //    _player.DigHandler.StartDiggingProcess(Enums.BoxTriggerDirection.Top);
+                //else if (boxDigTrigger.TriggerDirection == Enums.BoxTriggerDirection.Left)
+                //    _player.DigHandler.StartDiggingProcess(Enums.BoxTriggerDirection.Left);
+                //else if (boxDigTrigger.TriggerDirection == Enums.BoxTriggerDirection.Right)
+                //    _player.DigHandler.StartDiggingProcess(Enums.BoxTriggerDirection.Right);
+            }
+            #endregion
         }
 
         private void OnTriggerExit(Collider other)
@@ -45,6 +60,14 @@ namespace ZestGames
                 examplePoint.PlayerIsInArea = false;
                 _player.MoneyHandler.StopSpending();
             }
+
+            #region DIGGING
+            if (other.TryGetComponent(out BoxDigTrigger boxDigTrigger) && _player.IsInDigZone)
+            {
+                _player.StoppedDigging();
+                _player.DigHandler.StopDiggingProcess();
+            }
+            #endregion
         }
     }
 }
