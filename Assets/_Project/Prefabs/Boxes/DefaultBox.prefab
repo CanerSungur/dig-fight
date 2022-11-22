@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6196585926236615873}
   - component: {fileID: 6196585926236615879}
   - component: {fileID: 6196585926236615878}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DigTrigger_Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ GameObject:
   - component: {fileID: 6196585926255656090}
   - component: {fileID: 6196585926255656088}
   - component: {fileID: 6196585926255656091}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DigTrigger_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 6196585926299460685}
   - component: {fileID: 6196585926299460720}
   - component: {fileID: 6196585926299460723}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 6196585926795876159}
   - component: {fileID: 6196585926795876157}
   - component: {fileID: 6196585926795876156}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DigTrigger_Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -265,8 +265,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6196585926871131849}
   - component: {fileID: 6196585926871131854}
-  - component: {fileID: 6196585926871131855}
-  m_Layer: 3
+  - component: {fileID: 991617480583041943}
+  m_Layer: 7
   m_Name: DefaultBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -280,7 +280,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6196585926871131848}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -304,7 +304,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.2683978, y: 1.997711, z: 2.034597}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6196585926871131855
+--- !u!114 &991617480583041943
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

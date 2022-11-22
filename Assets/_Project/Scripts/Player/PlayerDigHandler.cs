@@ -15,6 +15,7 @@ namespace DigFight
         private const float DIG_DELAY = 0.5f;
 
         #region PROPERTIES
+        public Player Player => _player;
         public Enums.BoxTriggerDirection CurrentBoxTriggerDirection => _currentBoxTriggerDirection;
         #endregion
 
@@ -33,7 +34,7 @@ namespace DigFight
             {
                 _player.StartedDigging();
                 //PlayerEvents.OnStartDigging?.Invoke();
-                Debug.Log("started digging");
+                //Debug.Log("started digging");
             }
 
             CheckForDigIterruption();
@@ -64,7 +65,7 @@ namespace DigFight
             _player.EnteredDigZone();
             _delayedTime = Time.time + DIG_DELAY;
 
-            Debug.Log("Side: " + triggerDirection);
+            //Debug.Log("Side: " + triggerDirection);
         }
         public void StopDiggingProcess()
         {

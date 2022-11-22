@@ -1,9 +1,14 @@
 using UnityEngine;
+using UnityEngine.XR;
 
 namespace ZestGames
 {
     public class PlayerAudio : MonoBehaviour
     {
+        #region JETPACK
+        private AudioSource _jetpackAudioSource;
+        #endregion
+
         private readonly float _targetPitch = 5f;
         private readonly float _pitchIncrement = 0.05f;
         private readonly float _cooldown = 2f;
@@ -22,18 +27,35 @@ namespace ZestGames
 
         public void Init(Player player)
         {
+            if (_jetpackAudioSource == null)
+            {
+                _jetpackAudioSource = GetComponent<AudioSource>();
+                _jetpackAudioSource.loop = true;
+                _jetpackAudioSource.Stop();
+            }
+
             _currentCollectPitch = _currentSpendPitch = 1f;
             _collectingMoney = _spendingMoney = false;
             _collectTimer = _spendTimer = _cooldown;
 
             AudioEvents.OnPlayCollectMoney += HandleCollectMoney;
             AudioEvents.OnPlaySpendMoney += HandleSpendMoney;
+            AudioEvents.OnPlaySwing += Swing;
+
+            PlayerEvents.OnFly += StartJetpackSound;
+            PlayerEvents.OnFall += StopJetpackSound;
+            PlayerEvents.OnLand += Land;
         }
 
         private void OnDisable()
         {
             AudioEvents.OnPlayCollectMoney -= HandleCollectMoney;
             AudioEvents.OnPlaySpendMoney -= HandleSpendMoney;
+            AudioEvents.OnPlaySwing -= Swing;
+
+            PlayerEvents.OnFly -= StartJetpackSound;
+            PlayerEvents.OnFall -= StopJetpackSound;
+            PlayerEvents.OnLand -= Land;
         }
 
         private void Update()
@@ -89,5 +111,19 @@ namespace ZestGames
                 _currentCollectPitch = 1f;
         }
         #endregion
+
+        #region JETPACK
+        private void StartJetpackSound() => _jetpackAudioSource.Play();
+        private void StopJetpackSound() => _jetpackAudioSource.Stop();
+        #endregion
+
+        private void Land()
+        {
+            AudioManager.PlayAudio(Enums.AudioType.Land, 0.4f);
+        }
+        private void Swing()
+        {
+            AudioManager.PlayAudio(Enums.AudioType.Swing);
+        }
     }
 }

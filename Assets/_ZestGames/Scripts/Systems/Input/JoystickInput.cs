@@ -69,6 +69,8 @@ namespace ZestGames
         }
         private void SetMovementDirection()
         {
+            if (GameManager.GameState != Enums.GameState.Started) return;
+
             if (joystick.Horizontal == 0)
                 MovementDirection = Enums.MovementDirection.None;
             else

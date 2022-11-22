@@ -32,14 +32,8 @@ namespace ZestGames
             #region DIGGING
             if (other.TryGetComponent(out BoxDigTrigger boxDigTrigger) && !_player.IsInDigZone)
             {
+                boxDigTrigger.AssignHitter(_player);
                 _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
-
-                //if (boxDigTrigger.TriggerDirection == Enums.BoxTriggerDirection.Top)
-                //    _player.DigHandler.StartDiggingProcess(Enums.BoxTriggerDirection.Top);
-                //else if (boxDigTrigger.TriggerDirection == Enums.BoxTriggerDirection.Left)
-                //    _player.DigHandler.StartDiggingProcess(Enums.BoxTriggerDirection.Left);
-                //else if (boxDigTrigger.TriggerDirection == Enums.BoxTriggerDirection.Right)
-                //    _player.DigHandler.StartDiggingProcess(Enums.BoxTriggerDirection.Right);
             }
             #endregion
         }

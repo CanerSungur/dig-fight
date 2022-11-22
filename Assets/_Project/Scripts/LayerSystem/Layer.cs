@@ -10,12 +10,16 @@ namespace DigFight
         private const float LAYER_BOX_COUNT = 5;
 
         private bool _firstLayer;
+        private int _layerNumber;
+
+        public int LayerNumber => _layerNumber;
 
         public void Init(BoxSpawnManager boxSpawnManager, int number)
         {
             if (_boxSpawnManager == null)
                 _boxSpawnManager = boxSpawnManager;
 
+            _layerNumber = number;
             _firstLayer = number == 0;
 
             transform.SetParent(_boxSpawnManager.BoxContainerTransform);

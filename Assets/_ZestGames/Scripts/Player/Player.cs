@@ -106,6 +106,7 @@ namespace ZestGames
         #region PUBLICS
         public void StartedDigging()
         {
+            if (GameManager.GameState == Enums.GameState.GameEnded) return;
             IsDigging = true;
             PlayerEvents.OnStartDigging?.Invoke();
         }
@@ -113,6 +114,7 @@ namespace ZestGames
         {
             IsDigging = false;
             PlayerEvents.OnStopDigging?.Invoke();
+            PickaxeEvents.OnCannotHit?.Invoke();
         }
         public void EnteredDigZone() => IsInDigZone = true;
         public void ExitedDigZone() => IsInDigZone = false;

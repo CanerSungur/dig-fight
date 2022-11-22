@@ -17,7 +17,7 @@ namespace ZestGames
         public static Action OnOpenedUpgradeCanvas, OnClosedUpgradeCanvas;
         public static Action OnEmptyNextInQueue, OnStopSpendingMoney;
         public static Action OnRotateLeft, OnRotateRight, OnResetRotation;
-        public static Action OnStartDigging, OnStopDigging;
+        public static Action OnStartDigging, OnStopDigging, OnStagger;
     }
 
     public static class PlayerUpgradeEvents
@@ -44,6 +44,11 @@ namespace ZestGames
 
     public static class AudioEvents
     {
-        public static Action OnPlayCollectMoney, OnPlaySpendMoney;
+        public static Action OnPlayCollectMoney, OnPlaySpendMoney, OnPlaySwing;
+    }
+
+    public static class PickaxeEvents
+    {
+        public static Action OnCanHit, OnCannotHit, OnBreak;
     }
 }

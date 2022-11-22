@@ -20,9 +20,11 @@ namespace ZestGames
         private readonly int _winID = Animator.StringToHash("Win");
         private readonly int _loseID = Animator.StringToHash("Lose");
         private readonly int _cheerID = Animator.StringToHash("Cheer");
+        private readonly int _staggerID = Animator.StringToHash("Stagger");
 
         // Integers
         private readonly int _cheerIndexID = Animator.StringToHash("CheerIndex");
+        private readonly int _loseIndexID = Animator.StringToHash("LoseIndex");
         private readonly int _digSideIndexID = Animator.StringToHash("DigSideIndex");
         #endregion
 
@@ -53,6 +55,7 @@ namespace ZestGames
             PlayerEvents.OnLand += Land;
             PlayerEvents.OnStartDigging += StartDigging;
             PlayerEvents.OnStopDigging += StopDigging;
+            PlayerEvents.OnStagger += Stagger;
         }
 
         private void OnDisable()
@@ -70,6 +73,7 @@ namespace ZestGames
             PlayerEvents.OnLand -= Land;
             PlayerEvents.OnStartDigging -= StartDigging;
             PlayerEvents.OnStopDigging -= StopDigging;
+            PlayerEvents.OnStagger -= Stagger;
         }
 
         #region BASIC ANIM FUNCTIONS
@@ -77,7 +81,12 @@ namespace ZestGames
         private void Move() => _animator.SetBool(_moveID, true);
         private void Die() => _animator.SetTrigger(_dieID);
         private void Win() => _animator.SetTrigger(_winID);
-        private void Lose() => _animator.SetTrigger(_loseID);
+        private void SelectRandomLose() => _animator.SetInteger(_loseIndexID, Random.Range(1, 4));
+        private void Lose()
+        {
+            SelectRandomLose();
+            _animator.SetTrigger(_loseID);
+        }
         private void SelectRandomCheer() => _animator.SetInteger(_cheerIndexID, Random.Range(1, 5));
         private void Cheer()
         {
@@ -98,26 +107,18 @@ namespace ZestGames
             _animator.SetBool(_groundedID, false);
             _animator.SetBool(_flyingID, false);
         }
-        private void Land()
-        {
-            _animator.SetBool(_groundedID, true);
-        }
+        private void Land() => _animator.SetBool(_groundedID, true);
         private void StartDigging()
         {
             _animator.SetInteger(_digSideIndexID, (int)_player.DigHandler.CurrentBoxTriggerDirection);
             _animator.SetBool(_diggingID, true);
         }
-        private void StopDigging()
-        {
-            _animator.SetBool(_diggingID, false);
-        }
+        private void StopDigging() => _animator.SetBool(_diggingID, false);
+        private void Stagger() => _animator.SetTrigger(_staggerID);
         #endregion
 
         #region HELPERS
-        private void CheckForHeight()
-        {
-            _animator.SetBool(_tooHighID, _player.IsTooHigh);
-        }
+        private void CheckForHeight() => _animator.SetBool(_tooHighID, _player.IsTooHigh);
         #endregion
 
         #region ANIMATION EVENT FUNCTIONS
@@ -127,6 +128,18 @@ namespace ZestGames
             {
                 _player.StoppedDigging();
                 _player.DigHandler.StartDiggingProcess(_player.DigHandler.CurrentBoxTriggerDirection);
+            }
+            else if (message.Equals("EnableCanHit"))
+            {
+                PickaxeEvents.OnCanHit?.Invoke();
+                //AudioEvents.OnPlaySwing?.Invoke();
+            }
+            else if (message.Equals("DisableCanHit"))
+                PickaxeEvents.OnCannotHit?.Invoke();
+            else if (message.Equals("SwingAnimStarted"))
+            {
+                AudioEvents.OnPlaySwing?.Invoke();
+
             }
         }
         #endregion

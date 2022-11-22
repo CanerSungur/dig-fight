@@ -15,10 +15,14 @@ namespace ZestGames
         [Header("-- SHAKE SETUP --")]
         private CinemachineBasicMultiChannelPerlin _gameplayCMBasicPerlin;
         private bool _shakeStarted = false;
-        private float _shakeDuration = 1f;
+        private float _shakeDuration = 0.5f;
         private float _shakeTimer;
 
-        public static event Action OnShakeCam;
+        private const float BOX_HIT_AMPLITUDE = 0.5f;
+        private const float BOX_BREAK_AMPLITUDE = 0.75f;
+        private const float EXPLOSIVE_HIT_AMPLITUDE = 2f;
+
+        public static Action OnBoxHitShake, OnBoxBreakShake, OnExplosiveHitShake;
 
         private void Awake()
         {
@@ -37,7 +41,9 @@ namespace ZestGames
             GameEvents.OnGameStart += () => gameplayCM.Priority = 3;
             PlayerUpgradeEvents.OnOpenCanvas += () => playerUpgradeCM.Priority = 4;
             PlayerUpgradeEvents.OnCloseCanvas += () => playerUpgradeCM.Priority = 0;
-            OnShakeCam += () => _shakeStarted = true;
+            OnBoxHitShake += BoxHitShake;
+            OnBoxBreakShake += BoxBreakShake;
+            OnExplosiveHitShake += ExplosiveHitShake;
         }
 
         private void OnDisable()
@@ -45,7 +51,9 @@ namespace ZestGames
             GameEvents.OnGameStart -= () => gameplayCM.Priority = 3;
             PlayerUpgradeEvents.OnOpenCanvas -= () => playerUpgradeCM.Priority = 4;
             PlayerUpgradeEvents.OnCloseCanvas -= () => playerUpgradeCM.Priority = 0;
-            OnShakeCam -= () => _shakeStarted = true;
+            OnBoxHitShake -= BoxHitShake;
+            OnBoxBreakShake -= BoxBreakShake;
+            OnExplosiveHitShake -= ExplosiveHitShake;
         }
 
         private void Update()
@@ -57,7 +65,7 @@ namespace ZestGames
         {
             if (_shakeStarted)
             {
-                _gameplayCMBasicPerlin.m_AmplitudeGain = 1f;
+                //_gameplayCMBasicPerlin.m_AmplitudeGain = 1f;
 
                 _shakeTimer -= Time.deltaTime;
                 if (_shakeTimer <= 0f)
@@ -69,5 +77,22 @@ namespace ZestGames
                 }
             }
         }
+        #region EVENT HANDLER FUNCTIONS
+        private void BoxHitShake()
+        {
+            _shakeStarted = true;
+            _gameplayCMBasicPerlin.m_AmplitudeGain = BOX_HIT_AMPLITUDE;
+        }
+        private void BoxBreakShake()
+        {
+            _shakeStarted = true;
+            _gameplayCMBasicPerlin.m_AmplitudeGain = BOX_BREAK_AMPLITUDE;
+        }
+        private void ExplosiveHitShake()
+        {
+            _shakeStarted = true;
+            _gameplayCMBasicPerlin.m_AmplitudeGain = EXPLOSIVE_HIT_AMPLITUDE;
+        }
+        #endregion
     }
 }

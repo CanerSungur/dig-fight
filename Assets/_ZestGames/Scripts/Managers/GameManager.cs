@@ -65,6 +65,7 @@ namespace ZestGames
 
         private void HandleGameEnd(Enums.GameEnd gameEnd)
         {
+            GameState = Enums.GameState.GameEnded;
             GameEnd = gameEnd;
 
             if (gameEnd == Enums.GameEnd.Success)
