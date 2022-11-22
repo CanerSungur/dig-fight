@@ -45,6 +45,8 @@ namespace ZestGames
             PlayerEvents.OnFly += StartJetpackSound;
             PlayerEvents.OnFall += StopJetpackSound;
             PlayerEvents.OnLand += Land;
+
+            GameEvents.OnGameEnd += (Enums.GameEnd ignoreThis) => StopJetpackSound();
         }
 
         private void OnDisable()
@@ -56,6 +58,8 @@ namespace ZestGames
             PlayerEvents.OnFly -= StartJetpackSound;
             PlayerEvents.OnFall -= StopJetpackSound;
             PlayerEvents.OnLand -= Land;
+
+            GameEvents.OnGameEnd -= (Enums.GameEnd ignoreThis) => StopJetpackSound();
         }
 
         private void Update()

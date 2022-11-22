@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 87eeeccb9e1c34671a2e807587bd278f, type: 2}
+  - {fileID: 2100000, guid: 7675a91941d32416dbeecf8522c5295b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -91,7 +91,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6196585926871131849}
   - component: {fileID: 6196585926871131854}
-  - component: {fileID: -7079241060163218475}
   m_Layer: 7
   m_Name: StaticBox
   m_TagString: Untagged
@@ -106,7 +105,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6196585926871131848}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -127,15 +126,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.2683978, y: 1.997711, z: 2.034597}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-7079241060163218475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6196585926871131848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0753989043218448eaf6f46134be61cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

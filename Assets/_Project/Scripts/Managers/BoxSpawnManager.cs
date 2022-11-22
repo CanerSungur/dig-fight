@@ -51,7 +51,7 @@ namespace DigFight
             for (int i = 0; i < layerCount; i++)
             {
                 Layer layer = new GameObject($"Layer_{_currentLayerCount}", typeof(Layer)).GetComponent<Layer>();
-                layer.Init(this, _currentLayerCount);
+                layer.Init(this, _currentLayerCount, LAYER_BOX_COUNT);
 
                 _currentLayerCount++;
 

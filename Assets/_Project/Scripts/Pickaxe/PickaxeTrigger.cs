@@ -15,7 +15,7 @@ namespace DigFight
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out Box box) && _pickaxe.Player.IsDigging && _pickaxe.CanHit)
+            if (other.TryGetComponent(out BreakableBox box) && _pickaxe.Player.IsDigging && _pickaxe.CanHit)
             {
                 if (_pickaxe.DamageHandler.Damage < box.CurrentHealth)
                     PlayerEvents.OnStagger?.Invoke();

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74654b171ce5644d3afae8fc9fd8837e, type: 3}
   m_Name: HitBoxSmoke
   m_EditorClassIdentifier: 
-  PoolStamp: 4
+  PoolStamp: 5
   Prefabs:
-  - {fileID: 6185430543415887423, guid: 630b302d9491946efb9f76937e924368, type: 3}
+  - {fileID: 6185430543415887423, guid: a9053d0600e994fc1aa0cbd8aa1aa5c8, type: 3}
   Size: 5
