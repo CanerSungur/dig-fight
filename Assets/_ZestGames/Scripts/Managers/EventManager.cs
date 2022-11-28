@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace ZestGames
 {
@@ -35,6 +36,7 @@ namespace ZestGames
     public static class CollectableEvents
     {
         public static Action<float> OnCollect, OnSpend;
+        public static Action<int, Vector3> OnSpawnMoney;
     }
     
     public static class InputEvents

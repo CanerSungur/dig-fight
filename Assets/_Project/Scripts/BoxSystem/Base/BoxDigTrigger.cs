@@ -5,7 +5,8 @@ namespace DigFight
 {
     public class BoxDigTrigger : MonoBehaviour
     {
-        private BreakableBox _box;
+        private BreakableBox _breakableBox = null;
+        private ExplosiveBox _explosiveBox = null;
 
         [Header("-- SETUP --")]
         [SerializeField] private Enums.BoxTriggerDirection triggerDirection;
@@ -16,14 +17,19 @@ namespace DigFight
 
         private void OnEnable()
         {
-            if (_box == null)
-                _box = GetComponentInParent<BreakableBox>();
+            if (_breakableBox == null)
+                transform.parent.TryGetComponent(out _breakableBox);
+            if (_explosiveBox == null)
+                transform.parent.TryGetComponent(out _explosiveBox);
         }
 
         #region PUBLICS
         public void AssignHitter(Player player)
         {
-            _box.AssignHitter(player);
+            if (_breakableBox)
+                _breakableBox.AssignHitter(player);
+            else if (_explosiveBox)
+                _explosiveBox.AssignHitter(player);
         }
         #endregion
     }

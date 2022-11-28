@@ -57,7 +57,7 @@ namespace ZestGames
             int currentCount = 0;
             while (currentCount < _value)
             {
-                MoneyCanvas.Instance.SpawnCollectMoney(transform);
+                MoneyCanvas.Instance.SpawnCollectMoney(transform.position);
                 currentCount++;
 
                 yield return _spawnMoneyDelay;

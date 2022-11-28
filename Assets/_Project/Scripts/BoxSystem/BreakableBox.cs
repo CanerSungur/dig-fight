@@ -2,6 +2,8 @@ using DG.Tweening;
 using UnityEngine;
 using ZestGames;
 using System;
+using ZestCore.Utility;
+using Random = UnityEngine.Random;
 
 namespace DigFight
 {
@@ -46,6 +48,11 @@ namespace DigFight
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmokeSquare, transform.position, Quaternion.identity);
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmoke, transform.position + new Vector3(0f, 1f, -1f), Quaternion.identity);
 
+            if (amount <= CurrentHealth)
+                CollectableEvents.OnSpawnMoney?.Invoke(amount, transform.position);
+            else
+                CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
+
             CurrentHealth -= amount;
             AudioManager.PlayAudio(Enums.AudioType.HitBox, 0.5f);
 
@@ -57,7 +64,7 @@ namespace DigFight
         public void Break()
         {
             if (_player == null)
-                Debug.LogWarning("Player is not assigned!");
+                Debug.Log("Player is not assigned!");
             else
             {
                 _player.StoppedDigging();
@@ -74,6 +81,19 @@ namespace DigFight
         public void AssignHitter(Player player)
         {
             _player = player;
+        }
+        public void Explode()
+        {
+            Delayer.DoActionAfterDelay(this, Random.Range(0f, 0.75f), () => {
+                // effects
+
+                CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
+                CurrentHealth = 0;
+
+                gameObject.SetActive(false);
+                AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
+                CameraManager.OnBoxBreakShake?.Invoke();
+            });
         }
         #endregion
 

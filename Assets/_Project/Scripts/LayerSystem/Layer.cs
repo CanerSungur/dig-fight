@@ -9,22 +9,37 @@ namespace DigFight
     public class Layer : MonoBehaviour
     {
         private BoxSpawnManager _boxSpawnManager;
-        private const float BOX_GAP = 2.25f;
-        private const int LAYER_BOX_COUNT = 5;
-
-        private const int BORDER_TOP_OFFSET = 3;
-        private const int BORDER_BOTTOM_OFFSET = 1;
 
         private bool _firstLayer, _lastLayer;
         private int _layerNumber;
 
+        #region BOX RELATED
+        private const float BOX_GAP = 2.25f;
+        private const int LAYER_BOX_COUNT = 5;
+        #endregion
+
+        #region BORDER RELATED
+        private const int BORDER_TOP_OFFSET = 3;
+        private const int BORDER_BOTTOM_OFFSET = 1;
+        #endregion
+
+        #region EXPLOSIVE RELATED
+        private bool _hasExplosiveOnPlayerSide, _hasExplosiveOnAiSide = false;
+        private int _notExplosiveCountOnPlayerSide, _notExplosiveCountOnAiSide = 0;
+        #endregion
+
+        #region PROPERTIES
         public int LayerNumber => _layerNumber;
+        public bool PlayerSideCanHasExplosive => !_firstLayer && !_lastLayer && !_hasExplosiveOnPlayerSide && !_boxSpawnManager.HasExplosiveOnPlayerSide && RNG.RollDice(30 * _layerNumber);
+        public bool AiSideCanHasExplosive => !_firstLayer && !_lastLayer && !_hasExplosiveOnAiSide && !_boxSpawnManager.HasExplosiveOnAiSide && RNG.RollDice(30 * _layerNumber);
+        #endregion
 
         public void Init(BoxSpawnManager boxSpawnManager, int number, int totalLayerCount)
         {
             if (_boxSpawnManager == null)
                 _boxSpawnManager = boxSpawnManager;
 
+            _hasExplosiveOnPlayerSide = _hasExplosiveOnAiSide = false;
             _layerNumber = number;
             _firstLayer = number == 0;
             _lastLayer = number == totalLayerCount - 1;
@@ -38,8 +53,10 @@ namespace DigFight
 
         private Transform GetRandomBreakableBox()
         {
-            if (RNG.RollDice(80))
+            if (RNG.RollDice(70))
+            {
                 return Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.StoneBox], transform).transform;
+            }
             else
             {
                 if (RNG.RollDice(70))
@@ -47,6 +64,19 @@ namespace DigFight
                 else
                     return Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.DiamondBox], transform).transform;
             }
+        }
+
+        private void CheckForExplosiveBoxSpawnForPlayerSide(out Transform boxTransform)
+        {
+            boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.ExplosiveBox], transform).transform;
+            _hasExplosiveOnPlayerSide = true;
+            _boxSpawnManager.ExplosiveSpawnedOnPlayerSide();
+        }
+        private void CheckForExplosiveBoxSpawnForAiSide(out Transform boxTransform)
+        {
+            boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.ExplosiveBox], transform).transform;
+            _hasExplosiveOnAiSide = true;
+            _boxSpawnManager.ExplosiveSpawnedOnAiSide();
         }
 
         #region BOX SPAWN FUNCTIONS
@@ -62,8 +92,16 @@ namespace DigFight
                     boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.LevelEndBox], transform).transform;
                 else
                 {
-                    boxTransform = GetRandomBreakableBox();
-                    boxTransform.GetComponent<BreakableBox>().Init(this);
+                    if (PlayerSideCanHasExplosive)
+                        CheckForExplosiveBoxSpawnForPlayerSide(out boxTransform);
+                    else
+                        boxTransform = GetRandomBreakableBox();
+
+                    if (boxTransform.TryGetComponent(out BreakableBox breakableBox))
+                        breakableBox.Init(this);
+                    else if (boxTransform.TryGetComponent(out ExplosiveBox explosiveBox))
+                        explosiveBox.Init(this);
+                    //boxTransform.GetComponent<BreakableBox>().Init(this);
                 }
 
                 boxTransform.localPosition = new Vector3(j * BOX_GAP, 0f, 0f);
@@ -87,8 +125,16 @@ namespace DigFight
                     boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.LevelEndBox], transform).transform;
                 else
                 {
-                    boxTransform = GetRandomBreakableBox();
-                    boxTransform.GetComponent<BreakableBox>().Init(this);
+                    if (AiSideCanHasExplosive)
+                        CheckForExplosiveBoxSpawnForAiSide(out boxTransform);
+                    else
+                        boxTransform = GetRandomBreakableBox();
+
+                    if(boxTransform.TryGetComponent(out BreakableBox breakableBox))
+                        breakableBox.Init(this);
+                    else if (boxTransform.TryGetComponent(out ExplosiveBox explosiveBox))
+                        explosiveBox.Init(this);
+                    //boxTransform.GetComponent<BreakableBox>().Init(this);
                 }
 
                 boxTransform.localPosition = new Vector3(((j + 1) + LAYER_BOX_COUNT) * BOX_GAP, 0f, 0f);

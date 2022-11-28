@@ -16,6 +16,7 @@ namespace ZestGames
         private DataManager _dataManager;
         private QueueManager _queueManager;
         private BoxSpawnManager _boxSpawnManager;
+        private MoneySpawnManager _moneySpawnManager;
 
         private void Init()
         {
@@ -34,6 +35,8 @@ namespace ZestGames
             _queueManager.Init(this);
             _boxSpawnManager = GetComponent<BoxSpawnManager>();
             _boxSpawnManager.Init(this);
+            _moneySpawnManager = GetComponent<MoneySpawnManager>();
+            _moneySpawnManager.Init(this);
 
             UiEvents.OnUpdateCollectableText?.Invoke(DataManager.TotalMoney);
             UiEvents.OnUpdateLevelText?.Invoke(LevelHandler.Level);

@@ -118,7 +118,11 @@ namespace ZestGames
 
         #region JETPACK
         private void StartJetpackSound() => _jetpackAudioSource.Play();
-        private void StopJetpackSound() => _jetpackAudioSource.Stop();
+        private void StopJetpackSound()
+        {
+            if (_jetpackAudioSource != null)
+                _jetpackAudioSource.Stop();
+        }
         #endregion
 
         private void Land()

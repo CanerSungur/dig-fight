@@ -19,11 +19,16 @@ namespace DigFight
         private const int LAYER_BOX_COUNT = 5;
         private const float BOX_GAP = 2.25f;
         private int _currentLayerCount;
+
+        private const int MAX_EXPLOSIVE_COUNT = 1;
+        private int _currentExplosiveCountOnPlayerSide, _currentExplosiveCountOnAiSide = 0;
         #endregion
 
         #region PROPERTIES
         public Dictionary<Enums.PrefabStamp, GameObject> PrefabDictionary => _prefabDictionary;
         public Transform BoxContainerTransform => boxContainerTransform;
+        public bool HasExplosiveOnPlayerSide { get; private set; }
+        public bool HasExplosiveOnAiSide { get; private set; }
         #endregion
 
         public void Init(GameManager gameManager)
@@ -31,6 +36,7 @@ namespace DigFight
             _prefabData = Resources.LoadAll<PrefabSO>("_PrefabData/");
             InitializePrefabDictionary();
 
+            HasExplosiveOnPlayerSide = HasExplosiveOnAiSide = false;
             _currentLayerCount = 0;
 
             SpawnLayers();
@@ -54,14 +60,20 @@ namespace DigFight
                 layer.Init(this, _currentLayerCount, LAYER_BOX_COUNT);
 
                 _currentLayerCount++;
-
-                //for (int j = 0; j < LAYER_BOX_COUNT; j++)
-                //{
-                //    Box box = Instantiate(defaultBoxPrefab, layer.transform).GetComponent<Box>();
-                //    box.transform.localPosition = new Vector3(j * BOX_GAP, 0f, 0f);
-                //    box.Init(this);
-                //}
             }
         }
+
+        #region PUBLICS
+        public void ExplosiveSpawnedOnPlayerSide()
+        {
+            _currentExplosiveCountOnPlayerSide++;
+            HasExplosiveOnPlayerSide = _currentExplosiveCountOnPlayerSide >= MAX_EXPLOSIVE_COUNT;
+        }
+        public void ExplosiveSpawnedOnAiSide()
+        {
+            _currentExplosiveCountOnAiSide++;
+            HasExplosiveOnAiSide = _currentExplosiveCountOnAiSide >= MAX_EXPLOSIVE_COUNT;
+        }
+        #endregion
     }
 }

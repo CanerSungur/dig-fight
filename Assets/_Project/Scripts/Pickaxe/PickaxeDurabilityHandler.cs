@@ -5,10 +5,19 @@ namespace DigFight
 {
     public class PickaxeDurabilityHandler : MonoBehaviour
     {
+        [Header("-- BAR SETUP --")]
+        [SerializeField] private PickaxeDurabilityBar _durabilityBar;
+
         private Pickaxe _pickaxe;
 
         private int _maxDurability = 5;
         private int _currentDurability;
+
+        #region PROPERTIES
+        public int MaxDurability => _maxDurability;
+        public int CurrentDurability => _currentDurability;
+        public Pickaxe Pickaxe => _pickaxe;
+        #endregion
 
         public void Init(Pickaxe pickaxe)
         {
@@ -16,6 +25,7 @@ namespace DigFight
                 _pickaxe = pickaxe;
 
             _currentDurability = _maxDurability;
+            _durabilityBar.Init(this);
         }
 
         #region PUBLICS
@@ -24,6 +34,8 @@ namespace DigFight
             _currentDurability--;
             if (_currentDurability <= 0)
                 Break();
+
+            _durabilityBar.GetDamaged();
         }
         #endregion
 

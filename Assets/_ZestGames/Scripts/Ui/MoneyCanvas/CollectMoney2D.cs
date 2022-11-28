@@ -19,7 +19,7 @@ namespace ZestGames
         private readonly float _collectDuration = 1f;
         #endregion
 
-        public void Init(MoneyCanvas moneyCanvas, Transform spawnTransform)
+        public void Init(MoneyCanvas moneyCanvas, Vector3 spawnPosition)
         {
             if (!_moneyCanvas)
             {
@@ -29,16 +29,16 @@ namespace ZestGames
             }
 
             _rectTransform = GetComponent<RectTransform>();
-            _rectTransform.localScale = Vector3.one;
-            _rectTransform.anchoredPosition = GetWorldPointToScreenPoint(spawnTransform);
+            _rectTransform.localScale = Vector3.one * 0.5f;
+            _rectTransform.anchoredPosition = GetWorldPointToScreenPoint(spawnPosition);
 
             _rectTransform.localRotation = Quaternion.Euler(0f, 0f, Random.Range(0, 360));
             StartCollectSequence();
         }
 
-        private Vector2 GetWorldPointToScreenPoint(Transform transform)
+        private Vector2 GetWorldPointToScreenPoint(Vector3 position)
         {
-            Vector2 viewportPosition = _camera.WorldToViewportPoint(transform.position);
+            Vector2 viewportPosition = _camera.WorldToViewportPoint(position);
             Vector2 phaseUnlockerScreenPosition = new Vector2(
                (viewportPosition.x * _canvasRect.sizeDelta.x) - (_canvasRect.sizeDelta.x * 1f),
                (viewportPosition.y * _canvasRect.sizeDelta.y) - (_canvasRect.sizeDelta.y * 1f));
@@ -61,7 +61,9 @@ namespace ZestGames
                 _collectSequence.id = _collectSequenceID;
                 //_rectTransform.DOJumpAnchorPos(Hud.MoneyAnchoredPosition, 2f, 1, 1f);
                 //_rectTransform.DOAnchorPos(Hud.MoneyAnchoredPosition, 1f)
-                _collectSequence.Append(_rectTransform.DOJumpAnchorPos(Hud.MoneyAnchoredPosition, Random.Range(-200, 200), 1, _collectDuration))
+                _collectSequence.Append(_rectTransform.DOAnchorPos(_rectTransform.anchoredPosition + new Vector2(Random.Range(-100f, 100f), Random.Range(100f, 200f)), 0.5f))
+                    .Append(DOVirtual.Float(0f, 1f, 0.5f, r => { }))
+                    .Append(_rectTransform.DOJumpAnchorPos(Hud.MoneyAnchoredPosition, Random.Range(-200, 200), 1, _collectDuration))
                     .Join(_rectTransform.DOScale(Vector3.one * 0.8f, _collectDuration))
                     .Join(_rectTransform.DORotate(Vector3.zero, _collectDuration))
                     .OnComplete(() => {

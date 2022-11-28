@@ -23,10 +23,10 @@ namespace ZestGames
         #endregion
 
         #region COLLECT MONEY
-        public void SpawnCollectMoney(Transform spawnTransform)
+        public void SpawnCollectMoney(Vector3 spawnPosition)
         {
             CollectMoney2D money = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.MoneyCollect2D, Vector3.zero, Quaternion.identity, transform).GetComponent<CollectMoney2D>();
-            money.Init(this, spawnTransform);
+            money.Init(this, spawnPosition);
         }
         #endregion
 

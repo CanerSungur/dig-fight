@@ -25,6 +25,17 @@ namespace DigFight
                 _pickaxe.DurabilityHandler.GetDamaged();
                 PickaxeEvents.OnCannotHit?.Invoke();
             }
+
+            if (other.TryGetComponent(out ExplosiveBox explosiveBox) && _pickaxe.Player.IsDigging && _pickaxe.CanHit)
+            {
+                if (_pickaxe.DamageHandler.Damage < explosiveBox.CurrentHealth)
+                    PlayerEvents.OnStagger?.Invoke();
+
+                explosiveBox.GetDamaged(_pickaxe.DamageHandler.Damage);
+                _pickaxe.HitHappened();
+                _pickaxe.DurabilityHandler.GetDamaged();
+                PickaxeEvents.OnCannotHit?.Invoke();
+            }
         }
     }
 }

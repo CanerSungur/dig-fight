@@ -92,6 +92,7 @@ namespace ZestGames
         {
             _shakeStarted = true;
             _gameplayCMBasicPerlin.m_AmplitudeGain = EXPLOSIVE_HIT_AMPLITUDE;
+            _shakeTimer = _shakeDuration * 2f;
         }
         #endregion
     }
