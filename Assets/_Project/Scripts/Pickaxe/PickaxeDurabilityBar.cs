@@ -19,6 +19,7 @@ namespace DigFight
         [SerializeField] private ParticleSystem _glowPS;
 
         private Image _remainingDurabilityImage, _changedDurabilityImage;
+        private Animation _pickaxeEnableAnim;
 
         #region SEQUENCE
         private Sequence _shakeSequence, _getDamagedSequence, _disableSequence, _enableSequence;
@@ -38,8 +39,9 @@ namespace DigFight
             if (_durabilityHandler == null)
             {
                 _durabilityHandler = durabilityHandler;
-                _changedDurabilityImage = transform.GetChild(1).GetComponent<Image>();
-                _remainingDurabilityImage = transform.GetChild(2).GetComponent<Image>();
+                _changedDurabilityImage = transform.GetChild(2).GetComponent<Image>();
+                _remainingDurabilityImage = transform.GetChild(3).GetComponent<Image>();
+                _pickaxeEnableAnim = transform.GetChild(0).GetChild(1).GetComponent<Animation>();
             }
 
             _changedDurabilityImage.fillAmount = _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();
@@ -76,6 +78,7 @@ namespace DigFight
 
             _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();
         }
+        public void ResetBar() => _changedDurabilityImage.fillAmount = _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();
         #endregion
 
         #region DOTWEEN FUNCTIONS
@@ -101,6 +104,7 @@ namespace DigFight
                         {
                             transform.localScale = Vector3.one;
                             _glowPS.Play();
+                            _pickaxeEnableAnim.Play();
                             DeleteEnableSequence();
                         });
             }

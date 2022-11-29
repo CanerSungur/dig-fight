@@ -45,6 +45,10 @@ namespace ZestGames
             Delayer.DoActionAfterDelay(this, _animationDuration, () => action());
         }
 
-        public void TriggerClick(Action action) => OnClicked?.Invoke(action);
+        public void TriggerClick(Action action, Action simultaniousAction = null)
+        {
+            simultaniousAction?.Invoke();
+            OnClicked?.Invoke(action);
+        }
     }
 }

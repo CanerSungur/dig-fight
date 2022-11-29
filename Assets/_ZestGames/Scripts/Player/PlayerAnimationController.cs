@@ -26,6 +26,8 @@ namespace ZestGames
         private readonly int _cheerIndexID = Animator.StringToHash("CheerIndex");
         private readonly int _loseIndexID = Animator.StringToHash("LoseIndex");
         private readonly int _digSideIndexID = Animator.StringToHash("DigSideIndex");
+
+        private readonly int _digSpeedID = Animator.StringToHash("DigSpeed");
         #endregion
 
         #region DIG SIDE DATA
@@ -42,7 +44,10 @@ namespace ZestGames
                 _animator = GetComponent<Animator>();
             }
 
+            UpdateDigSpeed();
             Land();
+
+            PlayerEvents.OnSetCurrentPickaxeSpeed += UpdateDigSpeed;
 
             PlayerEvents.OnMove += Move;
             PlayerEvents.OnIdle += Idle;
@@ -61,6 +66,8 @@ namespace ZestGames
         private void OnDisable()
         {
             if (_player == null) return;
+
+            PlayerEvents.OnSetCurrentPickaxeSpeed -= UpdateDigSpeed;
 
             PlayerEvents.OnMove -= Move;
             PlayerEvents.OnIdle -= Idle;
@@ -115,6 +122,7 @@ namespace ZestGames
         }
         private void StopDigging() => _animator.SetBool(_diggingID, false);
         private void Stagger() => _animator.SetTrigger(_staggerID);
+        private void UpdateDigSpeed() => _animator.SetFloat(_digSpeedID, DataManager.PickaxeSpeed);
         #endregion
 
         #region HELPERS

@@ -10,7 +10,7 @@ namespace DigFight
 
         private Pickaxe _pickaxe;
 
-        private int _maxDurability = 5;
+        private int _maxDurability;
         private int _currentDurability;
 
         #region PROPERTIES
@@ -24,8 +24,17 @@ namespace DigFight
             if (_pickaxe == null)
                 _pickaxe = pickaxe;
 
+            _maxDurability = DataManager.PickaxeDurability;
             _currentDurability = _maxDurability;
             _durabilityBar.Init(this);
+
+            PlayerEvents.OnSetCurrentPickaxeDurability += UpdateDurability;
+        }
+
+        private void OnDisable()
+        {
+            if (_pickaxe == null) return;
+            PlayerEvents.OnSetCurrentPickaxeDurability -= UpdateDurability;
         }
 
         #region PUBLICS
@@ -43,6 +52,12 @@ namespace DigFight
         {
             if (!_pickaxe.IsBroken)
                 PickaxeEvents.OnBreak?.Invoke();
+        }
+        private void UpdateDurability()
+        {
+            _maxDurability = DataManager.PickaxeDurability;
+            _currentDurability = _maxDurability;
+            _durabilityBar.ResetBar();
         }
     }
 }

@@ -19,8 +19,9 @@ namespace ZestGames
         #endregion
 
         [Header("-- STAMINA SETUP --")]
-        [SerializeField] private UpgradeCanvasItem movementSpeed;
         [SerializeField] private UpgradeCanvasItem moneyValue;
+        [SerializeField] private UpgradeCanvasItem pickaxeSpeed;
+        [SerializeField] private UpgradeCanvasItem pickaxeDurability;
 
         public void Init(UiManager uiManager)
         {
@@ -33,8 +34,9 @@ namespace ZestGames
                     _emptySpaceButton = transform.GetChild(1).GetComponent<CustomButton>();
                 }
 
-                movementSpeed.Init(this);
                 moneyValue.Init(this);
+                pickaxeSpeed.Init(this);
+                pickaxeDurability.Init(this);
             }
 
             Delayer.DoActionAfterDelay(this, 0.5f, UpdateTexts);
@@ -47,8 +49,9 @@ namespace ZestGames
                 _emptySpaceButton.onClick.AddListener(CloseCanvasClicked);
             }
 
-            movementSpeed.Button.onClick.AddListener(MovementSpeedUpgradeClicked);
             moneyValue.Button.onClick.AddListener(MoneyValueUpgradeClicked);
+            pickaxeSpeed.Button.onClick.AddListener(PickaxeSpeedUpgradeClicked);
+            pickaxeDurability.Button.onClick.AddListener(PickaxeDurabilityUpgradeClicked);
 
             PlayerUpgradeEvents.OnUpdateUpgradeTexts += UpdateTexts;
 
@@ -64,8 +67,9 @@ namespace ZestGames
                 _emptySpaceButton.onClick.RemoveListener(CloseCanvasClicked);
             }
 
-            movementSpeed.Button.onClick.RemoveListener(MovementSpeedUpgradeClicked);
             moneyValue.Button.onClick.RemoveListener(MoneyValueUpgradeClicked);
+            pickaxeSpeed.Button.onClick.RemoveListener(PickaxeSpeedUpgradeClicked);
+            pickaxeDurability.Button.onClick.RemoveListener(PickaxeDurabilityUpgradeClicked);
 
             PlayerUpgradeEvents.OnUpdateUpgradeTexts -= UpdateTexts;
 
@@ -90,25 +94,23 @@ namespace ZestGames
             //}
             #endregion
 
-            if (_currentType == Type.Idle)
-                movementSpeed.LevelText.text = $"Level {DataManager.MovementSpeedLevel}";
-            else
-                movementSpeed.LevelText.text = DataManager.MovementSpeedLevel.ToString();
-            movementSpeed.CostText.text = DataManager.MovementSpeedCost.ToString();
-
-            if (_currentType == Type.Idle)
-                moneyValue.LevelText.text = $"Level {DataManager.MoneyValueLevel}";
-            else
-                moneyValue.LevelText.text = DataManager.MoneyValueLevel.ToString();
+            moneyValue.LevelText.text = $"Level {DataManager.MoneyValueLevel}";
             moneyValue.CostText.text = DataManager.MoneyValueCost.ToString();
+
+            pickaxeSpeed.LevelText.text = $"Level {DataManager.PickaxeSpeedLevel}";
+            pickaxeSpeed.CostText.text = DataManager.PickaxeSpeedCost.ToString();
+
+            pickaxeDurability.LevelText.text = $"Level {DataManager.PickaxeDurabilityLevel}";
+            pickaxeDurability.CostText.text = DataManager.PickaxeDurabilityCost.ToString();
 
             CheckForMoneySufficiency();
         }
 
         private void CheckForMoneySufficiency()
         {
-            movementSpeed.Button.interactable = DataManager.TotalMoney >= DataManager.MovementSpeedCost;
             moneyValue.Button.interactable = DataManager.TotalMoney >= DataManager.MoneyValueCost;
+            pickaxeSpeed.Button.interactable = DataManager.TotalMoney >= DataManager.PickaxeSpeedCost;
+            pickaxeDurability.Button.interactable = DataManager.TotalMoney >= DataManager.PickaxeDurabilityCost;
         }
         #endregion
 
@@ -118,8 +120,9 @@ namespace ZestGames
             PlayerUpgradeEvents.OnCloseCanvas?.Invoke();
             PlayerEvents.OnClosedUpgradeCanvas?.Invoke();
         }
-        private void UpgradeMovementSpeed() => PlayerUpgradeEvents.OnUpgradeMovementSpeed?.Invoke();
         private void UpgradeMoneyValue() => PlayerUpgradeEvents.OnUpgradeMoneyValue?.Invoke();
+        private void UpgradePickaxeSpeed() => PlayerUpgradeEvents.OnUpgradePickaxeSpeed?.Invoke();
+        private void UpgradePickaxeDurability() => PlayerUpgradeEvents.OnUpgradePickaxeDurability?.Invoke();
         #endregion
 
         #region CLICK TRIGGER FUNCTIONS
@@ -131,8 +134,9 @@ namespace ZestGames
                 _closeButton.TriggerClick(CloseCanvas);
             }
         }
-        private void MovementSpeedUpgradeClicked() => movementSpeed.Button.TriggerClick(UpgradeMovementSpeed);
-        private void MoneyValueUpgradeClicked() => moneyValue.Button.TriggerClick(UpgradeMoneyValue);
+        private void MoneyValueUpgradeClicked() => moneyValue.Button.TriggerClick(UpgradeMoneyValue, moneyValue.ShakeLevelImage);
+        private void PickaxeSpeedUpgradeClicked() => pickaxeSpeed.Button.TriggerClick(UpgradePickaxeSpeed, pickaxeSpeed.ShakeLevelImage);
+        private void PickaxeDurabilityUpgradeClicked() => pickaxeDurability.Button.TriggerClick(UpgradePickaxeDurability, pickaxeDurability.ShakeLevelImage);
         #endregion
 
         #region ANIMATOR FUNCTIONS
