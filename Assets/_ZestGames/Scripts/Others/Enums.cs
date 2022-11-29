@@ -9,6 +9,7 @@ namespace ZestGames
         public enum AudioType { Testing_PlayerMove, Button_Click, UpgradeMenu, CollectMoney, SpendMoney, HitBox, HitExplosive, Land, Swing, BreakBox }
         public enum AiStateType { Idle, WalkRandom, GetInQueue }
         public enum MovementDirection { None, Left, Right }
-        public enum BoxTriggerDirection { Top, Left, Right }
+        public enum DigDirection { None, Left, Right, Down, Up }
+        public enum BoxTriggerDirection { None, Left, Right, Top, Down }
     }
 }

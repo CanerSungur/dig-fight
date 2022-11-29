@@ -12,7 +12,7 @@ namespace DigFight
         [SerializeField] private Pickaxe pickaxe;
 
         private float _delayedTime;
-        private const float DIG_DELAY = 0.5f;
+        private const float DIG_DELAY = 0f;
 
         #region PROPERTIES
         public Player Player => _player;
@@ -30,14 +30,17 @@ namespace DigFight
 
         private void Update()
         {
-            if (_player.IsInDigZone && !_player.IsDigging && Time.time >= _delayedTime)
+            if ((int)_player.InputHandler.DigDirection == (int)_currentBoxTriggerDirection)
+                Debug.Log("Match");
+
+            if ((int)_player.InputHandler.DigDirection == (int)_currentBoxTriggerDirection && _player.IsInDigZone && !_player.IsDigging && Time.time >= _delayedTime)
             {
                 _player.StartedDigging();
                 //PlayerEvents.OnStartDigging?.Invoke();
                 //Debug.Log("started digging");
             }
 
-            CheckForDigIterruption();
+            //CheckForDigIterruption();
         }
 
         #region PRIVATES
@@ -70,6 +73,7 @@ namespace DigFight
         public void StopDiggingProcess()
         {
             //DisablePickaxe();
+            _currentBoxTriggerDirection = Enums.BoxTriggerDirection.None;
             _player.ExitedDigZone();
         }
         #endregion

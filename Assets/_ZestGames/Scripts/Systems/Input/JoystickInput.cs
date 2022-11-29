@@ -23,11 +23,14 @@ namespace ZestGames
         public float WalkInput { get; private set; }
         public bool CanTakeInput => GameManager.GameState == Enums.GameState.Started && Time.time >= _delayedTime && !_player.IsUpgrading;
         public Enums.MovementDirection MovementDirection { get; private set; }
+        public Enums.DigDirection DigDirection { get; private set; }
         #endregion
 
         public void Init(Player player)
         {
             _player = player;
+            DigDirection = Enums.DigDirection.None;
+
             GameEvents.OnGameStart += () => _delayedTime = Time.time + _delayRate;
             PlayerEvents.OnFall += CheckForHighFall;
             PlayerEvents.OnLand += CheckForStagger;
@@ -44,6 +47,8 @@ namespace ZestGames
         private void Update()
         {
             SetMovementDirection();
+            SetDigDirection();
+            //Debug.Log(DigDirection);
 
             if (CanTakeInput)
             {
@@ -75,6 +80,19 @@ namespace ZestGames
                 MovementDirection = Enums.MovementDirection.None;
             else
                 MovementDirection = joystick.Horizontal > 0 ? Enums.MovementDirection.Left : Enums.MovementDirection.Right;
+        }
+        private void SetDigDirection()
+        {
+            if (joystick.Horizontal >= .98f)
+                DigDirection = Enums.DigDirection.Right;
+            else if (joystick.Horizontal <= -.98f)
+                DigDirection = Enums.DigDirection.Left;
+            else if (joystick.Vertical >= .98f)
+                DigDirection = Enums.DigDirection.Up;
+            else if (joystick.Vertical <= -.98f)
+                DigDirection = Enums.DigDirection.Down;
+            else
+                DigDirection = Enums.DigDirection.None;
         }
         #endregion
 

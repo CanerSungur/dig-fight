@@ -68,6 +68,7 @@ namespace DigFight
                 Debug.Log("Player is not assigned!");
             else
             {
+                //Debug.Log("RESET DIGGING");
                 _player.StoppedDigging();
                 _player.DigHandler.StopDiggingProcess();
             }
