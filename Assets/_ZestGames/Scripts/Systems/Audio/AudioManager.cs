@@ -54,10 +54,34 @@ namespace ZestGames
                     oneShotAudioSource = oneShotGameObject.AddComponent<AudioSource>();
                 }
 
+                oneShotAudioSource.loop = false;
                 oneShotAudioSource.volume = volume;
                 oneShotAudioSource.pitch = pitch;
                 oneShotAudioSource.PlayOneShot(GetAudioClip(audioType));
             }
+        }
+
+        public static void PlayAudioLoop(Enums.AudioType audioType, float volume = 1f, float pitch = 1f)
+        {
+            if (!SettingsManager.SoundOn) return;
+
+            if (CanPlayAudio(audioType))
+            {
+                if (oneShotGameObject == null)
+                {
+                    oneShotGameObject = new GameObject("One Shot Audio");
+                    oneShotAudioSource = oneShotGameObject.AddComponent<AudioSource>();
+                }
+
+                oneShotAudioSource.loop = true;
+                oneShotAudioSource.volume = volume;
+                oneShotAudioSource.pitch = pitch;
+                oneShotAudioSource.PlayOneShot(GetAudioClip(audioType));
+            }
+        }
+        public static void StopAudioLoop()
+        {
+            if (oneShotAudioSource != null && oneShotAudioSource.isPlaying) oneShotAudioSource.Stop();
         }
 
         // Add delayed audios here.

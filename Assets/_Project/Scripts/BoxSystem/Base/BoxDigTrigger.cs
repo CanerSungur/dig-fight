@@ -5,6 +5,7 @@ namespace DigFight
 {
     public class BoxDigTrigger : MonoBehaviour
     {
+        private PushableBox _pushableBox = null;
         private BreakableBox _breakableBox = null;
         private ExplosiveBox _explosiveBox = null;
 
@@ -21,6 +22,8 @@ namespace DigFight
                 transform.parent.TryGetComponent(out _breakableBox);
             if (_explosiveBox == null)
                 transform.parent.TryGetComponent(out _explosiveBox);
+            if (_pushableBox == null)
+                transform.parent.TryGetComponent(out _pushableBox);
         }
 
         #region PUBLICS
@@ -30,6 +33,8 @@ namespace DigFight
                 _breakableBox.AssignHitter(player);
             else if (_explosiveBox)
                 _explosiveBox.AssignHitter(player);
+            else if (_pushableBox)
+                _pushableBox.AssignPusher(player);
         }
         #endregion
     }

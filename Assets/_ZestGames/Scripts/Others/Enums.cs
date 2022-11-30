@@ -6,7 +6,7 @@ namespace ZestGames
         public enum GameEnd { None, Success, Fail }
         public enum PoolStamp { Something, MoneyCollect2D, MoneySpend2D, HitBoxEffect, HitBoxSmokeSquare, HitBoxSmoke, MoneyTextDisplay }
         public enum PrefabStamp { StoneBox, StaticBox, PushableBox, ExplosiveBox, MiddleBox, LevelEndBox, BorderBox, CopperBox, DiamondBox }
-        public enum AudioType { Testing_PlayerMove, Button_Click, UpgradeMenu, CollectMoney, SpendMoney, HitBox, HitExplosive, Land, Swing, BreakBox }
+        public enum AudioType { Testing_PlayerMove, Button_Click, UpgradeMenu, CollectMoney, SpendMoney, HitBox, HitExplosive, Land, Swing, BreakBox, PushBox, PushBoxDrop }
         public enum AiStateType { Idle, WalkRandom, GetInQueue }
         public enum MovementDirection { None, Left, Right }
         public enum DigDirection { None, Left, Right, Down, Up }

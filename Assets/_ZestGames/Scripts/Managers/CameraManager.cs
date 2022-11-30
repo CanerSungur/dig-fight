@@ -18,11 +18,15 @@ namespace ZestGames
         private float _shakeDuration = 0.5f;
         private float _shakeTimer;
 
+        private bool _pushBackCamera = false;
+        private float _pushBackDuration = 2f;
+        private float _pushBackTimer;
+
         private const float BOX_HIT_AMPLITUDE = 0.5f;
         private const float BOX_BREAK_AMPLITUDE = 0.75f;
         private const float EXPLOSIVE_HIT_AMPLITUDE = 2f;
 
-        public static Action OnBoxHitShake, OnBoxBreakShake, OnExplosiveHitShake;
+        public static Action OnBoxHitShake, OnBoxBreakShake, OnExplosiveHitShake, OnBoxPushed;
 
         private void Awake()
         {
@@ -30,6 +34,7 @@ namespace ZestGames
             _gameplayCMBasicPerlin = gameplayCM.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
             _gameplayCMBasicPerlin.m_AmplitudeGain = 0f;
             _shakeTimer = _shakeDuration;
+            _pushBackTimer = _pushBackDuration;
 
             gameStartCM.Priority = 2;
             gameplayCM.Priority = 1;
@@ -44,6 +49,7 @@ namespace ZestGames
             OnBoxHitShake += BoxHitShake;
             OnBoxBreakShake += BoxBreakShake;
             OnExplosiveHitShake += ExplosiveHitShake;
+            OnBoxPushed += PushBackCamera;
         }
 
         private void OnDisable()
@@ -54,6 +60,7 @@ namespace ZestGames
             OnBoxHitShake -= BoxHitShake;
             OnBoxBreakShake -= BoxBreakShake;
             OnExplosiveHitShake -= ExplosiveHitShake;
+            OnBoxPushed -= PushBackCamera;
         }
 
         private void Update()
@@ -76,6 +83,18 @@ namespace ZestGames
                     _gameplayCMBasicPerlin.m_AmplitudeGain = 0f;
                 }
             }
+
+            if (_pushBackCamera)
+            {
+                _pushBackTimer -= Time.deltaTime;
+                if (_pushBackTimer < 0)
+                {
+                    _pushBackCamera = false;
+                    _pushBackTimer = _pushBackDuration;
+
+                    gameStartCM.Priority = 2;
+                }
+            }
         }
         #region EVENT HANDLER FUNCTIONS
         private void BoxHitShake()
@@ -93,6 +112,11 @@ namespace ZestGames
             _shakeStarted = true;
             _gameplayCMBasicPerlin.m_AmplitudeGain = EXPLOSIVE_HIT_AMPLITUDE;
             _shakeTimer = _shakeDuration * 2f;
+        }
+        private void PushBackCamera()
+        {
+            gameStartCM.Priority = 5;
+            _pushBackCamera = true;
         }
         #endregion
     }

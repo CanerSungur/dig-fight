@@ -14,9 +14,9 @@ TagManager:
   - Pickaxe
   - Box
   - BoxTrigger
-  - 
-  - 
-  - 
+  - PushableBox
+  - BorderBox
+  - MiddleBox
   - 
   - 
   - 

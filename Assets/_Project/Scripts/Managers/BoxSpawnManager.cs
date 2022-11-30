@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using ZestCore.Utility;
 using ZestGames;
 
 namespace DigFight
@@ -16,12 +17,16 @@ namespace DigFight
         [SerializeField] private Transform boxContainerTransform;
 
         #region SPAWN DATA
-        private const int LAYER_BOX_COUNT = 5;
         private const float BOX_GAP = 2.25f;
         private int _currentLayerCount;
 
         private const int MAX_EXPLOSIVE_COUNT = 1;
         private int _currentExplosiveCountOnPlayerSide, _currentExplosiveCountOnAiSide = 0;
+
+        private const int MAX_PUSHABLE_LAYER_COUNT = 1;
+        private const int PUSHABLE_LAYER_SPAWN_CHANCE_DECREASE = 30;
+        private int _currentPushableLayerCount = 0;
+        private bool _setLayerForPushable = false;
         #endregion
 
         #region PROPERTIES
@@ -37,7 +42,7 @@ namespace DigFight
             InitializePrefabDictionary();
 
             HasExplosiveOnPlayerSide = HasExplosiveOnAiSide = false;
-            _currentLayerCount = 0;
+            _currentLayerCount = _currentPushableLayerCount = 0;
 
             SpawnLayers();
         }
@@ -56,11 +61,20 @@ namespace DigFight
         {
             for (int i = 0; i < layerCount; i++)
             {
-                Layer layer = new GameObject($"Layer_{_currentLayerCount}", typeof(Layer)).GetComponent<Layer>();
-                layer.Init(this, _currentLayerCount, LAYER_BOX_COUNT);
+                DecidePushableOrBreakableLayer();
+
+                Layer layer = new GameObject($"Layer_{_currentLayerCount}", typeof(Layer), typeof(LayerBorderBoxHandler), typeof(LayerBreakableBoxHandler), typeof(LayerExplosiveBoxHandler), typeof(LayerPushableBoxHandler)).GetComponent<Layer>();
+                layer.Init(this, _currentLayerCount, layerCount, _setLayerForPushable);
 
                 _currentLayerCount++;
+
+                if (_setLayerForPushable == true) _setLayerForPushable = false;
             }
+        }
+        private void DecidePushableOrBreakableLayer()
+        {
+            _setLayerForPushable = _currentLayerCount > 2 && _currentLayerCount < layerCount - 1 && _currentPushableLayerCount < MAX_PUSHABLE_LAYER_COUNT && RNG.RollDice(100 - (_currentPushableLayerCount * PUSHABLE_LAYER_SPAWN_CHANCE_DECREASE));
+            if (_setLayerForPushable) _currentPushableLayerCount++;
         }
 
         #region PUBLICS

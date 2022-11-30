@@ -1,4 +1,5 @@
 using UnityEngine;
+using ZestCore.Utility;
 
 namespace ZestGames
 {
@@ -14,6 +15,8 @@ namespace ZestGames
         private readonly int _flyingID = Animator.StringToHash("Flying");
         private readonly int _tooHighID = Animator.StringToHash("TooHigh");
         private readonly int _diggingID = Animator.StringToHash("Digging");
+        private readonly int _pushingID = Animator.StringToHash("Pushing");
+        private readonly int _kickingID = Animator.StringToHash("Kicking");
 
         // Triggers
         private readonly int _dieID = Animator.StringToHash("Die");
@@ -61,6 +64,8 @@ namespace ZestGames
             PlayerEvents.OnStartDigging += StartDigging;
             PlayerEvents.OnStopDigging += StopDigging;
             PlayerEvents.OnStagger += Stagger;
+            PlayerEvents.OnStartPushing += StartPushing;
+            PlayerEvents.OnStopPushing += StopPushing;
         }
 
         private void OnDisable()
@@ -81,6 +86,8 @@ namespace ZestGames
             PlayerEvents.OnStartDigging -= StartDigging;
             PlayerEvents.OnStopDigging -= StopDigging;
             PlayerEvents.OnStagger -= Stagger;
+            PlayerEvents.OnStartPushing -= StartPushing;
+            PlayerEvents.OnStopPushing -= StopPushing;
         }
 
         #region BASIC ANIM FUNCTIONS
@@ -123,6 +130,15 @@ namespace ZestGames
         private void StopDigging() => _animator.SetBool(_diggingID, false);
         private void Stagger() => _animator.SetTrigger(_staggerID);
         private void UpdateDigSpeed() => _animator.SetFloat(_digSpeedID, DataManager.PickaxeSpeed);
+        private void StartPushing()
+        {
+            _animator.SetBool(_kickingID, _player.PushHandler.CurrentPushedBox.RightIsMiddleBox || _player.PushHandler.CurrentPushedBox.LeftIsBorderBox);
+
+            _animator.SetInteger(_digSideIndexID, (int)_player.PushHandler.CurrentBoxTriggerDirection);
+            _animator.SetBool(_pushingID, true);
+            _animator.applyRootMotion = true;
+        }
+        private void StopPushing() => _animator.SetBool(_pushingID, false);
         #endregion
 
         #region HELPERS
@@ -134,8 +150,8 @@ namespace ZestGames
         {
             if (message.Equals("DigMotionEnded"))
             {
-                //_player.StoppedDigging();
-                //_player.DigHandler.StartDiggingProcess(_player.DigHandler.CurrentBoxTriggerDirection);
+                _player.StoppedDigging();
+                _player.DigHandler.StartDiggingProcess(_player.DigHandler.CurrentBoxTriggerDirection);
             }
             else if (message.Equals("EnableCanHit"))
             {
@@ -148,6 +164,35 @@ namespace ZestGames
             {
                 AudioEvents.OnPlaySwing?.Invoke();
 
+            }
+            else if (message.Equals("PushNow"))
+            {
+                _player.PushHandler.CurrentPushedBox.GetPushed(_player.PushHandler.CurrentBoxTriggerDirection);
+
+                if (!_player.PushHandler.CurrentPushedBox.RightIsMiddleBox && !_player.PushHandler.CurrentPushedBox.LeftIsBorderBox)
+                    _player.StartPushSequence(_player.PushHandler.CurrentBoxTriggerDirection);
+            }
+            else if (message.Equals("PushFinished"))
+            {
+                AudioManager.StopAudioLoop();
+
+                _player.StoppedPushing();
+                _player.PushHandler.StopPushingProcess();
+                _animator.applyRootMotion = false;
+
+                AudioManager.PlayAudio(Enums.AudioType.PushBoxDrop);
+            }
+            else if (message.Equals("KickFinished"))
+            {
+                Delayer.DoActionAfterDelay(this, 1.2f, () => {
+                    AudioManager.StopAudioLoop();
+
+                    _player.StoppedPushing();
+                    _player.PushHandler.StopPushingProcess();
+                    _animator.applyRootMotion = false;
+
+                    AudioManager.PlayAudio(Enums.AudioType.PushBoxDrop);
+                });
             }
         }
         #endregion

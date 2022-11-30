@@ -37,6 +37,8 @@ namespace ZestGames
         public PlayerRotationHandler RotationHandler => _rotationHandler == null ? _rotationHandler = GetComponent<PlayerRotationHandler>() : _rotationHandler;
         private PlayerDigHandler _digHandler;
         public PlayerDigHandler DigHandler => _digHandler == null ? _digHandler = GetComponent<PlayerDigHandler>() : _digHandler;
+        private PlayerPushHandler _pushHandler;
+        public PlayerPushHandler PushHandler => _pushHandler == null ? _pushHandler = GetComponent<PlayerPushHandler>() : _pushHandler;
         #endregion
 
         #region PROPERTIES
@@ -44,24 +46,27 @@ namespace ZestGames
         public bool IsUpgrading { get; private set; }
         public bool IsInDigZone { get; private set; }
         public bool IsDigging { get; private set; }
+        public bool IsInPushZone { get; private set; }
+        public bool IsPushing { get; private set; }
         public bool IsFlying { get; private set; }
         public bool UpwardsIsEmpty => !Physics.Raycast(Collider.bounds.center, Vector3.up, Collider.bounds.extents.y + 0.75f, walkableLayer);
         public bool IsTooHigh => !Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 2f, walkableLayer);
         public bool IsGrounded => Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 0.01f, walkableLayer);
-        public bool CanFly => UpwardsIsEmpty && InputHandler.IsMovingUp;
+        public bool CanFly => /*UpwardsIsEmpty && */InputHandler.IsMovingUp && !IsPushing;
         public TimerForAction TimerForAction => timerForAction;
         #endregion
 
         #region SEQUENCE
-        private Sequence _upgradeRotationSequence;
-        private Guid _upgradeRotationSequenceID;
+        private Sequence _upgradeRotationSequence, _pushSequence;
+        private Guid _upgradeRotationSequenceID, _pushSequenceID;
         private float _upgradeRotationDuration = 1f;
+        private const float PUSH_SEQUENCE_DURATION = 3f;
         #endregion
 
         private void Start()
         {
             CharacterTracker.SetPlayerTransform(transform);
-            IsDead = IsUpgrading = IsInDigZone = IsDigging = IsFlying = false;
+            IsDead = IsUpgrading = IsInDigZone = IsDigging = IsFlying = IsInPushZone = IsPushing = false;
 
             InputHandler.Init(this);
             PlayerMovement.Init(this);
@@ -73,6 +78,7 @@ namespace ZestGames
             timerForAction.Init();
             RotationHandler.Init(this);
             DigHandler.Init(this);
+            PushHandler.Init(this);
 
             PlayerUpgradeEvents.OnOpenCanvas += HandleUpgradeStart;
             PlayerUpgradeEvents.OnCloseCanvas += HandleUpgradeEnd;
@@ -116,18 +122,30 @@ namespace ZestGames
             PlayerEvents.OnStopDigging?.Invoke();
             PickaxeEvents.OnCannotHit?.Invoke();
         }
+        public void StartedPushing()
+        {
+            if (GameManager.GameState == Enums.GameState.GameEnded) return;
+            IsPushing = true;
+            PlayerEvents.OnStartPushing?.Invoke();
+        }
+        public void StoppedPushing()
+        {
+            IsPushing = false;
+            PlayerEvents.OnStopPushing?.Invoke();
+        }
         public void EnteredDigZone() => IsInDigZone = true;
         public void ExitedDigZone() => IsInDigZone = false;
+        public void EnteredPushZone() => IsInPushZone = true;
+        public void ExitedPushZone() => IsInPushZone = false;
         #endregion
 
+        #region DOTWEEN FUNCTIONS
         private void StartUpgradeRotationSequence()
         {
             DeleteUpgradeRotationSequence();
             CreateUpgradeRotationSequence();
             _upgradeRotationSequence.Play();
         }
-
-        #region DOTWEEN FUNCTIONS
         private void CreateUpgradeRotationSequence()
         {
             if (_upgradeRotationSequence == null)
@@ -146,6 +164,30 @@ namespace ZestGames
         {
             DOTween.Kill(_upgradeRotationSequenceID);
             _upgradeRotationSequence = null;
+        }
+        // ######################
+        public void StartPushSequence(Enums.BoxTriggerDirection pushDirection)
+        {
+            CreatePushSequence(pushDirection);
+            _pushSequence.Play();
+        }
+        private void CreatePushSequence(Enums.BoxTriggerDirection pushDirection)
+        {
+            if (_pushSequence == null)
+            {
+                _pushSequence = DOTween.Sequence();
+                _pushSequenceID = Guid.NewGuid();
+                _pushSequence.id = _pushSequenceID;
+
+                float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? transform.position.x - 2f : transform.position.x + 2f;
+                _pushSequence.Append(transform.DOMoveX(targetPosX, PUSH_SEQUENCE_DURATION))
+                    .OnComplete(DeletePushSequence);
+            }
+        }
+        private void DeletePushSequence()
+        {
+            DOTween.Kill(_pushSequenceID);
+            _pushSequence = null;
         }
         #endregion
     }

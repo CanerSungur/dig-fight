@@ -1,4 +1,3 @@
-using System.Reflection;
 using UnityEngine;
 using ZestGames;
 using Random = UnityEngine.Random;
@@ -10,237 +9,150 @@ namespace DigFight
     {
         private BoxSpawnManager _boxSpawnManager;
 
-        private bool _firstLayer, _lastLayer;
+        #region SCRIPT REFERENCES
+        private LayerBorderBoxHandler _borderBoxHandler;
+        public LayerBorderBoxHandler BorderBoxHandler => _borderBoxHandler == null ? _borderBoxHandler = GetComponent<LayerBorderBoxHandler>() : _borderBoxHandler;
+        private LayerBreakableBoxHandler _breakableBoxHandler;
+        public LayerBreakableBoxHandler BreakableBoxHandler => _breakableBoxHandler == null ? _breakableBoxHandler = GetComponent<LayerBreakableBoxHandler>() : _breakableBoxHandler;
+        private LayerExplosiveBoxHandler _explosiveBoxHandler;
+        public LayerExplosiveBoxHandler ExplosiveBoxHandler => _explosiveBoxHandler == null ? _explosiveBoxHandler = GetComponent<LayerExplosiveBoxHandler>() : _explosiveBoxHandler;
+        private LayerPushableBoxHandler _pushableBoxHandler;
+        public LayerPushableBoxHandler PushableBoxHandler => _pushableBoxHandler == null ? _pushableBoxHandler = GetComponent<LayerPushableBoxHandler>() : _pushableBoxHandler;
+        #endregion
+
+        #region SPAWN DATA
         private int _layerNumber;
-
-        #region BOX RELATED
-        private const float BOX_GAP = 2.25f;
-        private const int LAYER_BOX_COUNT = 5;
-        #endregion
-
-        #region BORDER RELATED
-        private const int BORDER_TOP_OFFSET = 3;
-        private const int BORDER_BOTTOM_OFFSET = 1;
-        #endregion
-
-        #region EXPLOSIVE RELATED
-        private bool _hasExplosiveOnPlayerSide, _hasExplosiveOnAiSide = false;
-        private int _notExplosiveCountOnPlayerSide, _notExplosiveCountOnAiSide = 0;
+        public readonly float BoxGap = 2.25f;
+        public readonly int BoxCount = 5;
         #endregion
 
         #region PROPERTIES
+        public BoxSpawnManager BoxSpawnManager => _boxSpawnManager;
         public int LayerNumber => _layerNumber;
-        public bool PlayerSideCanHasExplosive => !_firstLayer && !_lastLayer && !_hasExplosiveOnPlayerSide && !_boxSpawnManager.HasExplosiveOnPlayerSide && RNG.RollDice(30 * _layerNumber);
-        public bool AiSideCanHasExplosive => !_firstLayer && !_lastLayer && !_hasExplosiveOnAiSide && !_boxSpawnManager.HasExplosiveOnAiSide && RNG.RollDice(30 * _layerNumber);
+        public bool PlayerSideCanHasExplosive => !FirstLayer && !LastLayer && !ExplosiveBoxHandler.HasExplosiveOnPlayerSide && !_boxSpawnManager.HasExplosiveOnPlayerSide && RNG.RollDice(30 * _layerNumber);
+        public bool AiSideCanHasExplosive => !FirstLayer && !LastLayer && !ExplosiveBoxHandler.HasExplosiveOnAiSide && !_boxSpawnManager.HasExplosiveOnAiSide && RNG.RollDice(30 * _layerNumber);
+        public bool FirstLayer { get; private set; }
+        public bool LastLayer { get; private set; }
         #endregion
 
-        public void Init(BoxSpawnManager boxSpawnManager, int number, int totalLayerCount)
+        public void Init(BoxSpawnManager boxSpawnManager, int number, int totalLayerCount, bool setLayerForPushable)
         {
             if (_boxSpawnManager == null)
                 _boxSpawnManager = boxSpawnManager;
 
-            _hasExplosiveOnPlayerSide = _hasExplosiveOnAiSide = false;
             _layerNumber = number;
-            _firstLayer = number == 0;
-            _lastLayer = number == totalLayerCount - 1;
+            FirstLayer = number == 0;
+            LastLayer = number == totalLayerCount - 1;
 
             transform.SetParent(_boxSpawnManager.BoxContainerTransform);
-            transform.localPosition = new Vector3(0f, number * -BOX_GAP, 0f);
+            transform.localPosition = new Vector3(0f, number * -BoxGap, 0f);
 
-            SpawnPlayerSideBoxes();
-            SpawnAiSideBoxes();
-        }
+            BorderBoxHandler.Init(this);
+            BreakableBoxHandler.Init(this);
+            ExplosiveBoxHandler.Init(this);
+            PushableBoxHandler.Init(this);
 
-        private Transform GetRandomBreakableBox()
-        {
-            if (RNG.RollDice(70))
+            if (setLayerForPushable)
             {
-                return Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.StoneBox], transform).transform;
+                // spawn pushable layer
+                PushableBoxHandler.SpawnPushableBoxesForPlayerSide(this);
+                PushableBoxHandler.SpawnPushableBoxesForAiSide(this);
             }
             else
             {
-                if (RNG.RollDice(70))
-                    return Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.CopperBox], transform).transform;
-                else
-                    return Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.DiamondBox], transform).transform;
+                SpawnPlayerSideBoxes();
+                SpawnAiSideBoxes();
             }
+            
+            SpawnMiddleBoxes(BorderBoxHandler.TopOffset, BorderBoxHandler.BottomOffset);
         }
 
-        private void CheckForExplosiveBoxSpawnForPlayerSide(out Transform boxTransform)
-        {
-            boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.ExplosiveBox], transform).transform;
-            _hasExplosiveOnPlayerSide = true;
-            _boxSpawnManager.ExplosiveSpawnedOnPlayerSide();
-        }
-        private void CheckForExplosiveBoxSpawnForAiSide(out Transform boxTransform)
-        {
-            boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.ExplosiveBox], transform).transform;
-            _hasExplosiveOnAiSide = true;
-            _boxSpawnManager.ExplosiveSpawnedOnAiSide();
-        }
-
-        #region BOX SPAWN FUNCTIONS
         private void SpawnPlayerSideBoxes()
         {
-            for (int j = 0; j < LAYER_BOX_COUNT; j++)
+            for (int j = 0; j < BoxCount; j++)
             {
                 Transform boxTransform = null;
 
-                if (_firstLayer && j == 0)
+                if (FirstLayer && j == 0)
                     boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.StaticBox], transform).transform;
-                else if (_lastLayer)
+                else if (LastLayer)
                     boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.LevelEndBox], transform).transform;
                 else
                 {
                     if (PlayerSideCanHasExplosive)
-                        CheckForExplosiveBoxSpawnForPlayerSide(out boxTransform);
+                        ExplosiveBoxHandler.SpawnExplosiveBoxForPlayerSide(out boxTransform);
                     else
-                        boxTransform = GetRandomBreakableBox();
+                        boxTransform = BreakableBoxHandler.GetRandomBreakableBox();
 
                     if (boxTransform.TryGetComponent(out BreakableBox breakableBox))
                         breakableBox.Init(this);
                     else if (boxTransform.TryGetComponent(out ExplosiveBox explosiveBox))
                         explosiveBox.Init(this);
-                    //boxTransform.GetComponent<BreakableBox>().Init(this);
                 }
 
-                boxTransform.localPosition = new Vector3(j * BOX_GAP, 0f, 0f);
+                boxTransform.localPosition = new Vector3(j * BoxGap, 0f, 0f);
 
-                CheckForTopBorderSpawn(j);
-                CheckForBottomBorderSpawn(j);
-                CheckForLeftBorderSpawn(j);
+                BorderBoxHandler.SpawnTopBorder(j);
+                BorderBoxHandler.SpawnBottomBorder(j);
+                BorderBoxHandler.SpawnLeftBorder(j);
             }
         }
         private void SpawnAiSideBoxes()
         {
-            SpawnMiddleBox();
-
-            for (int j = 0; j < LAYER_BOX_COUNT; j++)
+            for (int j = 0; j < BoxCount; j++)
             {
                 Transform boxTransform = null;
 
-                if (_firstLayer && j == LAYER_BOX_COUNT - 1)
+                if (FirstLayer && j == BoxCount - 1)
                     boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.StaticBox], transform).transform;
-                else if (_lastLayer)
+                else if (LastLayer)
                     boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.LevelEndBox], transform).transform;
                 else
                 {
                     if (AiSideCanHasExplosive)
-                        CheckForExplosiveBoxSpawnForAiSide(out boxTransform);
+                        ExplosiveBoxHandler.SpawnExplosiveBoxForAiSide(out boxTransform);
                     else
-                        boxTransform = GetRandomBreakableBox();
+                        boxTransform = BreakableBoxHandler.GetRandomBreakableBox();
 
-                    if(boxTransform.TryGetComponent(out BreakableBox breakableBox))
+                    if (boxTransform.TryGetComponent(out BreakableBox breakableBox))
                         breakableBox.Init(this);
                     else if (boxTransform.TryGetComponent(out ExplosiveBox explosiveBox))
                         explosiveBox.Init(this);
-                    //boxTransform.GetComponent<BreakableBox>().Init(this);
                 }
+                boxTransform.localPosition = new Vector3(((j + 1) + BoxCount) * BoxGap, 0f, 0f);
 
-                boxTransform.localPosition = new Vector3(((j + 1) + LAYER_BOX_COUNT) * BOX_GAP, 0f, 0f);
-
-                CheckForTopBorderSpawn((j + 1) + LAYER_BOX_COUNT);
-                CheckForBottomBorderSpawn((j + 1) + LAYER_BOX_COUNT);
-                CheckForRightBorderSpawn(j);
+                BorderBoxHandler.SpawnTopBorder((j + 1) + BoxCount);
+                BorderBoxHandler.SpawnBottomBorder((j + 1) + BoxCount);
+                BorderBoxHandler.SpawnRightBorder(j);
             }
         }
-        private void SpawnMiddleBox()
+        private void SpawnMiddleBoxes(float borderTopOffset, float borderBottomOffset)
         {
             GameObject box = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.MiddleBox], transform);
-            box.transform.localPosition = new Vector3(BOX_GAP * LAYER_BOX_COUNT, 0f, 0f);
+            box.transform.localPosition = new Vector3(BoxGap * BoxCount, 0f, 0f);
 
-            if (_firstLayer)
+            if (FirstLayer)
             {
-                for (int i = 1; i < BORDER_TOP_OFFSET; i++)
+                for (int i = 1; i < borderTopOffset; i++)
                 {
                     GameObject gapBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.MiddleBox], transform);
-                    gapBox.transform.localPosition = new Vector3(BOX_GAP * LAYER_BOX_COUNT, i * BOX_GAP, 0f);
+                    gapBox.transform.localPosition = new Vector3(BoxGap * BoxCount, i * BoxGap, 0f);
                 }
 
                 GameObject borderBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform);
-                borderBox.transform.localPosition = new Vector3(BOX_GAP * LAYER_BOX_COUNT, BORDER_TOP_OFFSET * BOX_GAP);
+                borderBox.transform.localPosition = new Vector3(BoxGap * BoxCount, borderTopOffset * BoxGap);
             }
-            else if (_lastLayer)
+            else if (LastLayer)
             {
-                for (int i = 1; i <= BORDER_BOTTOM_OFFSET; i++)
+                for (int i = 1; i <= borderBottomOffset; i++)
                 {
                     GameObject gapBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.MiddleBox], transform);
-                    gapBox.transform.localPosition = new Vector3(BOX_GAP * LAYER_BOX_COUNT, -i * BOX_GAP, 0f);
+                    gapBox.transform.localPosition = new Vector3(BoxGap * BoxCount, -i * BoxGap, 0f);
                 }
 
                 GameObject borderBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform);
-                borderBox.transform.localPosition = new Vector3(BOX_GAP * LAYER_BOX_COUNT, -BORDER_BOTTOM_OFFSET * BOX_GAP);
+                borderBox.transform.localPosition = new Vector3(BoxGap * BoxCount, -borderBottomOffset * BoxGap);
             }
         }
-        #endregion
-
-        #region BORDER SPAWN FUNCTIONS
-        private void CheckForTopBorderSpawn(int index)
-        {
-            if (_firstLayer)
-            {
-                Transform box = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
-                box.localPosition = new Vector3(index * BOX_GAP, BORDER_TOP_OFFSET * BOX_GAP, 0f);
-            }
-        }
-        private void CheckForBottomBorderSpawn(int index)
-        {
-            if (_lastLayer)
-            {
-                Transform box = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
-                box.localPosition = new Vector3(index * BOX_GAP, -BORDER_BOTTOM_OFFSET * BOX_GAP, 0f);
-            }
-        }
-        private void CheckForLeftBorderSpawn(int index)
-        {
-            if (index == 0)
-            {
-                Transform box = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
-                box.localPosition = new Vector3(-1 * BOX_GAP, 0f, 0f);
-
-                if (_firstLayer)
-                {
-                    for (int i = 1; i <= BORDER_TOP_OFFSET; i++)
-                    {
-                        Transform gapBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
-                        gapBox.localPosition = new Vector3(-1 * BOX_GAP, i * BOX_GAP, 0f);
-                    }
-                }
-                else if (_lastLayer)
-                {
-                    for (int i = 1; i <= BORDER_BOTTOM_OFFSET; i++)
-                    {
-                        Transform gapBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
-                        gapBox.localPosition = new Vector3(-1 * BOX_GAP, -i * BOX_GAP, 0f);
-                    }
-                }
-            }
-        }
-        private void CheckForRightBorderSpawn(int index)
-        {
-            if (index == LAYER_BOX_COUNT - 1)
-            {
-                Transform box = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
-                box.localPosition = new Vector3(((index + 2) + LAYER_BOX_COUNT) * BOX_GAP, 0f, 0f);
-
-                if (_firstLayer)
-                {
-                    for (int i = 1; i <= BORDER_TOP_OFFSET; i++)
-                    {
-                        Transform gapBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
-                        gapBox.localPosition = new Vector3(((index + 2) + LAYER_BOX_COUNT) * BOX_GAP, i * BOX_GAP, 0f);
-                    }
-                }
-                else if (_lastLayer)
-                {
-                    for (int i = 1; i <= BORDER_BOTTOM_OFFSET; i++)
-                    {
-                        Transform gapBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
-                        gapBox.localPosition = new Vector3(((index + 2) + LAYER_BOX_COUNT) * BOX_GAP, -i * BOX_GAP, 0f);
-                    }
-                }
-            }
-        }
-        #endregion
     }
 }

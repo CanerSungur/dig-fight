@@ -30,10 +30,22 @@ namespace ZestGames
             }
 
             #region DIGGING
-            if (other.TryGetComponent(out BoxDigTrigger boxDigTrigger) && !_player.IsInDigZone)
+            if (other.TryGetComponent(out BoxDigTrigger boxDigTrigger))
             {
-                boxDigTrigger.AssignHitter(_player);
-                _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
+                if (boxDigTrigger.transform.parent.TryGetComponent(out PushableBox pushableBox) && !_player.IsInPushZone)
+                {
+                    pushableBox.AssignPusher(_player);
+                    _player.PushHandler.SetPushedBox(pushableBox);
+                    _player.PushHandler.StartPushingProcess(boxDigTrigger.TriggerDirection);
+                }
+                else
+                {
+                    if (!_player.IsInDigZone)
+                    {
+                        boxDigTrigger.AssignHitter(_player);
+                        _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
+                    }
+                }
             }
             #endregion
         }
@@ -56,10 +68,21 @@ namespace ZestGames
             }
 
             #region DIGGING
-            if (other.TryGetComponent(out BoxDigTrigger boxDigTrigger) && _player.IsInDigZone)
+            if (other.TryGetComponent(out BoxDigTrigger boxDigTrigger))
             {
-                _player.StoppedDigging();
-                _player.DigHandler.StopDiggingProcess();
+                if (boxDigTrigger.transform.parent.TryGetComponent(out PushableBox pushableBox) && !_player.IsPushing)
+                {
+                    _player.StoppedPushing();
+                    _player.PushHandler.StopPushingProcess();
+                }
+                else
+                {
+                    if (!_player.IsDigging)
+                    {
+                        _player.StoppedDigging();
+                        _player.DigHandler.StopDiggingProcess();
+                    }
+                }
             }
             #endregion
         }
