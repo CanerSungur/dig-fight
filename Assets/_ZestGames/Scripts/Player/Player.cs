@@ -113,11 +113,13 @@ namespace ZestGames
         public void StartedDigging()
         {
             if (GameManager.GameState == Enums.GameState.GameEnded) return;
+            //Debug.Log("started dig");
             IsDigging = true;
             PlayerEvents.OnStartDigging?.Invoke();
         }
         public void StoppedDigging()
         {
+            //Debug.Log("stopped dig");
             IsDigging = false;
             PlayerEvents.OnStopDigging?.Invoke();
             PickaxeEvents.OnCannotHit?.Invoke();

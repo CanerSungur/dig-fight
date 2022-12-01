@@ -29,6 +29,9 @@ namespace DigFight
         private void SpawnMoneyText(int amount, Vector3 boxPosition)
         {
             TextMeshPro moneyText = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.MoneyTextDisplay, boxPosition + _textOffset, Quaternion.identity).GetComponentInChildren<TextMeshPro>();
+            Animation moneyTextAnimation = moneyText.GetComponentInParent<Animation>();
+            moneyTextAnimation.Rewind();
+            moneyTextAnimation.Play();
             moneyText.text = "+" + amount * DataManager.MoneyValue;
         }
     }

@@ -30,14 +30,14 @@ namespace DigFight
 
         private void Update()
         {
-            if ((int)_player.InputHandler.DigDirection == (int)_currentBoxTriggerDirection && _player.IsInDigZone && !_player.IsDigging && Time.time >= _delayedTime)
+            if ((int)_player.InputHandler.DigDirection == (int)_currentBoxTriggerDirection && _player.IsInDigZone && !_player.IsDigging && !_player.IsPushing && Time.time >= _delayedTime)
             {
                 _player.StartedDigging();
                 //PlayerEvents.OnStartDigging?.Invoke();
                 //Debug.Log("started digging");
             }
 
-            //CheckForDigIterruption();
+            CheckForDigIterruption();
         }
 
         #region PRIVATES
@@ -45,7 +45,7 @@ namespace DigFight
         {
             if (_player.IsFlying) return;
 
-            if (_player.IsDigging && (_player.InputHandler.WalkInput != 0 || _player.InputHandler.FlyInput != 0))
+            if (_player.IsDigging && (int)_player.InputHandler.DigDirection != (int)_currentBoxTriggerDirection)
             {
                 _player.StoppedDigging();
 
@@ -61,7 +61,7 @@ namespace DigFight
         public void StartDiggingProcess(Enums.BoxTriggerDirection triggerDirection)
         {
             //EnablePickaxe();
-            _player.PushHandler.StopPushingProcess();
+            //_player.PushHandler.StopPushingProcess();
 
             _currentBoxTriggerDirection = triggerDirection;
             _player.EnteredDigZone();
@@ -75,11 +75,7 @@ namespace DigFight
             _currentBoxTriggerDirection = Enums.BoxTriggerDirection.None;
             _player.ExitedDigZone();
         }
-        #endregion
-
-        #region HELPERS
-        //private void EnablePickaxe() => pickaxeObj.SetActive(true);
-        //private void DisablePickaxe() => pickaxeObj.SetActive(false);
+        public void ResetTriggerDirection() => _currentBoxTriggerDirection = Enums.BoxTriggerDirection.None;
         #endregion
     }
 }

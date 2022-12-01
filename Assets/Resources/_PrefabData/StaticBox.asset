@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: StaticBox
   m_EditorClassIdentifier: 
   Stamp: 1
-  Prefab: {fileID: 6196585926871131848, guid: ce4f0b6afe89843e7b61bd0c1e8146d5, type: 3}
+  Prefab: {fileID: 3173150260311812731, guid: ef8c42cee857a40bf9886d0276961f00, type: 3}

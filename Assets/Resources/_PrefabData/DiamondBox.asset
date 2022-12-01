@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: DiamondBox
   m_EditorClassIdentifier: 
   Stamp: 8
-  Prefab: {fileID: 6196585926871131848, guid: b865fa4b6697d4035ba383c3a164692e, type: 3}
+  Prefab: {fileID: 5198382572303800049, guid: 049998539e8e146a7bd9de1d9808538e, type: 3}

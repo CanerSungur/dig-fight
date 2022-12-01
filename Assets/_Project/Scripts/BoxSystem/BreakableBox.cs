@@ -17,6 +17,8 @@ namespace DigFight
 
         private Player _player;
         private Transform _meshTransform;
+        private DebrisHandler _debrisHandler;
+        private Collider _collider;
 
         //private const int DEFAULT_HP = 1;
 
@@ -35,6 +37,9 @@ namespace DigFight
         {
             _meshTransform = transform.GetChild(0);
             CurrentHealth = MaxHealth;
+            _collider = GetComponent<Collider>();
+            _debrisHandler = GetComponent<DebrisHandler>();
+            _debrisHandler.Init(this);
 
             //if (layer.LayerNumber != 0)
             //    CurrentHealth *= layer.LayerNumber;
@@ -59,6 +64,8 @@ namespace DigFight
 
             if (CurrentHealth <= 0)
                 Break();
+            else
+                _debrisHandler.ReleaseDebris(2);
 
             StartShakeSequence();
         }
@@ -73,9 +80,11 @@ namespace DigFight
                 _player.DigHandler.StopDiggingProcess();
             }
 
-            gameObject.SetActive(false);
+            _collider.enabled = false;
+            _debrisHandler.ReleaseDebris(_debrisHandler.TotalDebrisCount);
             AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
             CameraManager.OnBoxBreakShake?.Invoke();
+            gameObject.SetActive(false);
         }
         #endregion
 
@@ -92,9 +101,12 @@ namespace DigFight
                 CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
                 CurrentHealth = 0;
 
-                gameObject.SetActive(false);
+                _collider.enabled = false;
+                _debrisHandler.ReleaseDebris(_debrisHandler.TotalDebrisCount);
+                
                 AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
                 CameraManager.OnBoxBreakShake?.Invoke();
+                gameObject.SetActive(false);
             });
         }
         #endregion

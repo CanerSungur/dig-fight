@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a63390d47262478b86b576c3aeaf24f, type: 3}
+  m_Name: StoneBox
+  m_EditorClassIdentifier: 
+  Stamp: 0
+  Prefab: {fileID: 5919577094374056801, guid: 57eff326e6a364b869fecddc9c6f7a35, type: 3}

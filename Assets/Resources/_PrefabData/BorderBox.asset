@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: BorderBox
   m_EditorClassIdentifier: 
   Stamp: 6
-  Prefab: {fileID: 6196585926871131848, guid: c1e710dc05d3249959ff88d8557adddd, type: 3}
+  Prefab: {fileID: 3870316317792792616, guid: c4ff8d5989c424cd9b076439f915f388, type: 3}

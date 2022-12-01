@@ -66,6 +66,7 @@ namespace DigFight
                 _player.DigHandler.StopDiggingProcess();
             }
 
+            PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.ExplosionLargeEffect, transform.position + new Vector3(0f, 0f, -1f), Quaternion.identity);
             gameObject.SetActive(false);
             AudioManager.PlayAudio(Enums.AudioType.HitExplosive, 0.3f);
             CameraManager.OnExplosiveHitShake?.Invoke();

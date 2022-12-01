@@ -348,7 +348,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -4485754101530644449}
-    m_Position: {x: 420, y: 160, z: 0}
+    m_Position: {x: 450, y: 180, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1619332993482466920}
     m_Position: {x: 420, y: 40, z: 0}
@@ -2381,7 +2381,7 @@ AnimatorStateTransition:
   - m_ConditionMode: 6
     m_ConditionEvent: DigSideIndex
     m_EventTreshold: 1
-  - m_ConditionMode: 1
+  - m_ConditionMode: 2
     m_ConditionEvent: Pushing
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}

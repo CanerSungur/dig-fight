@@ -77,11 +77,11 @@ namespace ZestGames
                 }
                 else
                 {
-                    if (!_player.IsDigging)
-                    {
+                    //if (!_player.IsDigging)
+                    //{
                         _player.StoppedDigging();
                         _player.DigHandler.StopDiggingProcess();
-                    }
+                    //}
                 }
             }
             #endregion

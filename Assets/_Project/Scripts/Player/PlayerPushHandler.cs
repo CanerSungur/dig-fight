@@ -25,7 +25,7 @@ namespace DigFight
 
         private void Update()
         {
-            if ((int)_player.InputHandler.DigDirection == (int)_currentBoxTriggerDirection && _player.IsInPushZone && !_player.IsPushing && Time.time >= _delayedTime)
+            if ((int)_player.InputHandler.DigDirection == (int)_currentBoxTriggerDirection && _player.IsInPushZone && !_player.IsPushing && !_player.IsDigging && Time.time >= _delayedTime)
             {
                 _player.StartedPushing();
             }
@@ -34,7 +34,7 @@ namespace DigFight
         #region PUBLICS
         public void StartPushingProcess(Enums.BoxTriggerDirection triggerDirection)
         {
-            _player.DigHandler.StopDiggingProcess();
+            //_player.DigHandler.StopDiggingProcess();
 
             //EnablePickaxe();
             _currentBoxTriggerDirection = triggerDirection;

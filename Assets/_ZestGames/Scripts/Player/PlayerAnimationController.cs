@@ -151,7 +151,8 @@ namespace ZestGames
             if (message.Equals("DigMotionEnded"))
             {
                 _player.StoppedDigging();
-                _player.DigHandler.StartDiggingProcess(_player.DigHandler.CurrentBoxTriggerDirection);
+                if ((int)_player.InputHandler.DigDirection == (int)_player.DigHandler.CurrentBoxTriggerDirection)
+                    _player.DigHandler.StartDiggingProcess(_player.DigHandler.CurrentBoxTriggerDirection);
             }
             else if (message.Equals("EnableCanHit"))
             {

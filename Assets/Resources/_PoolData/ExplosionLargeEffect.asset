@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a63390d47262478b86b576c3aeaf24f, type: 3}
-  m_Name: EasyBox
+  m_Script: {fileID: 11500000, guid: 74654b171ce5644d3afae8fc9fd8837e, type: 3}
+  m_Name: ExplosionLargeEffect
   m_EditorClassIdentifier: 
-  Stamp: 0
-  Prefab: {fileID: 6196585926871131848, guid: 46dbfdf9cbfd34405bd8a5999829c62e, type: 3}
+  PoolStamp: 7
+  Prefabs:
+  - {fileID: 1431530912211830, guid: 03e1819217785454096ae4b83379e9c5, type: 3}
+  Size: 5
