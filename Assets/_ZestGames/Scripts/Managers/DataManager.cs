@@ -20,6 +20,10 @@ namespace ZestGames
         public static int PickaxeDurability { get; private set; }
         public static int PickaxeDurabilityLevel { get; private set; }
         public static int PickaxeDurabilityCost => (int)(_upgradeCost * Mathf.Pow(_upgradeCostIncreaseRate, PickaxeDurabilityLevel));
+        // #####################
+        public static int PickaxePower { get; private set; }
+        public static int PickaxePowerLevel { get; private set; }
+        public static int PickaxePowerCost => (int)(_upgradeCost * Mathf.Pow(_upgradeCostIncreaseRate, PickaxePowerLevel));
 
         // cost data
         private static readonly int _upgradeCost = 30;
@@ -30,12 +34,14 @@ namespace ZestGames
         private readonly float _coreMoneyValue = 1;
         private readonly float _corePickaxeSpeed = 1f;
         private readonly int _corePickaxeDurability = 5;
+        private readonly int _corePickaxePower = 1;
 
         // increment data
         private readonly float _movementSpeedIncrement = 0.2f;
         private readonly float _moneyValueIncrement = 0.5f;
         private readonly float _pickaxeSpeedIncrement = 0.2f;
         private readonly int _pickaxeDurabilityIncrement = 1;
+        private readonly int _pickaxePowerIncrement = 1;
         #endregion
 
         public static float TotalMoney { get; private set; }
@@ -48,11 +54,13 @@ namespace ZestGames
             UpdateMoneyValue();
             UpdatePickaxeSpeed();
             UpdatePickaxeDurability();
+            UpdatePickaxePower();
 
             PlayerUpgradeEvents.OnUpgradeMovementSpeed += MovementSpeedUpgrade;
             PlayerUpgradeEvents.OnUpgradeMoneyValue += MoneyValueUpgrade;
             PlayerUpgradeEvents.OnUpgradePickaxeSpeed += PickaxeSpeedUpgrade;
             PlayerUpgradeEvents.OnUpgradePickaxeDurability += PickaxeDurabilityUpgrade;
+            PlayerUpgradeEvents.OnUpgradePickaxePower += PickaxePowerUpgrade;
 
             CollectableEvents.OnCollect += IncreaseTotalMoney;
             CollectableEvents.OnSpend += DecreaseTotalMoney;
@@ -64,6 +72,7 @@ namespace ZestGames
             PlayerUpgradeEvents.OnUpgradeMoneyValue -= MoneyValueUpgrade;
             PlayerUpgradeEvents.OnUpgradePickaxeSpeed -= PickaxeSpeedUpgrade;
             PlayerUpgradeEvents.OnUpgradePickaxeDurability -= PickaxeDurabilityUpgrade;
+            PlayerUpgradeEvents.OnUpgradePickaxePower -= PickaxePowerUpgrade;
 
             CollectableEvents.OnCollect -= IncreaseTotalMoney;
             CollectableEvents.OnSpend -= DecreaseTotalMoney;
@@ -124,6 +133,12 @@ namespace ZestGames
             UpdatePickaxeDurability();
             PlayerEvents.OnCheer?.Invoke();
         }
+        private void PickaxePowerUpgrade()
+        {
+            IncreasePickaxePowerLevel();
+            UpdatePickaxePower();
+            PlayerEvents.OnCheer?.Invoke();
+        }
         #endregion
 
         #region UPDATE FUNCTIONS
@@ -146,6 +161,11 @@ namespace ZestGames
         {
             PickaxeDurability = _corePickaxeDurability + _pickaxeDurabilityIncrement * (PickaxeDurabilityLevel - 1);
             PlayerEvents.OnSetCurrentPickaxeDurability?.Invoke();
+        }
+        private void UpdatePickaxePower()
+        {
+            PickaxePower = _corePickaxePower + _pickaxePowerIncrement * (PickaxePowerLevel - 1);
+            PlayerEvents.OnSetCurrentPickaxePower?.Invoke();
         }
         #endregion
 
@@ -190,6 +210,16 @@ namespace ZestGames
                 UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
             }
         }
+        private void IncreasePickaxePowerLevel()
+        {
+            if (TotalMoney >= PickaxePowerCost)
+            {
+                DecreaseTotalMoney(PickaxePowerCost);
+                PickaxePowerLevel++;
+                PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
+                UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
+            }
+        }
         #endregion
         #endregion
 
@@ -201,6 +231,7 @@ namespace ZestGames
             MoneyValueLevel = PlayerPrefs.GetInt("MoneyValueLevel", 1);
             PickaxeSpeedLevel = PlayerPrefs.GetInt("PickaxeSpeedLevel", 1);
             PickaxeDurabilityLevel = PlayerPrefs.GetInt("PickaxeDurabilityLevel", 1);
+            PickaxePowerLevel = PlayerPrefs.GetInt("PickaxePowerLevel", 1);
         }
         private void SaveData()
         {
@@ -209,6 +240,7 @@ namespace ZestGames
             PlayerPrefs.SetInt("MoneyValueLevel", MoneyValueLevel);
             PlayerPrefs.SetInt("PickaxeSpeedLevel", PickaxeSpeedLevel);
             PlayerPrefs.SetInt("PickaxeDurabilityLevel", PickaxeDurabilityLevel);
+            PlayerPrefs.SetInt("PickaxePowerLevel", PickaxePowerLevel);
             PlayerPrefs.Save();
         }
         private void OnApplicationPause(bool pause) => SaveData();

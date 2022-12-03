@@ -12,11 +12,17 @@ namespace DigFight
         private int _totalDebrisCount;
         private int _currentDebrisCount;
 
+        #region PROPERTIES
         public int TotalDebrisCount => _totalDebrisCount;
         public float ReleaseForce => _releaseForce;
+        public BreakableBox BreakableBox { get; private set; }
+        #endregion
 
         public void Init(BreakableBox breakableBox)
         {
+            if (BreakableBox == null)
+                BreakableBox = breakableBox;
+
             RNG.ShuffleList(_debris);
             _currentDebrisCount = _totalDebrisCount = _debris.Count;
 
@@ -34,6 +40,11 @@ namespace DigFight
                 RemoveDebris(_debris[0]);
                 _totalDebrisCount--;
             }
+        }
+        public void MakeCracksBigger()
+        {
+            for (int i = 0; i < _debris.Count; i++)
+                _debris[i].MakeCrackBigger();
         }
         #endregion
 

@@ -18,9 +18,9 @@ TagManager:
   - BorderBox
   - MiddleBox
   - Debris
-  - 
-  - 
-  - 
+  - LayerMask
+  - SeeThrough
+  - VoxelVFX
   - 
   - 
   - 

@@ -21,7 +21,7 @@ namespace ZestGames
         public Vector3 InputValue { get; private set; }
         public float FlyInput { get; private set; }
         public float WalkInput { get; private set; }
-        public bool CanTakeInput => GameManager.GameState == Enums.GameState.Started && Time.time >= _delayedTime && !_player.IsUpgrading && !_player.IsPushing;
+        public bool CanTakeInput => GameManager.GameState == Enums.GameState.Started && Time.time >= _delayedTime && !_player.IsUpgrading && !_player.IsPushing && !_player.IsDigging;
         public Enums.MovementDirection MovementDirection { get; private set; }
         public Enums.DigDirection DigDirection { get; private set; }
         #endregion

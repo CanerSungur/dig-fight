@@ -13,18 +13,31 @@ namespace DigFight
         //[SerializeField] private ParticleSystem hitSmokePS;
 
         [Header("-- SETUP --")]
+        [SerializeField] private Enums.BoxType _boxType;
         [SerializeField] private int hp = 1;
 
+        #region SCRIPT REFERENCES
         private Player _player;
-        private Transform _meshTransform;
         private DebrisHandler _debrisHandler;
+        private CrackHandler _crackHandler;
+        #endregion
+
+        #region COMPONENTS
+        private Transform _meshTransform;
         private Collider _collider;
+        #endregion
+
+        #region EFFECT RELATED
+        private readonly Vector3 vfxVoxelOffset = new Vector3(0f, 1.5f, -1.75f);
+        private Enums.HitPower _affectedHitPower;
+        #endregion
 
         //private const int DEFAULT_HP = 1;
 
         #region PROPERTIES
         public int MaxHealth => hp;
         public int CurrentHealth { get; set; }
+        public DebrisHandler DebrisHandler => _debrisHandler;
         #endregion
 
         #region SEQUENCE
@@ -35,37 +48,40 @@ namespace DigFight
 
         public void Init(Layer layer)
         {
-            _meshTransform = transform.GetChild(0);
             CurrentHealth = MaxHealth;
-            _collider = GetComponent<Collider>();
-            _debrisHandler = GetComponent<DebrisHandler>();
-            _debrisHandler.Init(this);
 
-            //if (layer.LayerNumber != 0)
-            //    CurrentHealth *= layer.LayerNumber;
+            if (_meshTransform == null)
+            {
+                _meshTransform = transform.GetChild(0);
+                _collider = GetComponent<Collider>();
+
+                _debrisHandler = GetComponent<DebrisHandler>();
+                _crackHandler = GetComponent<CrackHandler>();
+            }
+
+            _debrisHandler.Init(this);
+            _crackHandler.Init(this);
         }
 
         #region INTERFACE FUNCTIONS
         public void GetDamaged(int amount)
         {
             CameraManager.OnBoxHitShake?.Invoke();
-            //hitSmokePS.Play();
-            PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxEffect, transform.position + new Vector3(0f, 0f, -1f), Quaternion.identity);
-            PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmokeSquare, transform.position, Quaternion.identity);
-            PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmoke, transform.position + new Vector3(0f, 1f, -1f), Quaternion.identity);
 
             if (amount <= CurrentHealth)
                 CollectableEvents.OnSpawnMoney?.Invoke(amount, transform.position);
             else
                 CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
 
+            SetHitPower(amount);
+            SpawnEffect(_affectedHitPower);
+
             CurrentHealth -= amount;
             AudioManager.PlayAudio(Enums.AudioType.HitBox, 0.5f);
+            _crackHandler.EnhanceCracks();
 
             if (CurrentHealth <= 0)
                 Break();
-            else
-                _debrisHandler.ReleaseDebris(2);
 
             StartShakeSequence();
         }
@@ -75,11 +91,11 @@ namespace DigFight
                 Debug.Log("Player is not assigned!");
             else
             {
-                //Debug.Log("RESET DIGGING");
                 _player.StoppedDigging();
                 _player.DigHandler.StopDiggingProcess();
             }
 
+            _crackHandler.DisposeCracks();
             _collider.enabled = false;
             _debrisHandler.ReleaseDebris(_debrisHandler.TotalDebrisCount);
             AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
@@ -96,7 +112,8 @@ namespace DigFight
         public void Explode()
         {
             Delayer.DoActionAfterDelay(this, Random.Range(0f, 0.75f), () => {
-                // effects
+                _crackHandler.DisposeCracks();
+                SpawnEffect(Enums.HitPower.High);
 
                 CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
                 CurrentHealth = 0;
@@ -108,6 +125,51 @@ namespace DigFight
                 CameraManager.OnBoxBreakShake?.Invoke();
                 gameObject.SetActive(false);
             });
+        }
+        public float GetCurrentHealthNormalized() => (((float)MaxHealth - CurrentHealth) / (float)MaxHealth);
+        #endregion
+
+        #region PRIVATES
+        private void SetHitPower(int damageAmount)
+        {
+            float damageRate = GetIncomingDamageNormalized(damageAmount);
+
+            if (damageRate <= 0.25f)
+                _affectedHitPower = Enums.HitPower.Low;
+            else if (damageRate > 0.25f && damageRate <= .5f)
+                _affectedHitPower = Enums.HitPower.Medium;
+            else if (damageRate > .5f)
+                _affectedHitPower = Enums.HitPower.High;
+        }
+        private float GetIncomingDamageNormalized(int damageAmount)
+        {
+            if (damageAmount >= CurrentHealth) return 1f;
+            else return 1f - (((float)CurrentHealth - damageAmount) / (float)CurrentHealth);
+        }
+        private void SpawnEffect(Enums.HitPower affectedHitPower)
+        {
+            VFXVoxel vfxVoxel;
+            if (_boxType == Enums.BoxType.Stone)
+            {
+                vfxVoxel = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.VFX_Voxel_Stone, transform.position + vfxVoxelOffset, Quaternion.Euler(-90f, 0f, 0f)).GetComponent<VFXVoxel>();
+                vfxVoxel.Init(affectedHitPower);
+            }
+            else if (_boxType == Enums.BoxType.Copper)
+            {
+                vfxVoxel = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.VFX_Voxel_Copper, transform.position + vfxVoxelOffset, Quaternion.Euler(-90f, 0f, 0f)).GetComponent<VFXVoxel>();
+                vfxVoxel.Init(affectedHitPower);
+            }
+            else if (_boxType == Enums.BoxType.Diamond)
+            {
+                vfxVoxel = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.VFX_Voxel_Diamond, transform.position + vfxVoxelOffset, Quaternion.Euler(-90f, 0f, 0f)).GetComponent<VFXVoxel>();
+                vfxVoxel.Init(affectedHitPower);
+            }
+            else
+                Debug.Log("Unknown BOX TYPE!");
+
+            PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxEffect, transform.position + new Vector3(0f, 0f, -1f), Quaternion.identity);
+            PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmokeSquare, transform.position, Quaternion.identity);
+            PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmoke, transform.position + new Vector3(0f, 1f, -1f), Quaternion.identity);
         }
         #endregion
 

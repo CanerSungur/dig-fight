@@ -22,6 +22,7 @@ namespace ZestGames
         [SerializeField] private UpgradeCanvasItem moneyValue;
         [SerializeField] private UpgradeCanvasItem pickaxeSpeed;
         [SerializeField] private UpgradeCanvasItem pickaxeDurability;
+        [SerializeField] private UpgradeCanvasItem pickaxePower;
 
         public void Init(UiManager uiManager)
         {
@@ -37,6 +38,7 @@ namespace ZestGames
                 moneyValue.Init(this);
                 pickaxeSpeed.Init(this);
                 pickaxeDurability.Init(this);
+                pickaxePower.Init(this);
             }
 
             Delayer.DoActionAfterDelay(this, 0.5f, UpdateTexts);
@@ -52,6 +54,7 @@ namespace ZestGames
             moneyValue.Button.onClick.AddListener(MoneyValueUpgradeClicked);
             pickaxeSpeed.Button.onClick.AddListener(PickaxeSpeedUpgradeClicked);
             pickaxeDurability.Button.onClick.AddListener(PickaxeDurabilityUpgradeClicked);
+            pickaxePower.Button.onClick.AddListener(PickaxePowerUpgradeClicked);
 
             PlayerUpgradeEvents.OnUpdateUpgradeTexts += UpdateTexts;
 
@@ -70,6 +73,7 @@ namespace ZestGames
             moneyValue.Button.onClick.RemoveListener(MoneyValueUpgradeClicked);
             pickaxeSpeed.Button.onClick.RemoveListener(PickaxeSpeedUpgradeClicked);
             pickaxeDurability.Button.onClick.RemoveListener(PickaxeDurabilityUpgradeClicked);
+            pickaxePower.Button.onClick.RemoveListener(PickaxePowerUpgradeClicked);
 
             PlayerUpgradeEvents.OnUpdateUpgradeTexts -= UpdateTexts;
 
@@ -103,6 +107,9 @@ namespace ZestGames
             pickaxeDurability.LevelText.text = $"Level {DataManager.PickaxeDurabilityLevel}";
             pickaxeDurability.CostText.text = DataManager.PickaxeDurabilityCost.ToString();
 
+            pickaxePower.LevelText.text = $"Level {DataManager.PickaxePowerLevel}";
+            pickaxePower.CostText.text = DataManager.PickaxePowerCost.ToString();
+
             CheckForMoneySufficiency();
         }
 
@@ -111,6 +118,7 @@ namespace ZestGames
             moneyValue.Button.interactable = DataManager.TotalMoney >= DataManager.MoneyValueCost;
             pickaxeSpeed.Button.interactable = DataManager.TotalMoney >= DataManager.PickaxeSpeedCost;
             pickaxeDurability.Button.interactable = DataManager.TotalMoney >= DataManager.PickaxeDurabilityCost;
+            pickaxePower.Button.interactable = DataManager.TotalMoney >= DataManager.PickaxePowerCost;
         }
         #endregion
 
@@ -123,6 +131,7 @@ namespace ZestGames
         private void UpgradeMoneyValue() => PlayerUpgradeEvents.OnUpgradeMoneyValue?.Invoke();
         private void UpgradePickaxeSpeed() => PlayerUpgradeEvents.OnUpgradePickaxeSpeed?.Invoke();
         private void UpgradePickaxeDurability() => PlayerUpgradeEvents.OnUpgradePickaxeDurability?.Invoke();
+        private void UpgradePickaxePower() => PlayerUpgradeEvents.OnUpgradePickaxePower?.Invoke();
         #endregion
 
         #region CLICK TRIGGER FUNCTIONS
@@ -137,6 +146,7 @@ namespace ZestGames
         private void MoneyValueUpgradeClicked() => moneyValue.Button.TriggerClick(UpgradeMoneyValue, moneyValue.ShakeLevelImage);
         private void PickaxeSpeedUpgradeClicked() => pickaxeSpeed.Button.TriggerClick(UpgradePickaxeSpeed, pickaxeSpeed.ShakeLevelImage);
         private void PickaxeDurabilityUpgradeClicked() => pickaxeDurability.Button.TriggerClick(UpgradePickaxeDurability, pickaxeDurability.ShakeLevelImage);
+        private void PickaxePowerUpgradeClicked() => pickaxePower.Button.TriggerClick(UpgradePickaxePower, pickaxePower.ShakeLevelImage);
         #endregion
 
         #region ANIMATOR FUNCTIONS
