@@ -11,7 +11,6 @@ namespace DigFight
 
         private Player _player;
         private Transform _meshTransform;
-        
 
         #region PROPERTIES
         public int MaxHealth => hp;
@@ -42,11 +41,6 @@ namespace DigFight
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxEffect, transform.position + new Vector3(0f, 0f, -1f), Quaternion.identity);
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmokeSquare, transform.position, Quaternion.identity);
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmoke, transform.position + new Vector3(0f, 1f, -1f), Quaternion.identity);
-
-            //if (amount <= CurrentHealth)
-            //    CollectableEvents.OnSpawnMoney?.Invoke(amount, transform.position);
-            //else
-            //    CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
 
             CurrentHealth -= amount;
             AudioManager.PlayAudio(Enums.AudioType.HitBox, 0.5f);

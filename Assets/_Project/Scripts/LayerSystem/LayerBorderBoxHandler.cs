@@ -16,6 +16,8 @@ namespace DigFight
                 _layer = layer;
         }
 
+        private void SetParentAsBorderBoxContainer(Transform borderBoxTransform) => borderBoxTransform.SetParent(_layer.BoxSpawnManager.BorderBoxContainerTransform);
+
         #region PUBLICS
         public void SpawnTopBorder(int index)
         {
@@ -23,6 +25,7 @@ namespace DigFight
             {
                 Transform box = Instantiate(_layer.BoxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
                 box.localPosition = new Vector3(index * _layer.BoxGap, TopOffset * _layer.BoxGap, 0f);
+                SetParentAsBorderBoxContainer(box);
             }
         }
         public void SpawnBottomBorder(int index)
@@ -31,6 +34,7 @@ namespace DigFight
             {
                 Transform box = Instantiate(_layer.BoxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
                 box.localPosition = new Vector3(index * _layer.BoxGap, -BottomOffset * _layer.BoxGap, 0f);
+                SetParentAsBorderBoxContainer(box);
             }
         }
         public void SpawnLeftBorder(int index)
@@ -39,6 +43,7 @@ namespace DigFight
             {
                 Transform box = Instantiate(_layer.BoxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
                 box.localPosition = new Vector3(-1 * _layer.BoxGap, 0f, 0f);
+                SetParentAsBorderBoxContainer(box);
 
                 if (_layer.FirstLayer)
                 {
@@ -46,6 +51,7 @@ namespace DigFight
                     {
                         Transform gapBox = Instantiate(_layer.BoxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
                         gapBox.localPosition = new Vector3(-1 * _layer.BoxGap, i * _layer.BoxGap, 0f);
+                        SetParentAsBorderBoxContainer(gapBox);
                     }
                 }
                 else if (_layer.LastLayer)
@@ -54,6 +60,7 @@ namespace DigFight
                     {
                         Transform gapBox = Instantiate(_layer.BoxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
                         gapBox.localPosition = new Vector3(-1 * _layer.BoxGap, -i * _layer.BoxGap, 0f);
+                        SetParentAsBorderBoxContainer(gapBox);
                     }
                 }
             }
@@ -64,6 +71,7 @@ namespace DigFight
             {
                 Transform box = Instantiate(_layer.BoxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
                 box.localPosition = new Vector3(((index + 2) + _layer.BoxCount) * _layer.BoxGap, 0f, 0f);
+                SetParentAsBorderBoxContainer(box);
 
                 if (_layer.FirstLayer)
                 {
@@ -71,6 +79,7 @@ namespace DigFight
                     {
                         Transform gapBox = Instantiate(_layer.BoxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
                         gapBox.localPosition = new Vector3(((index + 2) + _layer.BoxCount) * _layer.BoxGap, i * _layer.BoxGap, 0f);
+                        SetParentAsBorderBoxContainer(gapBox);
                     }
                 }
                 else if (_layer.LastLayer)
@@ -79,6 +88,7 @@ namespace DigFight
                     {
                         Transform gapBox = Instantiate(_layer.BoxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
                         gapBox.localPosition = new Vector3(((index + 2) + _layer.BoxCount) * _layer.BoxGap, -i * _layer.BoxGap, 0f);
+                        SetParentAsBorderBoxContainer(gapBox);
                     }
                 }
             }

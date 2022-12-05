@@ -1,19 +1,15 @@
-using System.Collections.Generic;
 using UnityEngine;
-using ZestCore.Utility;
+using ZestGames;
 
 namespace DigFight
 {
     public class DebrisHandler : MonoBehaviour
     {
-        [SerializeField] private List<Debris> _debris;
+        [Header("-- SETUP --")]
         [SerializeField] private float _releaseForce = 10f;
 
-        private int _totalDebrisCount;
-        private int _currentDebrisCount;
-
         #region PROPERTIES
-        public int TotalDebrisCount => _totalDebrisCount;
+        public DebrisContainer DebrisContainer { get; private set; }
         public float ReleaseForce => _releaseForce;
         public BreakableBox BreakableBox { get; private set; }
         #endregion
@@ -22,36 +18,23 @@ namespace DigFight
         {
             if (BreakableBox == null)
                 BreakableBox = breakableBox;
-
-            RNG.ShuffleList(_debris);
-            _currentDebrisCount = _totalDebrisCount = _debris.Count;
-
-            for (int i = 0; i < _debris.Count; i++)
-                _debris[i].Init(this);
         }
 
-        #region PUBLICS
-        public void ReleaseDebris(int count)
+        public void ActivateDebrises()
         {
-            for (int i = 0; i < count; i++)
-            {
-                _debris[0].transform.SetParent(null);
-                _debris[0].Release();
-                RemoveDebris(_debris[0]);
-                _totalDebrisCount--;
-            }
-        }
-        public void MakeCracksBigger()
-        {
-            for (int i = 0; i < _debris.Count; i++)
-                _debris[i].MakeCrackBigger();
-        }
-        #endregion
+            SpawnRelevantDebris();
 
-        private void RemoveDebris(Debris debris)
+            DebrisContainer.Init(this);
+        }
+
+        private void SpawnRelevantDebris()
         {
-            if (_debris.Contains(debris))
-                _debris.Remove(debris);
+            if (BreakableBox.BoxType == Enums.BoxType.Stone)
+                DebrisContainer = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.Debris_Stone, Vector3.zero, Quaternion.identity).GetComponent<DebrisContainer>();
+            else if (BreakableBox.BoxType == Enums.BoxType.Copper)
+                DebrisContainer = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.Debris_Copper, Vector3.zero, Quaternion.identity).GetComponent<DebrisContainer>();
+            else if (BreakableBox.BoxType == Enums.BoxType.Diamond)
+                DebrisContainer = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.Debris_Diamond, Vector3.zero, Quaternion.identity).GetComponent<DebrisContainer>();
         }
     }
 }

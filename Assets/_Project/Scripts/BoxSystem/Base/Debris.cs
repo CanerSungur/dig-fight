@@ -7,87 +7,85 @@ namespace DigFight
 {
     public class Debris : MonoBehaviour
     {
+        private Vector3 _defaultPosition;
+
         #region COMPONENTS
-        private DebrisHandler _debrisHandler;
+        private DebrisContainer _debrisContainer;
         private Rigidbody _rigidbody;
-        private Material _crackMaterial;
-        #endregion
-
-        #region COLOR SEQUENCE
-        private Sequence _colorSequence;
-        private Guid _colorSequenceID;
-
-        private Color _currentColor;
-        private const float COLOR_CHANGE_DURATION = 1f;
-        private const float MIN_OFFSET = -0.1f;
-        private const float MAX_OFFSET = 0.1f;
         #endregion
 
         #region DISPOSE SEQUENCE
         private Sequence _disposeSequence;
         private Guid _disposeSequenceID;
+        private const float DISPOSE_DURATION = 3f;
         #endregion
 
-        public void Init(DebrisHandler debrisHandler)
+        public void Init(DebrisContainer debrisContainer)
         {
             if (_rigidbody == null)
             {
                 _rigidbody = GetComponent<Rigidbody>();
-                _debrisHandler = debrisHandler;
-                _crackMaterial = GetComponent<MeshRenderer>().materials[1];
+                _debrisContainer = debrisContainer;
+                _defaultPosition = transform.localPosition;
             }
 
-            _rigidbody.isKinematic = true;
-            _currentColor = new Color(1f, 1f, 1f, 0f);
-            _crackMaterial.color = _currentColor;
-            SetRandomCrackOffset();
+            ResetToDefault();
+        }
+
+        private void OnDisable()
+        {
+            //if (_disposeSequence != null || _disposeSequence.IsPlaying())
+            //DeleteDisposeSequence();
+            transform.DOKill();
         }
 
         #region PUBLICS
         public void Release()
         {
-            _rigidbody.isKinematic = false;
-            _rigidbody.AddForce(new Vector3(Random.Range(-2f, 2f), Random.Range(1f, 5f), Random.Range(1f, 2f)) * _debrisHandler.ReleaseForce, ForceMode.Impulse);
-            DestroyAfterDelay();
+            _rigidbody.AddForce(new Vector3(Random.Range(-2f, 2f), Random.Range(1f, 5f), Random.Range(1f, 2f)) * _debrisContainer.ActivaterDebrisHandler.ReleaseForce, ForceMode.Impulse);
+            StartDisposeSequence();
         }
-        public void MakeCrackBigger() => StartColorSequence(_debrisHandler.BreakableBox.GetCurrentHealthNormalized());
         #endregion
 
         #region PRIVATES
-        private void DestroyAfterDelay()
+        private void ResetToDefault()
         {
-            // apply dispose sequence
-            Destroy(gameObject, 5f);
+            if (_disposeSequence != null && _disposeSequence.IsPlaying())
+                DeleteDisposeSequence();
+
+            transform.localPosition = _defaultPosition;
+            transform.localRotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
+            _rigidbody.velocity = _rigidbody.angularVelocity = Vector3.zero;
         }
-        private void SetRandomCrackOffset() => _crackMaterial.SetTextureOffset("_MainTex", new Vector2(Random.Range(MIN_OFFSET, MAX_OFFSET), Random.Range(MIN_OFFSET, MAX_OFFSET)));
         #endregion
 
         #region DOTWEEN FUNCTIONS
-        private void StartColorSequence(float alpha)
+        private void StartDisposeSequence()
         {
-            DeleteColorSequence();
-            CreateColorSequence(alpha);
-            _colorSequence.Play();
+            CreateDisposeSequence();
+            _disposeSequence.Play();
         }
-        private void CreateColorSequence(float alpha)
+        private void CreateDisposeSequence()
         {
-            if (_colorSequence == null)
+            if (_disposeSequence == null)
             {
-                _colorSequence = DOTween.Sequence();
-                _colorSequenceID = Guid.NewGuid();
-                _colorSequence.id = _colorSequenceID;
+                _disposeSequence = DOTween.Sequence();
+                _disposeSequenceID = Guid.NewGuid();
+                _disposeSequence.id = _disposeSequenceID;
 
-                _colorSequence.Append(DOVirtual.Color(_currentColor, new Color(1f, 1f, 1f, alpha), COLOR_CHANGE_DURATION, r =>
-                {
-                    _currentColor = r;
-                    _crackMaterial.color = _currentColor;
-                })).OnComplete(DeleteColorSequence);
+                _disposeSequence.Append(DOVirtual.Float(0f, 1f, DISPOSE_DURATION, r => { }))
+                    .Append(transform.DOScale(0f, DISPOSE_DURATION))
+                    .OnComplete(() => {
+                        DeleteDisposeSequence();
+                        _debrisContainer.Dispose();
+                    });
             }
         }
-        private void DeleteColorSequence()
+        private void DeleteDisposeSequence()
         {
-            DOTween.Kill(_colorSequenceID);
-            _colorSequence = null;
+            DOTween.Kill(_disposeSequenceID);
+            _disposeSequence = null;
         }
         #endregion
     }

@@ -2,6 +2,7 @@ using UnityEngine;
 using ZestGames;
 using Random = UnityEngine.Random;
 using ZestCore.Utility;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace DigFight
 {
@@ -67,6 +68,8 @@ namespace DigFight
             SpawnMiddleBoxes(BorderBoxHandler.TopOffset, BorderBoxHandler.BottomOffset);
         }
 
+        private void SetParentAsBorderBoxContainer(Transform borderBoxTransform) => borderBoxTransform.SetParent(_boxSpawnManager.BorderBoxContainerTransform);
+
         private void SpawnPlayerSideBoxes()
         {
             for (int j = 0; j < BoxCount; j++)
@@ -74,9 +77,17 @@ namespace DigFight
                 Transform boxTransform = null;
 
                 if (FirstLayer && j == 0)
+                {
                     boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.StaticBox], transform).transform;
+                    boxTransform.localPosition = new Vector3(j * BoxGap, 0f, 0f);
+                    SetParentAsBorderBoxContainer(boxTransform);
+                }
                 else if (LastLayer)
+                {
                     boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.LevelEndBox], transform).transform;
+                    boxTransform.localPosition = new Vector3(j * BoxGap, 0f, 0f);
+                    SetParentAsBorderBoxContainer(boxTransform);
+                }
                 else
                 {
                     if (PlayerSideCanHasExplosive)
@@ -88,9 +99,11 @@ namespace DigFight
                         breakableBox.Init(this);
                     else if (boxTransform.TryGetComponent(out ExplosiveBox explosiveBox))
                         explosiveBox.Init(this);
+
+                    boxTransform.localPosition = new Vector3(j * BoxGap, 0f, 0f);
                 }
 
-                boxTransform.localPosition = new Vector3(j * BoxGap, 0f, 0f);
+                //boxTransform.localPosition = new Vector3(j * BoxGap, 0f, 0f);
 
                 BorderBoxHandler.SpawnTopBorder(j);
                 BorderBoxHandler.SpawnBottomBorder(j);
@@ -104,9 +117,17 @@ namespace DigFight
                 Transform boxTransform = null;
 
                 if (FirstLayer && j == BoxCount - 1)
+                {
                     boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.StaticBox], transform).transform;
+                    boxTransform.localPosition = new Vector3(((j + 1) + BoxCount) * BoxGap, 0f, 0f);
+                    SetParentAsBorderBoxContainer(boxTransform);
+                }
                 else if (LastLayer)
+                {
                     boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.LevelEndBox], transform).transform;
+                    boxTransform.localPosition = new Vector3(((j + 1) + BoxCount) * BoxGap, 0f, 0f);
+                    SetParentAsBorderBoxContainer(boxTransform);
+                }
                 else
                 {
                     if (AiSideCanHasExplosive)
@@ -118,8 +139,9 @@ namespace DigFight
                         breakableBox.Init(this);
                     else if (boxTransform.TryGetComponent(out ExplosiveBox explosiveBox))
                         explosiveBox.Init(this);
+
+                    boxTransform.localPosition = new Vector3(((j + 1) + BoxCount) * BoxGap, 0f, 0f);
                 }
-                boxTransform.localPosition = new Vector3(((j + 1) + BoxCount) * BoxGap, 0f, 0f);
 
                 BorderBoxHandler.SpawnTopBorder((j + 1) + BoxCount);
                 BorderBoxHandler.SpawnBottomBorder((j + 1) + BoxCount);
@@ -128,30 +150,35 @@ namespace DigFight
         }
         private void SpawnMiddleBoxes(float borderTopOffset, float borderBottomOffset)
         {
-            GameObject box = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.MiddleBox], transform);
-            box.transform.localPosition = new Vector3(BoxGap * BoxCount, 0f, 0f);
+            Transform boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.MiddleBox], transform).transform;
+            boxTransform.localPosition = new Vector3(BoxGap * BoxCount, 0f, 0f);
+            SetParentAsBorderBoxContainer(boxTransform);
 
             if (FirstLayer)
             {
                 for (int i = 1; i < borderTopOffset; i++)
                 {
-                    GameObject gapBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.MiddleBox], transform);
-                    gapBox.transform.localPosition = new Vector3(BoxGap * BoxCount, i * BoxGap, 0f);
+                    Transform gapBoxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.MiddleBox], transform).transform;
+                    gapBoxTransform.transform.localPosition = new Vector3(BoxGap * BoxCount, i * BoxGap, 0f);
+                    SetParentAsBorderBoxContainer(gapBoxTransform);
                 }
 
-                GameObject borderBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform);
-                borderBox.transform.localPosition = new Vector3(BoxGap * BoxCount, borderTopOffset * BoxGap);
+                Transform borderBoxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
+                borderBoxTransform.transform.localPosition = new Vector3(BoxGap * BoxCount, borderTopOffset * BoxGap);
+                SetParentAsBorderBoxContainer(borderBoxTransform);
             }
             else if (LastLayer)
             {
                 for (int i = 1; i <= borderBottomOffset; i++)
                 {
-                    GameObject gapBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.MiddleBox], transform);
-                    gapBox.transform.localPosition = new Vector3(BoxGap * BoxCount, -i * BoxGap, 0f);
+                    Transform gapBoxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.MiddleBox], transform).transform;
+                    gapBoxTransform.transform.localPosition = new Vector3(BoxGap * BoxCount, -i * BoxGap, 0f);
+                    SetParentAsBorderBoxContainer(gapBoxTransform);
                 }
 
-                GameObject borderBox = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform);
-                borderBox.transform.localPosition = new Vector3(BoxGap * BoxCount, -borderBottomOffset * BoxGap);
+                Transform borderBoxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.BorderBox], transform).transform;
+                borderBoxTransform.transform.localPosition = new Vector3(BoxGap * BoxCount, -borderBottomOffset * BoxGap);
+                SetParentAsBorderBoxContainer(borderBoxTransform);
             }
         }
     }

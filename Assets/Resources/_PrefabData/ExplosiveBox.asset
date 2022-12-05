@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ExplosiveBox
   m_EditorClassIdentifier: 
   Stamp: 3
-  Prefab: {fileID: 6196585926871131848, guid: f6a22305fd07e4011a23750fad2607ff, type: 3}
+  Prefab: {fileID: 6196585926871131848, guid: ae8f4d3674de14d3a9a292684348951c, type: 3}

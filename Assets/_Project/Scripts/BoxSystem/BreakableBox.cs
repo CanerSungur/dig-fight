@@ -15,6 +15,7 @@ namespace DigFight
         [Header("-- SETUP --")]
         [SerializeField] private Enums.BoxType _boxType;
         [SerializeField] private int hp = 1;
+        private bool _isBroken;
 
         #region SCRIPT REFERENCES
         private Player _player;
@@ -24,11 +25,11 @@ namespace DigFight
 
         #region COMPONENTS
         private Transform _meshTransform;
-        private Collider _collider;
+        //private Collider _collider;
         #endregion
 
         #region EFFECT RELATED
-        private readonly Vector3 vfxVoxelOffset = new Vector3(0f, 1.5f, -1.75f);
+        private readonly Vector3 vfxVoxelOffset = new Vector3(0f, 0f, -1.75f);
         private Enums.HitPower _affectedHitPower;
         #endregion
 
@@ -38,6 +39,7 @@ namespace DigFight
         public int MaxHealth => hp;
         public int CurrentHealth { get; set; }
         public DebrisHandler DebrisHandler => _debrisHandler;
+        public Enums.BoxType BoxType => _boxType;
         #endregion
 
         #region SEQUENCE
@@ -49,18 +51,19 @@ namespace DigFight
         public void Init(Layer layer)
         {
             CurrentHealth = MaxHealth;
+            _isBroken = false;
 
             if (_meshTransform == null)
             {
                 _meshTransform = transform.GetChild(0);
-                _collider = GetComponent<Collider>();
+                //_collider = GetComponent<Collider>();
 
                 _debrisHandler = GetComponent<DebrisHandler>();
                 _crackHandler = GetComponent<CrackHandler>();
             }
 
-            _debrisHandler.Init(this);
             _crackHandler.Init(this);
+            _debrisHandler.Init(this);
         }
 
         #region INTERFACE FUNCTIONS
@@ -95,12 +98,16 @@ namespace DigFight
                 _player.DigHandler.StopDiggingProcess();
             }
 
-            _crackHandler.DisposeCracks();
-            _collider.enabled = false;
-            _debrisHandler.ReleaseDebris(_debrisHandler.TotalDebrisCount);
+            _isBroken = true;
             AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
             CameraManager.OnBoxBreakShake?.Invoke();
-            gameObject.SetActive(false);
+
+
+            _crackHandler.DisposeCracks();
+            //_collider.enabled = false;
+            _debrisHandler.ActivateDebrises();
+            //_debrisHandler.ReleaseDebris(_debrisHandler.TotalDebrisCount);
+            Destroy(gameObject);
         }
         #endregion
 
@@ -111,19 +118,21 @@ namespace DigFight
         }
         public void Explode()
         {
+            if (_isBroken) return;
+
             Delayer.DoActionAfterDelay(this, Random.Range(0f, 0.75f), () => {
                 _crackHandler.DisposeCracks();
                 SpawnEffect(Enums.HitPower.High);
 
                 CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
                 CurrentHealth = 0;
-
-                _collider.enabled = false;
-                _debrisHandler.ReleaseDebris(_debrisHandler.TotalDebrisCount);
-                
                 AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
                 CameraManager.OnBoxBreakShake?.Invoke();
-                gameObject.SetActive(false);
+
+                //_collider.enabled = false;
+                _debrisHandler.ActivateDebrises();
+                //_debrisHandler.ReleaseDebris(_debrisHandler.TotalDebrisCount);
+                Destroy(gameObject);
             });
         }
         public float GetCurrentHealthNormalized() => (((float)MaxHealth - CurrentHealth) / (float)MaxHealth);
