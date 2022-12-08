@@ -15,8 +15,6 @@ GameObject:
   - component: {fileID: 5491084403859615912}
   - component: {fileID: 5491084403859615927}
   - component: {fileID: 1124688366865923144}
-  - component: {fileID: 2375652696458217420}
-  - component: {fileID: 1278004159}
   - component: {fileID: 466320068415017879}
   m_Layer: 0
   m_Name: Managers
@@ -124,34 +122,6 @@ MonoBehaviour:
   gameplayCM: {fileID: 0}
   playerUpgradeCM: {fileID: 0}
   boostCM: {fileID: 0}
---- !u!114 &2375652696458217420
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5491084403859615924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5b5cc6b2359e6748a29857ccb9e383c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  exampleQueue: {fileID: 0}
---- !u!114 &1278004159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5491084403859615924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41cf81f0689784af38f1e893f13c8c00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerCount: 10
-  boxContainerTransform: {fileID: 0}
-  borderBoxContainerTransform: {fileID: 0}
 --- !u!114 &466320068415017879
 MonoBehaviour:
   m_ObjectHideFlags: 0

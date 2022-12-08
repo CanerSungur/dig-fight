@@ -3,7 +3,7 @@ using ZestGames;
 
 namespace DigFight
 {
-    public class ExplosiveBox : MonoBehaviour, IHealth, IDamageable
+    public class ExplosiveBox : MonoBehaviour, IHealth, IDamageable, IBoxInteractable
     {
         [Header("-- SETUP --")]
         [SerializeField] private int hp = 1;
@@ -17,25 +17,16 @@ namespace DigFight
         public int CurrentHealth { get; set; }
         #endregion
 
+        #region INTERFACE FUNCTIONS
         public void Init(Layer layer)
         {
             _meshTransform = transform.GetChild(0);
             CurrentHealth = MaxHealth;
         }
-
-        private void AffectNearBoxes()
+        public void ChangeParent(Transform transform)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 2.5f);
-            foreach (Collider boxCollider in hitColliders)
-            {
-                if (boxCollider.TryGetComponent(out BreakableBox breakableBox))
-                {
-                    breakableBox.Explode();
-                }
-            }
+            this.transform.SetParent(transform);
         }
-
-        #region INTERFACE FUNCTIONS
         public void GetDamaged(int amount)
         {
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxEffect, transform.position + new Vector3(0f, 0f, -1f), Quaternion.identity);
@@ -66,6 +57,16 @@ namespace DigFight
             CameraManager.OnExplosiveHitShake?.Invoke();
         }
         #endregion
+
+        private void AffectNearBoxes()
+        {
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, 2.5f);
+            foreach (Collider boxCollider in hitColliders)
+            {
+                if (boxCollider.TryGetComponent(out BreakableBox breakableBox))
+                    breakableBox.Explode();
+            }
+        }
 
         #region PUBLICS
         public void AssignHitter(Player player)

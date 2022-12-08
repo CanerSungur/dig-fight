@@ -7,7 +7,7 @@ using ZestCore.Utility;
 
 namespace DigFight
 {
-    public class PushableBox : MonoBehaviour
+    public class PushableBox : MonoBehaviour, IBoxInteractable
     {
         private Layer _layer;
         private Player _player;
@@ -29,6 +29,7 @@ namespace DigFight
         public bool RightIsMiddleBox => _rightIsMiddleBox;
         public bool LeftIsBorderBox => _leftIsBorderBox;
 
+        #region INTERFACE FUNCTIONS
         public void Init(Layer layer)
         {
             if (_layer == null)
@@ -37,9 +38,15 @@ namespace DigFight
                 _meshTransform = transform.GetChild(0);
             }
 
+            _layer.AddPushableBox(this);
             _leftIsMiddleBox = _leftIsBorderBox = _rightIsMiddleBox = _rightIsBorderBox = false;
             Delayer.DoActionAfterDelay(this, .5f, CheckSurroundings);
         }
+        public void ChangeParent(Transform transform)
+        {
+            this.transform.SetParent(transform);
+        }
+        #endregion
 
         #region PUBLICS
         public void AssignPusher(Player player)
@@ -49,9 +56,9 @@ namespace DigFight
         public void GetPushed(Enums.BoxTriggerDirection pushDirection)
         {
             if (pushDirection == Enums.BoxTriggerDirection.Left)
-                _layer.PushableBoxHandler.PushBoxesLeft();
+                _layer.PushBoxesLeft();
             else if (pushDirection == Enums.BoxTriggerDirection.Right)
-                _layer.PushableBoxHandler.PushBoxesRight();
+                _layer.PushBoxesRight();
             else
             {
                 Debug.Log("Unknown push direction!");
@@ -59,7 +66,7 @@ namespace DigFight
             }
 
             AudioManager.PlayAudioLoop(Enums.AudioType.PushBox);
-            //CameraManager.OnBoxPushed?.Invoke();
+            CameraManager.OnBoxPushed?.Invoke();
         }
         public void StartMoveSequence(Enums.BoxTriggerDirection pushDirection)
         {
@@ -119,7 +126,8 @@ namespace DigFight
 
                 float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? -_layer.BoxGap : (_layer.BoxCount + 1) * 2 * _layer.BoxGap;
                 _leaveScreenSequence.Append(transform.DOLocalMoveX(targetPosX, MOVE_DURATION * 0.2f))
-                    .OnComplete(() => {
+                    .OnComplete(() =>
+                    {
                         CreateEnterScreenSequence(pushDirection);
                         _enterScreenSequence.Play();
                         DeleteLeaveScreenSequence();
@@ -146,7 +154,8 @@ namespace DigFight
                 transform.localPosition = new Vector3(lastJumpPosX, transform.localPosition.y, transform.localPosition.z);
                 _enterScreenSequence.Append(transform.DOLocalMoveX(targetPosX, MOVE_DURATION * 0.8f))
                     .Append(transform.DOShakeScale(1f, .25f))
-                    .OnComplete(() => {
+                    .OnComplete(() =>
+                    {
                         CheckSurroundings();
                         DeleteEnterScreenSequence();
                     });
@@ -188,7 +197,8 @@ namespace DigFight
                     .Join(transform.DOLocalRotate(rotation, 1f))
                     .Append(transform.DOShakeScale(1f, .25f))
                     .Join(transform.DOLocalRotate(Vector3.zero, 0.5f))
-                    .OnComplete(() => {
+                    .OnComplete(() =>
+                    {
                         CheckSurroundings();
                         DeleteMoveSequence();
                     });

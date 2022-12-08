@@ -22,7 +22,7 @@ namespace DigFight
                 _progressLine = GetComponentInChildren<ProgressLine>();
                 _progressLine.Init(this, true);
 
-                _lengthToLevelFinish = GAP_BETWEEN_LAYERS * BoxSpawnManager.LayerCount;
+                _lengthToLevelFinish = GAP_BETWEEN_LAYERS * LayerHandler.TotalLayerCount;
             }
         }
 

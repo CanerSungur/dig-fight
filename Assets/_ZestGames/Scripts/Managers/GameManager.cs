@@ -38,8 +38,8 @@ namespace ZestGames
             _uiManager.Init(this);
             _queueManager = GetComponent<QueueManager>();
             _queueManager.Init(this);
-            _boxSpawnManager = GetComponent<BoxSpawnManager>();
-            _boxSpawnManager.Init(this);
+            //_boxSpawnManager = GetComponent<BoxSpawnManager>();
+            //_boxSpawnManager.Init(this);
             _moneySpawnManager = GetComponent<MoneySpawnManager>();
             _moneySpawnManager.Init(this);
             _postProcessManager.Init(this);

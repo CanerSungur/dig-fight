@@ -13,7 +13,7 @@ namespace DigFight
 
         #region FIXED CANVAS POSITION
         private bool _isItPlayer = false;
-        private const float FIXED_X_POSITION_FOR_PLAYER = -2f;
+        private const float FIXED_X_POSITION_FOR_PLAYER = -1.39f;
         private const float FIXED_X_POSITION_FOR_AI = 11f;
         #endregion
 
@@ -73,7 +73,7 @@ namespace DigFight
         }
         private void UpdateRemainingBoxText()
         {
-            _remainingBoxesText.text = (BoxSpawnManager.LayerCount - _progressHandler.CurrentLayer).ToString();
+            _remainingBoxesText.text = (LayerHandler.TotalLayerCount - _progressHandler.CurrentLayer - 1).ToString();
         }
 
         #region DOTWEEN FUNCTIONS

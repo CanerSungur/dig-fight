@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 namespace DigFight
 {
-    public class BreakableBox : MonoBehaviour, IHealth, IDamageable
+    public class BreakableBox : MonoBehaviour, IHealth, IDamageable, IBoxInteractable
     {
         //[Header("-- SETUP --")]
         //[SerializeField] private ParticleSystem hitSmokePS;
@@ -48,6 +48,7 @@ namespace DigFight
         private const float SHAKE_DURATION = 0.5f;
         #endregion
 
+        #region INTERFACE FUNCTIONS
         public void Init(Layer layer)
         {
             CurrentHealth = MaxHealth;
@@ -65,8 +66,10 @@ namespace DigFight
             _crackHandler.Init(this);
             _debrisHandler.Init(this);
         }
-
-        #region INTERFACE FUNCTIONS
+        public void ChangeParent(Transform transform)
+        {
+            this.transform.SetParent(transform);
+        }
         public void GetDamaged(int amount)
         {
             CameraManager.OnBoxHitShake?.Invoke();
