@@ -5,6 +5,8 @@ namespace ZestGames
 {
     public class PlayerAudio : MonoBehaviour
     {
+        private Player _player;
+
         #region JETPACK
         private AudioSource _jetpackAudioSource;
         #endregion
@@ -29,9 +31,12 @@ namespace ZestGames
         {
             if (_jetpackAudioSource == null)
             {
+                _player = player;
                 _jetpackAudioSource = GetComponent<AudioSource>();
                 _jetpackAudioSource.loop = true;
                 _jetpackAudioSource.Stop();
+
+                AudioManager.Initalize();
             }
 
             _currentCollectPitch = _currentSpendPitch = 1f;
@@ -66,6 +71,9 @@ namespace ZestGames
         {
             CheckCollectMoneyPitch();
             CheckStackOreToCartPitch();
+
+            if (_player.PlayerMovement.IsMoving && _player.IsGrounded && !_player.IsPushing)
+                AudioManager.PlayAudio(Enums.AudioType.Testing_PlayerMove, 0.1f);
         }
 
         #region SPEND MONEY FUNCTIONS

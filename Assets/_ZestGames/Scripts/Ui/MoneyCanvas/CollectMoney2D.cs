@@ -64,7 +64,7 @@ namespace ZestGames
                 _collectSequence.Append(_rectTransform.DOAnchorPos(_rectTransform.anchoredPosition + new Vector2(Random.Range(-100f, 100f), Random.Range(100f, 200f)), 0.5f))
                     .Append(DOVirtual.Float(0f, 1f, 0.5f, r => { }))
                     .Append(_rectTransform.DOJumpAnchorPos(Hud.MoneyAnchoredPosition, Random.Range(-200, 200), 1, _collectDuration))
-                    .Join(_rectTransform.DOScale(Vector3.one * 0.8f, _collectDuration))
+                    .Join(_rectTransform.DOScale(Vector3.one, _collectDuration))
                     .Join(_rectTransform.DORotate(Vector3.zero, _collectDuration))
                     .OnComplete(() => {
                         AudioEvents.OnPlayCollectMoney?.Invoke();

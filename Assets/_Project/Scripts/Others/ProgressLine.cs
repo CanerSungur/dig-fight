@@ -1,88 +1,103 @@
 using UnityEngine;
+using TMPro;
 using DG.Tweening;
 using System;
-using TMPro;
 using ZestGames;
 
 namespace DigFight
 {
     public class ProgressLine : MonoBehaviour
     {
-        #region COMPONENTS
-        private ProgressManager _progressManager;
-        private CanvasGroup _canvasGroup;
-        private TextMeshProUGUI _maxDepthAchievedText;
+        //private Transform _targetTransform;
+        private ProgressHandler _progressHandler;
+
+        #region FIXED CANVAS POSITION
+        private bool _isItPlayer = false;
+        private const float FIXED_X_POSITION_FOR_PLAYER = -2f;
+        private const float FIXED_X_POSITION_FOR_AI = 11f;
         #endregion
 
-        #region INIT SEQUENCE
-        private Sequence _initSequence;
-        private Guid _initSequenceID;
-        private const float INIT_DURATION = 3f;
+        #region LINE TO TARGET
+        private LineRenderer _lineRenderer;
+        private const float LINE_RENDERER_OFFSET = 0.7f;
         #endregion
 
-        public void Init(ProgressManager progressManager)
+        #region TEXT OF REMAINING BOXES TO FINISH
+        private TextMeshProUGUI _remainingBoxesText;
+        #endregion
+
+        #region DISABLE SEQUENCE
+        private Sequence _disableSequence;
+        private Guid _disableSequenceID;
+        #endregion
+
+        public void Init(ProgressHandler progressHandler, bool isItPlayer)
         {
-            if (_progressManager == null)
+            if (_progressHandler == null)
             {
-                _progressManager = progressManager;
-                _canvasGroup = GetComponent<CanvasGroup>();
-                _maxDepthAchievedText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
+                _progressHandler = progressHandler;
+                _lineRenderer = GetComponentInChildren<LineRenderer>();
+                _remainingBoxesText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
             }
 
-            transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
+            _isItPlayer = isItPlayer;
 
-            if (_progressManager.MaxDepthAchieved == 0)
-                StopInitialize();
-            else
-                StartInitSequence();
-
-            GameEvents.OnGameEnd += HandleGameEnd;
+            GameEvents.OnGameEnd += StartDisableSequence;
         }
 
         private void OnDisable()
         {
-            if (_progressManager == null) return;
-            GameEvents.OnGameEnd -= HandleGameEnd;
+            if (_progressHandler == null) return;
+            GameEvents.OnGameEnd -= StartDisableSequence;
         }
 
-        private void StopInitialize() => _canvasGroup.alpha = 0f;
-        private void SetMaxDepthAchievedText() => _maxDepthAchievedText.text = _progressManager.MaxDepthAchieved.ToString("#.#") + " ft.";
-
-        #region EVENT HANDLER FUNCTIONS
-        private void HandleGameEnd(Enums.GameEnd gameEnd)
+        private void LateUpdate()
         {
-            StopInitialize();
+            FixPositionX();
+            SetLineRendererTargetPosition();
+            UpdateRemainingBoxText();
         }
-        #endregion
+
+        private void FixPositionX()
+        {
+            transform.position = _isItPlayer == true ?
+                new Vector3(FIXED_X_POSITION_FOR_PLAYER, transform.position.y, transform.position.z) :
+                new Vector3(FIXED_X_POSITION_FOR_AI, transform.position.y, transform.position.z);
+        }
+        private void SetLineRendererTargetPosition()
+        {
+            if (_progressHandler.transform.position.x > 0)
+                _lineRenderer.SetPosition(1, new Vector3(_progressHandler.transform.position.x + LINE_RENDERER_OFFSET, 0f, 0f));
+            else
+                _lineRenderer.SetPosition(1, Vector3.zero);
+        }
+        private void UpdateRemainingBoxText()
+        {
+            _remainingBoxesText.text = (BoxSpawnManager.LayerCount - _progressHandler.CurrentLayer).ToString();
+        }
 
         #region DOTWEEN FUNCTIONS
-        private void StartInitSequence()
+        private void StartDisableSequence(Enums.GameEnd ignoreThis)
         {
-            SetMaxDepthAchievedText();
-            CreateInitSequence();
-            _initSequence.Play();
+            CreateDisableSequence();
+            _disableSequence.Play();
         }
-        private void CreateInitSequence()
+        private void CreateDisableSequence()
         {
-            if (_initSequence == null)
+            if (_disableSequence == null)
             {
-                _initSequence = DOTween.Sequence();
-                _initSequenceID = Guid.NewGuid();
-                _initSequence.id = _initSequenceID;
+                _disableSequence = DOTween.Sequence();
+                _disableSequenceID = Guid.NewGuid();
+                _disableSequence.id = _disableSequenceID;
 
-                _initSequence.Append(DOVirtual.Float(0f, 1f, 1f, r => { _canvasGroup.alpha = r; }))
-                    .Join(transform.DOShakeScale(1f, 0.005f))
-                    .Join(transform.DOLocalMoveY(-_progressManager.MaxDepthAchieved, INIT_DURATION))
-                    .OnComplete(() => {
-                        _canvasGroup.alpha = 1f;
-                        DeleteInitSequence();
-                    });
+                _disableSequence.Append(transform.DOScale(Vector3.zero, 1f)).SetEase(Ease.InBounce)
+                    .OnComplete(DeleteDisableSequence);
             }
         }
-        private void DeleteInitSequence()
+        private void DeleteDisableSequence()
         {
-            DOTween.Kill(_initSequenceID);
-            _initSequence = null;
+            DOTween.Kill(_disableSequenceID);
+            _disableSequence = null;
         }
         #endregion
     }

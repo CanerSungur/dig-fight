@@ -9,6 +9,16 @@ namespace DigFight
 {
     public class PickaxeDurabilityBar : MonoBehaviour
     {
+        public enum SequenceType
+        {
+            Shake,
+            Enable,
+            Disable,
+            GetDamaged,
+            GetRepaired,
+            FillRemainingDurability
+        }
+
         private PickaxeDurabilityHandler _durabilityHandler;
 
         [Header("-- COLOR SETUP --")]
@@ -16,14 +26,15 @@ namespace DigFight
         [SerializeField] private Color _defaultColor;
         [SerializeField] private Color _damageFlashColor;
         [SerializeField] private Color _healFlashColor;
+        [SerializeField] private Color _healColor;
         [SerializeField] private ParticleSystem _glowPS;
 
         private Image _remainingDurabilityImage, _changedDurabilityImage;
         private Animation _pickaxeEnableAnim;
 
         #region SEQUENCE
-        private Sequence _shakeSequence, _getDamagedSequence, _disableSequence, _enableSequence;
-        private Guid _shakeSequenceID, _getDamagedSequenceID, _disableSequenceID, _enableSequenceID;
+        private Sequence _shakeSequence, _getDamagedSequence, _disableSequence, _enableSequence, _getRepairedSequence, _fillRemainingDurabilitySequence;
+        private Guid _shakeSequenceID, _getDamagedSequenceID, _disableSequenceID, _enableSequenceID, _getRepairedSequenceID, _fillRemainingDurabilitySequenceID;
 
         private const float FADE_DURATION = 1.5f;
         private const float DAMAGED_COLOR_CHANGE_DURATION = 1f;
@@ -78,10 +89,54 @@ namespace DigFight
 
             _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();
         }
+        public void GetRepaired()
+        {
+            _changedDurabilityImage.fillAmount = GetDurabilityNormalized();
+
+            StartShakeSequence();
+            StartGetRepairedSequence();
+        }
         public void ResetBar() => _changedDurabilityImage.fillAmount = _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();
         #endregion
 
         #region DOTWEEN FUNCTIONS
+
+        #region GET REPAIRED
+        private void StartGetRepairedSequence()
+        {
+            DeleteGetRepairedSequence();
+            CreateGetRepairedSequence();
+            _getRepairedSequence.Play();
+        }
+        private void CreateGetRepairedSequence()
+        {
+            if (_getRepairedSequence == null)
+            {
+                _getRepairedSequence = DOTween.Sequence();
+                _getRepairedSequenceID = Guid.NewGuid();
+                _getRepairedSequence.id = _getRepairedSequenceID;
+
+                _getRepairedSequence.Append(DOVirtual.Color(_defaultColor, _healFlashColor, FLASH_COLOR_CHANGE_DURATION, r =>
+                {
+                    _changedDurabilityImage.color = r;
+                }))
+                    .Append(DOVirtual.Float(_remainingDurabilityImage.fillAmount, _changedDurabilityImage.fillAmount, FADE_DURATION, r =>
+                    {
+                        _remainingDurabilityImage.fillAmount = r;
+                    }))
+                    .OnComplete(() => {
+                        DeleteGetRepairedSequence();
+                    });
+            }
+        }
+        private void DeleteGetRepairedSequence()
+        {
+            DOTween.Kill(_getRepairedSequenceID);
+            _getRepairedSequence = null;
+        }
+        #endregion
+
+        #region ENABLE
         private void StartEnableSequence()
         {
             DeleteEnableSequence();
@@ -97,8 +152,8 @@ namespace DigFight
                 _enableSequence.id = _enableSequence;
 
                 _enableSequence.Append(DOVirtual.Vector3(Vector3.zero, Vector3.one, TOGGLE_DURATION, r => {
-                        transform.localScale = r;
-                    }))
+                    transform.localScale = r;
+                }))
                     .Append(transform.DOShakeScale(0.5f, 0.5f, 3, 50f))
                         .OnComplete(() =>
                         {
@@ -114,7 +169,9 @@ namespace DigFight
             DOTween.Kill(_enableSequenceID);
             _enableSequence = null;
         }
-        // ##############################
+        #endregion
+
+        #region DISABLE
         private void StartDisableSequence()
         {
             DeleteDisableSequence();
@@ -132,9 +189,9 @@ namespace DigFight
                 _glowPS.Stop();
                 _disableSequence.Append(transform.DOShakeScale(0.5f, 0.5f, 3, 50f))
                     .Append(DOVirtual.Vector3(Vector3.one, Vector3.zero, TOGGLE_DURATION, r => {
-                    transform.localScale = r;
-                }))
-                        
+                        transform.localScale = r;
+                    }))
+
                         .OnComplete(() =>
                         {
                             transform.localScale = Vector3.zero;
@@ -147,7 +204,9 @@ namespace DigFight
             DOTween.Kill(_disableSequenceID);
             _disableSequence = null;
         }
-        // ##############################
+        #endregion
+
+        #region SHAKE
         private void StartShakeSequence()
         {
             DeleteShakeSequence();
@@ -163,7 +222,10 @@ namespace DigFight
                 _shakeSequence.id = _shakeSequenceID;
 
                 _shakeSequence.Append(transform.DOShakeRotation(1f, 20f, 5, 50))
-                    .OnComplete(DeleteShakeSequence);
+                    .OnComplete(() => {
+                        transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        DeleteShakeSequence();
+                    });
             }
         }
         private void DeleteShakeSequence()
@@ -171,7 +233,9 @@ namespace DigFight
             DOTween.Kill(_shakeSequenceID);
             _shakeSequence = null;
         }
-        // ##############################
+        #endregion
+
+        #region GET DAMAGED
         private void StartGetDamagedSequence()
         {
             DeleteGetDamagedSequence();
@@ -212,6 +276,8 @@ namespace DigFight
             DOTween.Kill(_getDamagedSequenceID);
             _getDamagedSequence = null;
         }
+        #endregion
+
         #endregion
     }
 }

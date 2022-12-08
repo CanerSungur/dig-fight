@@ -36,6 +36,10 @@ namespace ZestGames
 
                 AudioSource audioSource = audioGameObject.AddComponent<AudioSource>();
                 audioSource.clip = GetAudioClip(audioType);
+                audioSource.maxDistance = 100f;
+                audioSource.spatialBlend = 1f;
+                audioSource.rolloffMode = AudioRolloffMode.Linear;
+                audioSource.dopplerLevel = 0f;
                 audioSource.Play();
 
                 Object.Destroy(audioGameObject, audioSource.clip.length);// Destroy when clip is finished
@@ -95,7 +99,7 @@ namespace ZestGames
                     if (audioTimerDictionary.ContainsKey(audioType))
                     {
                         float lastTimePlayed = audioTimerDictionary[audioType];
-                        float playerMoveTimerMax = .15f;
+                        float playerMoveTimerMax = .37f;
                         if (lastTimePlayed + playerMoveTimerMax < Time.time)
                         {
                             audioTimerDictionary[audioType] = Time.time;

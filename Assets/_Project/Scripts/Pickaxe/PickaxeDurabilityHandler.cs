@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using ZestGames;
 
@@ -29,12 +30,14 @@ namespace DigFight
             _durabilityBar.Init(this);
 
             PlayerEvents.OnSetCurrentPickaxeDurability += UpdateDurability;
+            PlayerEvents.OnTakePickaxeDurability += HandleDurabilityPickup;
         }
 
         private void OnDisable()
         {
             if (_pickaxe == null) return;
             PlayerEvents.OnSetCurrentPickaxeDurability -= UpdateDurability;
+            PlayerEvents.OnTakePickaxeDurability -= HandleDurabilityPickup;
         }
 
         #region PUBLICS
@@ -58,6 +61,14 @@ namespace DigFight
             _maxDurability = DataManager.PickaxeDurability;
             _currentDurability = _maxDurability;
             _durabilityBar.ResetBar();
+        }
+        private void HandleDurabilityPickup(int amount)
+        {
+            _currentDurability += amount;
+            if (_currentDurability > _maxDurability)
+                _currentDurability = _maxDurability;
+
+            _durabilityBar.GetRepaired();
         }
     }
 }

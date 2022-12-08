@@ -39,6 +39,8 @@ namespace ZestGames
         public PlayerDigHandler DigHandler => _digHandler == null ? _digHandler = GetComponent<PlayerDigHandler>() : _digHandler;
         private PlayerPushHandler _pushHandler;
         public PlayerPushHandler PushHandler => _pushHandler == null ? _pushHandler = GetComponent<PlayerPushHandler>() : _pushHandler;
+        private ProgressHandler _progressHandler;
+        public ProgressHandler ProgressHandler => _progressHandler == null ? _progressHandler = GetComponent<ProgressHandler>() : _progressHandler;
         #endregion
 
         #region PROPERTIES
@@ -79,6 +81,7 @@ namespace ZestGames
             RotationHandler.Init(this);
             DigHandler.Init(this);
             PushHandler.Init(this);
+            ProgressHandler.Init(this);
 
             PlayerUpgradeEvents.OnOpenCanvas += HandleUpgradeStart;
             PlayerUpgradeEvents.OnCloseCanvas += HandleUpgradeEnd;

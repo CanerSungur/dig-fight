@@ -19,6 +19,8 @@ namespace ZestGames
         public static Action OnEmptyNextInQueue, OnStopSpendingMoney;
         public static Action OnRotateLeft, OnRotateRight, OnResetRotation;
         public static Action OnStartDigging, OnStopDigging, OnStagger, OnStartPushing, OnStopPushing;
+        public static Action<int> OnTakePickaxeDurability;
+        public static Action<float> OnTakePickaxeSpeed;
     }
 
     public static class PlayerUpgradeEvents

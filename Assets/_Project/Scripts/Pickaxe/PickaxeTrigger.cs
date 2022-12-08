@@ -36,6 +36,11 @@ namespace DigFight
                 _pickaxe.DurabilityHandler.GetDamaged();
                 PickaxeEvents.OnCannotHit?.Invoke();
             }
+
+            if (other.TryGetComponent(out Chest chest) && !chest.Triggered && _pickaxe.Player.IsDigging && _pickaxe.CanHit)
+            {
+                chest.GiveBoost();
+            }
         }
     }
 }

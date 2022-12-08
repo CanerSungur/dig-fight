@@ -10,6 +10,7 @@ namespace ZestGames
         [SerializeField] private CinemachineVirtualCamera gameStartCM;
         [SerializeField] private CinemachineVirtualCamera gameplayCM;
         [SerializeField] private CinemachineVirtualCamera playerUpgradeCM;
+        [SerializeField] private CinemachineVirtualCamera boostCM;
         private CinemachineTransposer _gameplayCMTransposer;
 
         [Header("-- SHAKE SETUP --")]
@@ -22,11 +23,15 @@ namespace ZestGames
         private float _pushBackDuration = 2f;
         private float _pushBackTimer;
 
+        private bool _zoomIn = false;
+        private float _zoomInDuration = 2f;
+        private float _zoomInTimer;
+
         private const float BOX_HIT_AMPLITUDE = 0.5f;
         private const float BOX_BREAK_AMPLITUDE = 0.75f;
         private const float EXPLOSIVE_HIT_AMPLITUDE = 2f;
 
-        public static Action OnBoxHitShake, OnBoxBreakShake, OnExplosiveHitShake, OnBoxPushed;
+        public static Action OnBoxHitShake, OnBoxBreakShake, OnExplosiveHitShake, OnBoxPushed, OnBoostPickedUp;
 
         private void Awake()
         {
@@ -35,10 +40,12 @@ namespace ZestGames
             _gameplayCMBasicPerlin.m_AmplitudeGain = 0f;
             _shakeTimer = _shakeDuration;
             _pushBackTimer = _pushBackDuration;
+            _zoomInTimer = _zoomInDuration;
 
             gameStartCM.Priority = 2;
             gameplayCM.Priority = 1;
             playerUpgradeCM.Priority = 0;
+            boostCM.Priority = 0;
         }
 
         private void Start()
@@ -95,6 +102,18 @@ namespace ZestGames
                     gameStartCM.Priority = 2;
                 }
             }
+
+            if (_zoomIn)
+            {
+                _zoomInTimer -= Time.deltaTime;
+                if (_zoomInTimer < 0)
+                {
+                    _zoomIn = false;
+                    _zoomInTimer = _zoomInDuration;
+
+                    boostCM.Priority = 0;
+                }
+            }
         }
         #region EVENT HANDLER FUNCTIONS
         private void BoxHitShake()
@@ -117,6 +136,11 @@ namespace ZestGames
         {
             gameStartCM.Priority = 5;
             _pushBackCamera = true;
+        }
+        private void ZoomInForAWhile()
+        {
+            boostCM.Priority = 6;
+            _zoomIn = true;
         }
         #endregion
     }

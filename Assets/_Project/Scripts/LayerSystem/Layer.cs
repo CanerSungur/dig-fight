@@ -2,7 +2,6 @@ using UnityEngine;
 using ZestGames;
 using Random = UnityEngine.Random;
 using ZestCore.Utility;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace DigFight
 {
@@ -22,9 +21,11 @@ namespace DigFight
         #endregion
 
         #region SPAWN DATA
+        private Enums.LayerType _layerType;
         private int _layerNumber;
         public readonly float BoxGap = 2.25f;
         public readonly int BoxCount = 5;
+        private int _randomChestSpawnIndex;
         #endregion
 
         #region PROPERTIES
@@ -36,11 +37,12 @@ namespace DigFight
         public bool LastLayer { get; private set; }
         #endregion
 
-        public void Init(BoxSpawnManager boxSpawnManager, int number, int totalLayerCount, bool setLayerForPushable)
+        public void Init(BoxSpawnManager boxSpawnManager, int number, int totalLayerCount, Enums.LayerType layerType)
         {
             if (_boxSpawnManager == null)
                 _boxSpawnManager = boxSpawnManager;
 
+            _layerType = layerType;
             _layerNumber = number;
             FirstLayer = number == 0;
             LastLayer = number == totalLayerCount - 1;
@@ -53,23 +55,35 @@ namespace DigFight
             ExplosiveBoxHandler.Init(this);
             PushableBoxHandler.Init(this);
 
-            if (setLayerForPushable)
+            DecideLayerTypeSpawn();
+            SpawnMiddleBoxes(BorderBoxHandler.TopOffset, BorderBoxHandler.BottomOffset);
+        }
+
+        #region HELPERS
+        private void SetParentAsBorderBoxContainer(Transform borderBoxTransform) => borderBoxTransform.SetParent(_boxSpawnManager.BorderBoxContainerTransform);
+        private void DecideLayerTypeSpawn()
+        {
+            if (_layerType == Enums.LayerType.Pushable)
             {
                 // spawn pushable layer
                 PushableBoxHandler.SpawnPushableBoxesForPlayerSide(this);
                 PushableBoxHandler.SpawnPushableBoxesForAiSide(this);
+            }
+            else if (_layerType == Enums.LayerType.DurabilityChest || _layerType == Enums.LayerType.SpeedChest)
+            {
+                _randomChestSpawnIndex = Random.Range(1, BoxCount - 1); // We exclude first and last index
+                SpawnPlayerSideBoxes();
+                SpawnAiSideBoxes();
             }
             else
             {
                 SpawnPlayerSideBoxes();
                 SpawnAiSideBoxes();
             }
-            
-            SpawnMiddleBoxes(BorderBoxHandler.TopOffset, BorderBoxHandler.BottomOffset);
         }
+        #endregion
 
-        private void SetParentAsBorderBoxContainer(Transform borderBoxTransform) => borderBoxTransform.SetParent(_boxSpawnManager.BorderBoxContainerTransform);
-
+        #region SPAWN FUNCTIONS
         private void SpawnPlayerSideBoxes()
         {
             for (int j = 0; j < BoxCount; j++)
@@ -93,7 +107,14 @@ namespace DigFight
                     if (PlayerSideCanHasExplosive)
                         ExplosiveBoxHandler.SpawnExplosiveBoxForPlayerSide(out boxTransform);
                     else
-                        boxTransform = BreakableBoxHandler.GetRandomBreakableBox();
+                    {
+                        if (j == _randomChestSpawnIndex && _layerType == Enums.LayerType.DurabilityChest)
+                            boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.ChestPickaxeDurability], transform).transform;
+                        else if (j == _randomChestSpawnIndex && _layerType == Enums.LayerType.SpeedChest)
+                            boxTransform = Instantiate(_boxSpawnManager.PrefabDictionary[Enums.PrefabStamp.ChestPickaxeSpeed], transform).transform;
+                        else
+                            boxTransform = BreakableBoxHandler.GetRandomBreakableBox();
+                    }
 
                     if (boxTransform.TryGetComponent(out BreakableBox breakableBox))
                         breakableBox.Init(this);
@@ -102,8 +123,6 @@ namespace DigFight
 
                     boxTransform.localPosition = new Vector3(j * BoxGap, 0f, 0f);
                 }
-
-                //boxTransform.localPosition = new Vector3(j * BoxGap, 0f, 0f);
 
                 BorderBoxHandler.SpawnTopBorder(j);
                 BorderBoxHandler.SpawnBottomBorder(j);
@@ -181,5 +200,6 @@ namespace DigFight
                 SetParentAsBorderBoxContainer(borderBoxTransform);
             }
         }
+        #endregion
     }
 }

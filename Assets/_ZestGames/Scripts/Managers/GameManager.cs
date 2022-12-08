@@ -17,7 +17,7 @@ namespace ZestGames
         private QueueManager _queueManager;
         private BoxSpawnManager _boxSpawnManager;
         private MoneySpawnManager _moneySpawnManager;
-        private ProgressManager _progressManager;
+        [SerializeField] private PostProcessManager _postProcessManager;
 
         #region PROPERTIES
         public BoxSpawnManager BoxSpawnManager => _boxSpawnManager;
@@ -42,11 +42,12 @@ namespace ZestGames
             _boxSpawnManager.Init(this);
             _moneySpawnManager = GetComponent<MoneySpawnManager>();
             _moneySpawnManager.Init(this);
-            _progressManager = GetComponent<ProgressManager>();
-            _progressManager.Init(this);
+            _postProcessManager.Init(this);
 
             UiEvents.OnUpdateCollectableText?.Invoke(DataManager.TotalMoney);
             UiEvents.OnUpdateLevelText?.Invoke(LevelHandler.Level);
+
+            _postProcessManager.EnableBlur(this);
         }
 
         private void Awake()
@@ -71,6 +72,7 @@ namespace ZestGames
         private void HandleGameStart()
         {
             GameState = Enums.GameState.Started;
+            _postProcessManager.DisableBlur(this);
         }
 
         private void HandleGameEnd(Enums.GameEnd gameEnd)

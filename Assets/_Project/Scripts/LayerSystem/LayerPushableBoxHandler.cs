@@ -34,11 +34,6 @@ namespace DigFight
                     pushableBox.transform.localPosition = new Vector3(j * layer.BoxGap, 0f, 0f);
                     AddPushableBox(pushableBox);
 
-                    //if (j == 0) pushableBox.SetBoxAsFirst();
-                    //else if (randomGapIndex == layer.BoxCount - 1 && j == layer.BoxCount - 2) pushableBox.SetBoxAsLast();
-                    //else if (randomGapIndex < layer.BoxCount - 1 && j == layer.BoxCount - 1) pushableBox.SetBoxAsLast();
-                    //else pushableBox.SetBoxAsFirst();
-
                     layer.BorderBoxHandler.SpawnTopBorder(j);
                     layer.BorderBoxHandler.SpawnBottomBorder(j);
                     layer.BorderBoxHandler.SpawnLeftBorder(j);
@@ -59,8 +54,6 @@ namespace DigFight
                     pushableBox.Init(layer);
                     pushableBox.transform.localPosition = new Vector3(((j + 1) + layer.BoxCount) * layer.BoxGap, 0f, 0f);
                     AddPushableBox(pushableBox);
-
-                    //if (j == layer.BoxCount - 1) pushableBox.SetBoxAsLast();
 
                     layer.BorderBoxHandler.SpawnTopBorder((j + 1) + layer.BoxCount);
                     layer.BorderBoxHandler.SpawnBottomBorder((j + 1) + layer.BoxCount);

@@ -15,6 +15,5 @@ namespace ZestCore.Utility
                 .Select(guid => AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guid)))
                 .ToList();
         }
-
     }
 }

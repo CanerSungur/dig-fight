@@ -10,7 +10,7 @@ namespace DigFight
 
         #region LINE VISUAL
         [Header("-- LINE SETUP --")]
-        [SerializeField] private ProgressLine _progressLine;
+        [SerializeField] private ProgressLineMax _progressLineMax;
         #endregion
 
         #region DEPTH DATA RELATED
@@ -33,7 +33,7 @@ namespace DigFight
 
             Load();
 
-            _progressLine.Init(this);
+            _progressLineMax.Init(this);
         }
 
         private void OnDisable()
