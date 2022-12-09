@@ -10,7 +10,7 @@ namespace DigFight
         private PushableBox _currentPushedBox = null;
 
         private float _delayedTime;
-        private const float PUSH_DELAY = 0f;
+        private const float PUSH_DELAY = 0.5f;
 
         #region PROPERTIES
         public Enums.BoxTriggerDirection CurrentBoxTriggerDirection => _currentBoxTriggerDirection;

@@ -12,7 +12,7 @@ namespace DigFight
         [SerializeField] private Pickaxe pickaxe;
 
         private bool _notDiggingForAWhile = false;
-        private const float NOT_DIGGING_FOR_A_WHILE_TIME = 5f;
+        private const float NOT_DIGGING_FOR_A_WHILE_TIME = 10f;
         private float _notDiggingTimer;
 
         #region DIGGING DELAY

@@ -124,7 +124,7 @@ namespace DigFight
                 _leaveScreenSequenceID = Guid.NewGuid();
                 _leaveScreenSequence.id = _leaveScreenSequenceID;
 
-                float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? -_layer.BoxGap : (_layer.BoxCount + 1) * 2 * _layer.BoxGap;
+                float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? -_layer.BoxGap : (_layer.BoxCount) * 2 * _layer.BoxGap;
                 _leaveScreenSequence.Append(transform.DOLocalMoveX(targetPosX, MOVE_DURATION * 0.2f))
                     .Join(_meshTransform.DOScale(Vector3.zero, MOVE_DURATION * 0.2f))
                     .OnComplete(() =>
@@ -150,7 +150,7 @@ namespace DigFight
                 _enterScreenSequence.id = _enterScreenSequenceID;
 
                 float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? _layer.BoxCount * 2 * _layer.BoxGap : 0;
-                float lastJumpPosX = pushDirection == Enums.BoxTriggerDirection.Left ? (_layer.BoxCount + 1) * 2 * _layer.BoxGap : -_layer.BoxGap;
+                float lastJumpPosX = pushDirection == Enums.BoxTriggerDirection.Left ? (_layer.BoxCount) * 2 * _layer.BoxGap : -_layer.BoxGap;
 
                 transform.localPosition = new Vector3(lastJumpPosX, transform.localPosition.y, transform.localPosition.z);
                 _enterScreenSequence.Append(transform.DOLocalMoveX(targetPosX, MOVE_DURATION * 0.8f)).Join(_meshTransform.DOScale(Vector3.one, MOVE_DURATION * 0.8f))

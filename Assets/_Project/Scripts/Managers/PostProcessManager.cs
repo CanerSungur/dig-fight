@@ -13,7 +13,7 @@ namespace DigFight
         private DepthOfField _depthOfField;
 
         private const float MIN_FOCAL_LENGTH = 1f;
-        private const float MAX_FOCAL_LENGTH = 300f;
+        private const float MAX_FOCAL_LENGTH = 140f;
         private const float DEPTH_SEQUENCE_DURATION = 2f;
 
         #region SEQUENCE

@@ -23,8 +23,8 @@ namespace DigFight
 
         private Color _currentColor = new Color(1f, 1f, 1f, 0f);
         private const float CRACK_MATERIAL_CHANGE_DURATION = 1f;
-        private const float MIN_OFFSET = -0.1f;
-        private const float MAX_OFFSET = 0.1f;
+        private const float MIN_OFFSET = -0.05f;
+        private const float MAX_OFFSET = 0.05f;
         #endregion
 
         public void Init(BreakableBox breakableBox)
