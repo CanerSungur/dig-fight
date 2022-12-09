@@ -87,6 +87,7 @@ namespace ZestGames
         {
             if (oneShotAudioSource != null && oneShotAudioSource.isPlaying) oneShotAudioSource.Stop();
         }
+        public static bool IsAudioPlaying() => oneShotAudioSource != null && oneShotAudioSource.isPlaying;
 
         // Add delayed audios here.
         private static bool CanPlayAudio(Enums.AudioType audioType)

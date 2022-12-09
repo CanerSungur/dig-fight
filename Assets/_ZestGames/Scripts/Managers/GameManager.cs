@@ -14,13 +14,13 @@ namespace ZestGames
         private LevelManager _levelManager;
         private SettingsManager _settingsManager;
         private DataManager _dataManager;
-        private QueueManager _queueManager;
-        private BoxSpawnManager _boxSpawnManager;
+        //private QueueManager _queueManager;
+        //private BoxSpawnManager _boxSpawnManager;
         private MoneySpawnManager _moneySpawnManager;
         [SerializeField] private PostProcessManager _postProcessManager;
 
         #region PROPERTIES
-        public BoxSpawnManager BoxSpawnManager => _boxSpawnManager;
+        //public BoxSpawnManager BoxSpawnManager => _boxSpawnManager;
         #endregion
 
         private void Init()
@@ -36,8 +36,8 @@ namespace ZestGames
             _settingsManager.Init(this);
             _uiManager = GetComponent<UiManager>();
             _uiManager.Init(this);
-            _queueManager = GetComponent<QueueManager>();
-            _queueManager.Init(this);
+            //_queueManager = GetComponent<QueueManager>();
+            //_queueManager.Init(this);
             //_boxSpawnManager = GetComponent<BoxSpawnManager>();
             //_boxSpawnManager.Init(this);
             _moneySpawnManager = GetComponent<MoneySpawnManager>();

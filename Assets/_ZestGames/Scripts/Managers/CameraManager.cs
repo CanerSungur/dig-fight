@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 using System;
+using DG.Tweening;
 
 namespace ZestGames
 {
@@ -19,19 +20,34 @@ namespace ZestGames
         private float _shakeDuration = 0.5f;
         private float _shakeTimer;
 
-        private bool _pushBackCamera = false;
-        private float _pushBackDuration = 2f;
+        #region CAMERA FOV SECTION
+        private bool _pushBackCameraForAWhile = false;
         private float _pushBackTimer;
+        private float _currentFOV, _currentFollowOffsetX;
 
-        private bool _zoomIn = false;
-        private float _zoomInDuration = 2f;
-        private float _zoomInTimer;
+        private const float DEFAULT_FOV = 60f;
+        private const float PUSHED_BACK_FOV = 80f;
+        private const float PUSHED_BACK_DURATION = 3f;
 
+        private const float DEFAULT_FOLLOW_OFFSET_X = 0f;
+        private const float PUSHED_BACK_FOLLOW_OFFSET_X = 3f;
+        #endregion
+
+        #region CAMERA SHAKE SECTION
         private const float BOX_HIT_AMPLITUDE = 0.5f;
         private const float BOX_BREAK_AMPLITUDE = 0.75f;
         private const float EXPLOSIVE_HIT_AMPLITUDE = 2f;
+        #endregion
 
-        public static Action OnBoxHitShake, OnBoxBreakShake, OnExplosiveHitShake, OnBoxPushed, OnBoostPickedUp;
+        #region EVENTS
+        public static Action OnBoxHitShake, OnBoxBreakShake, OnExplosiveHitShake, OnPushBackCameraForAWhile, OnPushBackCamera, OnPushInCamera;
+        #endregion
+
+        #region SEQUENCE
+        private Sequence _pushBackSequence, _pushInSequence;
+        private Guid _pushBackSequenceID, _pushInSequenceID;
+        private const float PUSHING_DURATION = 6f;
+        #endregion
 
         private void Awake()
         {
@@ -39,8 +55,10 @@ namespace ZestGames
             _gameplayCMBasicPerlin = gameplayCM.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
             _gameplayCMBasicPerlin.m_AmplitudeGain = 0f;
             _shakeTimer = _shakeDuration;
-            _pushBackTimer = _pushBackDuration;
-            _zoomInTimer = _zoomInDuration;
+            _currentFollowOffsetX = DEFAULT_FOLLOW_OFFSET_X;
+            _currentFOV = DEFAULT_FOV;
+            gameplayCM.m_Lens.FieldOfView = _currentFOV;
+            _gameplayCMTransposer.m_FollowOffset.x = _currentFollowOffsetX;
 
             gameStartCM.Priority = 2;
             gameplayCM.Priority = 1;
@@ -56,7 +74,9 @@ namespace ZestGames
             OnBoxHitShake += BoxHitShake;
             OnBoxBreakShake += BoxBreakShake;
             OnExplosiveHitShake += ExplosiveHitShake;
-            OnBoxPushed += PushBackCamera;
+            OnPushBackCameraForAWhile += PushBackCameraForAWhile;
+            OnPushBackCamera += StartPushBackSequence;
+            OnPushInCamera += StartPushInSequence;
         }
 
         private void OnDisable()
@@ -67,7 +87,9 @@ namespace ZestGames
             OnBoxHitShake -= BoxHitShake;
             OnBoxBreakShake -= BoxBreakShake;
             OnExplosiveHitShake -= ExplosiveHitShake;
-            OnBoxPushed -= PushBackCamera;
+            OnPushBackCameraForAWhile -= PushBackCameraForAWhile;
+            OnPushBackCamera -= StartPushBackSequence;
+            OnPushInCamera -= StartPushInSequence;
         }
 
         private void Update()
@@ -91,27 +113,15 @@ namespace ZestGames
                 }
             }
 
-            if (_pushBackCamera)
+            if (_pushBackCameraForAWhile)
             {
                 _pushBackTimer -= Time.deltaTime;
                 if (_pushBackTimer < 0)
                 {
-                    _pushBackCamera = false;
-                    _pushBackTimer = _pushBackDuration;
+                    _pushBackCameraForAWhile = false;
+                    _pushBackTimer = PUSHED_BACK_DURATION;
 
-                    gameStartCM.Priority = 2;
-                }
-            }
-
-            if (_zoomIn)
-            {
-                _zoomInTimer -= Time.deltaTime;
-                if (_zoomInTimer < 0)
-                {
-                    _zoomIn = false;
-                    _zoomInTimer = _zoomInDuration;
-
-                    boostCM.Priority = 0;
+                    StartPushInSequence();
                 }
             }
         }
@@ -132,15 +142,83 @@ namespace ZestGames
             _gameplayCMBasicPerlin.m_AmplitudeGain = EXPLOSIVE_HIT_AMPLITUDE;
             _shakeTimer = _shakeDuration * 2f;
         }
-        private void PushBackCamera()
+        private void PushBackCameraForAWhile()
         {
-            gameStartCM.Priority = 5;
-            _pushBackCamera = true;
+            StartPushBackSequence();
+            _pushBackTimer = PUSHED_BACK_DURATION;
+            _pushBackCameraForAWhile = true;
         }
-        private void ZoomInForAWhile()
+        private void StartPushBackSequence()
         {
-            boostCM.Priority = 6;
-            _zoomIn = true;
+            DeletePushInSequence();
+            CreatePushBackSequence();
+            _pushBackSequence.Play();
+        }
+        private void StartPushInSequence()
+        {
+            DeletePushBackSequence();
+            CreatePushInSequence();
+            _pushInSequence.Play();
+        }
+        #endregion
+
+        #region DOTWEEN FUNCTIONS
+        private void CreatePushBackSequence()
+        {
+            if (_pushBackSequence == null)
+            {
+                _pushBackSequence = DOTween.Sequence();
+                _pushBackSequenceID = Guid.NewGuid();
+                _pushBackSequence.id = _pushBackSequenceID;
+
+                _pushBackSequence.Append(DOVirtual.Float(_currentFOV, PUSHED_BACK_FOV, PUSHING_DURATION, r => {
+                    _currentFOV = r;
+                    gameplayCM.m_Lens.FieldOfView = _currentFOV;
+                }))
+                    .Join(DOVirtual.Float(_currentFollowOffsetX, PUSHED_BACK_FOLLOW_OFFSET_X, PUSHING_DURATION, r => {
+                        _currentFollowOffsetX = r;
+                        _gameplayCMTransposer.m_FollowOffset.x = _currentFollowOffsetX;
+                    }))
+                    .OnComplete(() => {
+                        _gameplayCMTransposer.m_FollowOffset.x = PUSHED_BACK_FOLLOW_OFFSET_X;
+                        gameplayCM.m_Lens.FieldOfView = PUSHED_BACK_FOV;
+                        DeletePushBackSequence();
+                    });
+            }
+        }
+        private void DeletePushBackSequence()
+        {
+            DOTween.Kill(_pushBackSequenceID);
+            _pushBackSequence = null;
+        }
+        // #################
+        private void CreatePushInSequence()
+        {
+            if (_pushInSequence == null)
+            {
+                _pushInSequence = DOTween.Sequence();
+                _pushInSequenceID = Guid.NewGuid();
+                _pushInSequence.id = _pushInSequenceID;
+
+                _pushInSequence.Append(DOVirtual.Float(_currentFOV, DEFAULT_FOV, PUSHING_DURATION * 0.5f, r => {
+                    _currentFOV = r;
+                    gameplayCM.m_Lens.FieldOfView = _currentFOV;
+                }))
+                    .Join(DOVirtual.Float(_currentFollowOffsetX, DEFAULT_FOLLOW_OFFSET_X, PUSHING_DURATION * 0.5f, r => {
+                        _currentFollowOffsetX = r;
+                        _gameplayCMTransposer.m_FollowOffset.x = _currentFollowOffsetX;
+                    }))
+                    .OnComplete(() => {
+                        _gameplayCMTransposer.m_FollowOffset.x = DEFAULT_FOLLOW_OFFSET_X;
+                        gameplayCM.m_Lens.FieldOfView = DEFAULT_FOV;
+                        DeletePushBackSequence();
+                    });
+            }
+        }
+        private void DeletePushInSequence()
+        {
+            DOTween.Kill(_pushInSequenceID);
+            _pushInSequence = null;
         }
         #endregion
     }

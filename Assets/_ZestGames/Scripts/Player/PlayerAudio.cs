@@ -103,7 +103,9 @@ namespace ZestGames
         #region COLLECT MONEY FUNCTIONS
         private void HandleCollectMoney()
         {
-            AudioManager.PlayAudio(Enums.AudioType.CollectMoney, 0.5f, _currentCollectPitch);
+            if (!AudioManager.IsAudioPlaying())
+                AudioManager.PlayAudio(Enums.AudioType.CollectMoney, 0.5f, _currentCollectPitch);
+
             _collectTimer = _cooldown;
             _collectingMoney = true;
         }

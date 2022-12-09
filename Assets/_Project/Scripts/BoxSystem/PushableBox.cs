@@ -66,7 +66,7 @@ namespace DigFight
             }
 
             AudioManager.PlayAudioLoop(Enums.AudioType.PushBox);
-            CameraManager.OnBoxPushed?.Invoke();
+            //CameraManager.OnPushBackCameraForAWhile?.Invoke();
         }
         public void StartMoveSequence(Enums.BoxTriggerDirection pushDirection)
         {
@@ -126,6 +126,7 @@ namespace DigFight
 
                 float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? -_layer.BoxGap : (_layer.BoxCount + 1) * 2 * _layer.BoxGap;
                 _leaveScreenSequence.Append(transform.DOLocalMoveX(targetPosX, MOVE_DURATION * 0.2f))
+                    .Join(_meshTransform.DOScale(Vector3.zero, MOVE_DURATION * 0.2f))
                     .OnComplete(() =>
                     {
                         CreateEnterScreenSequence(pushDirection);
@@ -152,7 +153,7 @@ namespace DigFight
                 float lastJumpPosX = pushDirection == Enums.BoxTriggerDirection.Left ? (_layer.BoxCount + 1) * 2 * _layer.BoxGap : -_layer.BoxGap;
 
                 transform.localPosition = new Vector3(lastJumpPosX, transform.localPosition.y, transform.localPosition.z);
-                _enterScreenSequence.Append(transform.DOLocalMoveX(targetPosX, MOVE_DURATION * 0.8f))
+                _enterScreenSequence.Append(transform.DOLocalMoveX(targetPosX, MOVE_DURATION * 0.8f)).Join(_meshTransform.DOScale(Vector3.one, MOVE_DURATION * 0.8f))
                     .Append(transform.DOShakeScale(1f, .25f))
                     .OnComplete(() =>
                     {

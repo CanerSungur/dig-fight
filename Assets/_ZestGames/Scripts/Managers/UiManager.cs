@@ -10,6 +10,7 @@ namespace ZestGames
         [Header("-- REFERENCES --")]
         [SerializeField] private TouchToStart touchToStart;
         [SerializeField] private Hud hud;
+        [SerializeField] private GameObject levelTextGO;
         [SerializeField] private LevelFail levelFail;
         [SerializeField] private LevelSuccess levelSuccess;
         [SerializeField] private SettingsMinimalUi settings;
@@ -35,10 +36,12 @@ namespace ZestGames
                 PlayerUpgradeEvents.OnOpenCanvas?.Invoke();
 
             touchToStart.gameObject.SetActive(true);
-            hud.gameObject.SetActive(false);
             levelFail.gameObject.SetActive(false);
             levelSuccess.gameObject.SetActive(false);
             settings.gameObject.SetActive(false);
+
+            hud.gameObject.SetActive(true);
+            levelTextGO.SetActive(false);
 
             GameEvents.OnGameStart += GameStarted;
             GameEvents.OnGameEnd += GameEnded;
@@ -59,8 +62,9 @@ namespace ZestGames
         private void GameStarted()
         {
             touchToStart.gameObject.SetActive(false);
-            hud.gameObject.SetActive(true);
             settings.gameObject.SetActive(true);
+            //hud.gameObject.SetActive(true);
+            levelTextGO.SetActive(true);
         }
 
         private void GameEnded(Enums.GameEnd gameEnd)

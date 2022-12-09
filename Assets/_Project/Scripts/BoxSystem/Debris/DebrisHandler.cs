@@ -29,12 +29,14 @@ namespace DigFight
 
         private void SpawnRelevantDebris()
         {
-            if (BreakableBox.BoxType == Enums.BoxType.Stone)
-                DebrisContainer = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.Debris_Stone, Vector3.zero, Quaternion.identity).GetComponent<DebrisContainer>();
-            else if (BreakableBox.BoxType == Enums.BoxType.Copper)
-                DebrisContainer = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.Debris_Copper, Vector3.zero, Quaternion.identity).GetComponent<DebrisContainer>();
-            else if (BreakableBox.BoxType == Enums.BoxType.Diamond)
-                DebrisContainer = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.Debris_Diamond, Vector3.zero, Quaternion.identity).GetComponent<DebrisContainer>();
+            DebrisContainer = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.Debris_Stone, Vector3.zero, Quaternion.identity).GetComponent<DebrisContainer>();
+
+            //if (BreakableBox.BoxType == Enums.BoxType.Stone)
+            //    DebrisContainer = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.Debris_Stone, Vector3.zero, Quaternion.identity).GetComponent<DebrisContainer>();
+            //else if (BreakableBox.BoxType == Enums.BoxType.Copper)
+            //    DebrisContainer = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.Debris_Copper, Vector3.zero, Quaternion.identity).GetComponent<DebrisContainer>();
+            //else if (BreakableBox.BoxType == Enums.BoxType.Diamond)
+            //    DebrisContainer = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.Debris_Diamond, Vector3.zero, Quaternion.identity).GetComponent<DebrisContainer>();
         }
     }
 }

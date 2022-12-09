@@ -11,8 +11,14 @@ namespace DigFight
         [Header("-- SETUP --")]
         [SerializeField] private Pickaxe pickaxe;
 
+        private bool _notDiggingForAWhile = false;
+        private const float NOT_DIGGING_FOR_A_WHILE_TIME = 5f;
+        private float _notDiggingTimer;
+
+        #region DIGGING DELAY
         private float _delayedTime;
         private const float DIG_DELAY = 0f;
+        #endregion
 
         #region PROPERTIES
         public Player Player => _player;
@@ -24,6 +30,7 @@ namespace DigFight
             if (_player == null)
                 _player = player;
 
+            _notDiggingTimer = NOT_DIGGING_FOR_A_WHILE_TIME;
             pickaxe.Init(this);
             //EnablePickaxe();
         }
@@ -38,6 +45,8 @@ namespace DigFight
             }
 
             CheckForDigIterruption();
+
+            UpdateNotDiggingForAWhileState();
         }
 
         #region PRIVATES
@@ -53,6 +62,28 @@ namespace DigFight
                     StartDiggingProcess(_currentBoxTriggerDirection);
                 else
                     StopDiggingProcess();
+            }
+        }
+        private void UpdateNotDiggingForAWhileState()
+        {
+            if (GameManager.GameState != Enums.GameState.Started) return;
+
+            if (!_player.IsDigging && !_player.IsPushing && !_notDiggingForAWhile)
+            {
+                _notDiggingTimer -= Time.deltaTime;
+                if (_notDiggingTimer < 0f)
+                {
+                    _notDiggingForAWhile = true;
+                    _notDiggingTimer = NOT_DIGGING_FOR_A_WHILE_TIME;
+
+                    CameraManager.OnPushBackCamera?.Invoke();
+                }
+            }
+            else if (_player.IsDigging && _notDiggingForAWhile)
+            {
+                _notDiggingForAWhile = false;
+                _notDiggingTimer = NOT_DIGGING_FOR_A_WHILE_TIME;
+                CameraManager.OnPushInCamera?.Invoke();
             }
         }
         #endregion

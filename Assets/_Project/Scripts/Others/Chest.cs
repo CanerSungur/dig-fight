@@ -105,7 +105,7 @@ namespace DigFight
                         }
 
                         _animation.Play();
-                        CameraManager.OnBoostPickedUp?.Invoke();
+                        //CameraManager.OnBoostPickedUp?.Invoke();
 
                         DeleteOpenChestSequence();
                         //Destroy(gameObject);
