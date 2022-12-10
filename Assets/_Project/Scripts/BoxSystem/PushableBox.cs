@@ -2,7 +2,6 @@ using DG.Tweening;
 using UnityEngine;
 using ZestGames;
 using System;
-using TMPro;
 using ZestCore.Utility;
 
 namespace DigFight
@@ -66,6 +65,8 @@ namespace DigFight
             }
 
             AudioManager.PlayAudioLoop(Enums.AudioType.PushBox);
+            HapticEvents.OnPlayPush?.Invoke();
+
             //CameraManager.OnPushBackCameraForAWhile?.Invoke();
         }
         public void StartMoveSequence(Enums.BoxTriggerDirection pushDirection)

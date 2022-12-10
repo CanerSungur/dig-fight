@@ -14,5 +14,9 @@ namespace ZestGames
             _gameManager = gameManager;
             SoundOn = VibrationOn = true;
         }
+
+        #region PUBLICS
+        public void DisableVibrations() => VibrationOn = false;
+        #endregion
     }
 }

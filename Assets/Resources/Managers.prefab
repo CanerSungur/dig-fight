@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5491084403859615927}
   - component: {fileID: 1124688366865923144}
   - component: {fileID: 466320068415017879}
+  - component: {fileID: 8100756653816973517}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -100,6 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   touchToStart: {fileID: 0}
   hud: {fileID: 0}
+  levelTextGO: {fileID: 0}
   levelFail: {fileID: 0}
   levelSuccess: {fileID: 0}
   settings: {fileID: 0}
@@ -132,5 +134,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d325dccba5e5b456c93a70ecf531e3fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8100756653816973517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5491084403859615924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16346ac059f7f476d8bdf4123b144059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

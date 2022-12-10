@@ -75,44 +75,37 @@ namespace DigFight
         public void GetDamaged(int amount)
         {
             CameraManager.OnBoxHitShake?.Invoke();
+            AudioManager.PlayAudio(Enums.AudioType.HitBox, 0.5f);
 
-            if (amount <= CurrentHealth)
-                CollectableEvents.OnSpawnMoney?.Invoke(amount, transform.position);
-            else
-                CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
+            SpawnMoneyOnHit(amount);
 
             SetHitPower(amount);
             SpawnEffect(_affectedHitPower);
 
             CurrentHealth -= amount;
-            AudioManager.PlayAudio(Enums.AudioType.HitBox, 0.5f);
-            _crackHandler.EnhanceCracks();
 
+            _crackHandler.EnhanceCracks();
             if (_pieceHandler != null)
                 _pieceHandler.Release();
 
             if (CurrentHealth <= 0)
                 Break();
 
+            HapticEvents.OnPlayHitBox?.Invoke();
             StartShakeSequence();
         }
         public void Break()
         {
-            if (_player == null)
-                Debug.Log("Player is not assigned!");
-            else
-            {
-                _player.StoppedDigging();
-                _player.DigHandler.StopDiggingProcess();
-            }
+            StopHittersDiggingProcess();
 
             _isBroken = true;
             AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
             CameraManager.OnBoxBreakShake?.Invoke();
-
+            HapticEvents.OnPlayBreakBox?.Invoke();
 
             _crackHandler.DisposeCracks();
             _debrisHandler.ActivateDebrises();
+
             Destroy(gameObject);
         }
         #endregion
@@ -127,18 +120,20 @@ namespace DigFight
             if (_isBroken) return;
 
             Delayer.DoActionAfterDelay(this, Random.Range(0f, 0.75f), () => {
-                _crackHandler.DisposeCracks();
                 SpawnEffect(Enums.HitPower.High);
 
                 CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
                 CurrentHealth = 0;
                 AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
                 CameraManager.OnBoxBreakShake?.Invoke();
+                HapticEvents.OnPlayBreakBox?.Invoke();
 
                 if (_pieceHandler != null)
                     _pieceHandler.Release();
 
+                _crackHandler.DisposeCracks();
                 _debrisHandler.ActivateDebrises();
+
                 Destroy(gameObject);
             });
         }
@@ -146,6 +141,16 @@ namespace DigFight
         #endregion
 
         #region PRIVATES
+        private void StopHittersDiggingProcess()
+        {
+            if (_player == null)
+                Debug.Log("Player is not assigned!");
+            else
+            {
+                _player.StoppedDigging();
+                _player.DigHandler.StopDiggingProcess();
+            }
+        }
         private void SetHitPower(int damageAmount)
         {
             float damageRate = GetIncomingDamageNormalized(damageAmount);
@@ -188,6 +193,13 @@ namespace DigFight
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxEffect, transform.position + new Vector3(0f, 0f, -1f), Quaternion.identity);
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmokeSquare, transform.position, Quaternion.identity);
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmoke, transform.position + new Vector3(0f, 1f, -1f), Quaternion.identity);
+        }
+        private void SpawnMoneyOnHit(int amount)
+        {
+            if (amount <= CurrentHealth)
+                CollectableEvents.OnSpawnMoney?.Invoke(amount, transform.position);
+            else
+                CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
         }
         #endregion
 

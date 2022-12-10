@@ -55,4 +55,9 @@ namespace ZestGames
     {
         public static Action OnCanHit, OnCannotHit, OnBreak;
     }
+
+    public static class HapticEvents
+    {
+        public static Action OnPlayHitBox, OnPlayBreakBox, OnPlayHitExplosive, OnPlayPush;
+    }
 }

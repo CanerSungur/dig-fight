@@ -5,6 +5,7 @@ namespace DigFight
 {
     public class LayerDesigner : MonoBehaviour
     {
+#if UNITY_EDITOR
         [Header("-- SPAWN SETUP --")]
         [SerializeField] private int _totalLayerCount = 10;
 
@@ -60,5 +61,6 @@ namespace DigFight
                 _boxContainer = null;
             }
         }
+#endif
     }
 }

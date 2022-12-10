@@ -17,14 +17,19 @@ namespace ZestGames
         //private QueueManager _queueManager;
         //private BoxSpawnManager _boxSpawnManager;
         private MoneySpawnManager _moneySpawnManager;
+        private HapticManager _hapticManager;
         [SerializeField] private PostProcessManager _postProcessManager;
 
         #region PROPERTIES
         //public BoxSpawnManager BoxSpawnManager => _boxSpawnManager;
+        public SettingsManager SettingsManager => _settingsManager;
         #endregion
 
         private void Init()
         {
+            Application.targetFrameRate = 240;
+            DOTween.Init(true, true, LogBehaviour.Verbose).SetCapacity(200, 125);
+
             GameState = Enums.GameState.WaitingToStart;
             GameEnd = Enums.GameEnd.None;
 
@@ -42,6 +47,8 @@ namespace ZestGames
             //_boxSpawnManager.Init(this);
             _moneySpawnManager = GetComponent<MoneySpawnManager>();
             _moneySpawnManager.Init(this);
+            _hapticManager = GetComponent<HapticManager>();
+            _hapticManager.Init(this);
             _postProcessManager.Init(this);
 
             UiEvents.OnUpdateCollectableText?.Invoke(DataManager.TotalMoney);
