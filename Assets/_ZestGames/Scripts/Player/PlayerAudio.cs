@@ -46,6 +46,8 @@ namespace ZestGames
             AudioEvents.OnPlayCollectMoney += HandleCollectMoney;
             AudioEvents.OnPlaySpendMoney += HandleSpendMoney;
             AudioEvents.OnPlaySwing += Swing;
+            AudioEvents.OnEnableJetpackSound += EnableJetpackSound;
+            AudioEvents.OnDisableJetpackSound += DisableJetpackSound;
 
             PlayerEvents.OnFly += StartJetpackSound;
             PlayerEvents.OnFall += StopJetpackSound;
@@ -59,6 +61,8 @@ namespace ZestGames
             AudioEvents.OnPlayCollectMoney -= HandleCollectMoney;
             AudioEvents.OnPlaySpendMoney -= HandleSpendMoney;
             AudioEvents.OnPlaySwing -= Swing;
+            AudioEvents.OnEnableJetpackSound -= EnableJetpackSound;
+            AudioEvents.OnDisableJetpackSound -= DisableJetpackSound;
 
             PlayerEvents.OnFly -= StartJetpackSound;
             PlayerEvents.OnFall -= StopJetpackSound;
@@ -132,6 +136,14 @@ namespace ZestGames
         {
             if (_jetpackAudioSource != null)
                 _jetpackAudioSource.Stop();
+        }
+        private void EnableJetpackSound()
+        {
+            _jetpackAudioSource.volume = 0.5f;
+        }
+        private void DisableJetpackSound()
+        {
+            _jetpackAudioSource.volume = 0f;
         }
         #endregion
 

@@ -88,11 +88,13 @@ namespace ZestGames
         {
             SettingsManager.SoundOn = true;
             UpdateSoundSprite();
+            AudioEvents.OnEnableJetpackSound?.Invoke();
         }
         private void CloseSound()
         {
             SettingsManager.SoundOn = false;
             UpdateSoundSprite();
+            AudioEvents.OnDisableJetpackSound?.Invoke();
         }
         #endregion
 
