@@ -119,6 +119,8 @@ namespace ZestGames
             //Debug.Log("started dig");
             IsDigging = true;
             PlayerEvents.OnStartDigging?.Invoke();
+            AudioEvents.OnStopJetpackSound?.Invoke();
+            PickaxeEvents.OnCannotHit?.Invoke();
         }
         public void StoppedDigging()
         {
@@ -132,11 +134,14 @@ namespace ZestGames
             if (GameManager.GameState == Enums.GameState.GameEnded) return;
             IsPushing = true;
             PlayerEvents.OnStartPushing?.Invoke();
+            PickaxeEvents.OnCannotHit?.Invoke();
+            AudioEvents.OnStopJetpackSound?.Invoke();
         }
         public void StoppedPushing()
         {
             IsPushing = false;
             PlayerEvents.OnStopPushing?.Invoke();
+            PickaxeEvents.OnCannotHit?.Invoke();
         }
         public void EnteredDigZone() => IsInDigZone = true;
         public void ExitedDigZone() => IsInDigZone = false;

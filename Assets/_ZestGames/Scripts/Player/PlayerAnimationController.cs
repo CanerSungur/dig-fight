@@ -168,6 +168,8 @@ namespace ZestGames
             }
             else if (message.Equals("PushNow"))
             {
+                if (!_player.PushHandler.CurrentPushedBox.IsReadyForPushing) return;
+
                 _player.PushHandler.CurrentPushedBox.GetPushed(_player.PushHandler.CurrentBoxTriggerDirection);
 
                 if (!_player.PushHandler.CurrentPushedBox.RightIsMiddleBox && !_player.PushHandler.CurrentPushedBox.LeftIsBorderBox)
@@ -175,6 +177,8 @@ namespace ZestGames
             }
             else if (message.Equals("PushFinished"))
             {
+                //if (_player.PushHandler.CurrentPushedBox)
+
                 AudioManager.StopAudioLoop();
 
                 _player.StoppedPushing();

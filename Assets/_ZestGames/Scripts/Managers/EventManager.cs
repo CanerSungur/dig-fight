@@ -48,7 +48,7 @@ namespace ZestGames
 
     public static class AudioEvents
     {
-        public static Action OnPlayCollectMoney, OnPlaySpendMoney, OnPlaySwing, OnEnableJetpackSound, OnDisableJetpackSound;
+        public static Action OnPlayCollectMoney, OnPlaySpendMoney, OnPlaySwing, OnEnableJetpackSound, OnDisableJetpackSound, OnStopJetpackSound;
     }
 
     public static class PickaxeEvents

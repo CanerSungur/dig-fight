@@ -27,7 +27,7 @@ namespace DigFight
         }
 
         #region PUBLICS
-        public void AssignHitter(Player player)
+        public void AssignInteracter(Player player)
         {
             if (_breakableBox)
                 _breakableBox.AssignHitter(player);

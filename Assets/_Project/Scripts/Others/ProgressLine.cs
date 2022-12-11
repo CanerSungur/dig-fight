@@ -13,7 +13,7 @@ namespace DigFight
 
         #region FIXED CANVAS POSITION
         private bool _isItPlayer = false;
-        private const float FIXED_X_POSITION_FOR_PLAYER = -1.3f;
+        private const float FIXED_X_POSITION_FOR_PLAYER = -1.7f;
         private const float FIXED_X_POSITION_FOR_AI = 11f;
         #endregion
 
@@ -37,7 +37,7 @@ namespace DigFight
             {
                 _progressHandler = progressHandler;
                 _lineRenderer = GetComponentInChildren<LineRenderer>();
-                _remainingBoxesText = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
+                _remainingBoxesText = transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
             }
 
             _isItPlayer = isItPlayer;

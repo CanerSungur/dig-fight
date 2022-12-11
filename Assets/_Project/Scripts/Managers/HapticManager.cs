@@ -57,6 +57,9 @@ namespace DigFight
         {
             HapticPatterns.PlayPreset(HapticPatterns.PresetType.LightImpact);
         }
+
+        //Soft = new Preset(PresetType.SoftImpact, new float[] { 0.000f, 0.160f },// time
+        //                                             new float[] { 0.156f, 0.156f }); // amplitude
         #endregion
     }
 }

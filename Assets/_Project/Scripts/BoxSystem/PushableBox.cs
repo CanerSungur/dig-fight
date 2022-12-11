@@ -15,6 +15,7 @@ namespace DigFight
         #region MOVE SEQUENCE
         private Sequence _moveSequence, _enterScreenSequence, _leaveScreenSequence;
         private Guid _moveSequenceID, _enterScreenSequenceID, _leaveScreenSequenceID;
+        private bool _moveSeqIsPlaying, _enterScreenSeqIsPlaying, _leaveScreenSeqIsPlaying = false;
         private const float BOX_LENGTH = 2.25f;
         private const float MOVE_DURATION = 3f;
         #endregion
@@ -25,8 +26,11 @@ namespace DigFight
         private const string BOX_TRIGGER_LAYER = "BoxTrigger;";
         private bool _rightIsMiddleBox, _rightIsBorderBox, _leftIsMiddleBox, _leftIsBorderBox;
 
+        #region PROPERTIES
         public bool RightIsMiddleBox => _rightIsMiddleBox;
         public bool LeftIsBorderBox => _leftIsBorderBox;
+        public bool IsReadyForPushing => !(_moveSeqIsPlaying && _enterScreenSeqIsPlaying && _leaveScreenSeqIsPlaying);
+        #endregion
 
         #region INTERFACE FUNCTIONS
         public void Init(Layer layer)
@@ -47,7 +51,7 @@ namespace DigFight
         }
         #endregion
 
-        #region PUBLICS
+        #region PUBLICS 
         public void AssignPusher(Player player)
         {
             _player = player;
@@ -71,20 +75,26 @@ namespace DigFight
         }
         public void StartMoveSequence(Enums.BoxTriggerDirection pushDirection)
         {
-            //CheckSurroundings();
+            CheckSurroundings();
 
             if (pushDirection == Enums.BoxTriggerDirection.Left && _leftIsBorderBox)
             {
+                DeleteMoveSequence();
+                DeleteEnterScreenSequence();
                 CreateLeaveScreenSequence(pushDirection);
                 _leaveScreenSequence.Play();
             }
             else if (pushDirection == Enums.BoxTriggerDirection.Right && _rightIsBorderBox)
             {
+                DeleteMoveSequence();
+                DeleteEnterScreenSequence();
                 CreateLeaveScreenSequence(pushDirection);
                 _leaveScreenSequence.Play();
             }
             else
             {
+                DeleteLeaveScreenSequence();
+                DeleteEnterScreenSequence();
                 CreateMoveSequence(pushDirection);
                 _moveSequence.Play();
             }
@@ -121,6 +131,8 @@ namespace DigFight
         {
             if (_leaveScreenSequence == null)
             {
+                _leaveScreenSeqIsPlaying = true;
+
                 _leaveScreenSequence = DOTween.Sequence();
                 _leaveScreenSequenceID = Guid.NewGuid();
                 _leaveScreenSequence.id = _leaveScreenSequenceID;
@@ -138,6 +150,7 @@ namespace DigFight
         }
         private void DeleteLeaveScreenSequence()
         {
+            _leaveScreenSeqIsPlaying = false;
             DOTween.Kill(_leaveScreenSequenceID);
             _leaveScreenSequence = null;
         }
@@ -146,6 +159,8 @@ namespace DigFight
         {
             if (_enterScreenSequence == null)
             {
+                _enterScreenSeqIsPlaying = true;
+
                 _enterScreenSequence = DOTween.Sequence();
                 _enterScreenSequenceID = Guid.NewGuid();
                 _enterScreenSequence.id = _enterScreenSequenceID;
@@ -165,6 +180,7 @@ namespace DigFight
         }
         private void DeleteEnterScreenSequence()
         {
+            _enterScreenSeqIsPlaying = false;
             DOTween.Kill(_enterScreenSequenceID);
             _enterScreenSequence = null;
         }
@@ -173,6 +189,8 @@ namespace DigFight
         {
             if (_moveSequence == null)
             {
+                _moveSeqIsPlaying = true;
+
                 _moveSequence = DOTween.Sequence();
                 _moveSequenceID = Guid.NewGuid();
                 _moveSequence.id = _moveSequenceID;
@@ -208,6 +226,7 @@ namespace DigFight
         }
         private void DeleteMoveSequence()
         {
+            _moveSeqIsPlaying = false;
             DOTween.Kill(_moveSequenceID);
             _moveSequence = null;
         }
