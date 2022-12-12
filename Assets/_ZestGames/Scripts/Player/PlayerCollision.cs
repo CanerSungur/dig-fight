@@ -43,6 +43,11 @@ namespace ZestGames
                     boxDigTrigger.AssignInteracter(_player);
                     _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
                 }
+                else if (boxDigTrigger.transform.parent.TryGetComponent(out ExplosiveBox explosiveBox) && !_player.IsInDigZone)
+                {
+                    boxDigTrigger.AssignInteracter(_player);
+                    _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
+                }
             }
             #endregion
         }
@@ -73,6 +78,11 @@ namespace ZestGames
                     _player.PushHandler.StopPushingProcess();
                 }
                 else if (boxDigTrigger.transform.parent.TryGetComponent(out BreakableBox breakableBox))
+                {
+                    _player.StoppedDigging();
+                    _player.DigHandler.StopDiggingProcess();
+                }
+                else if (boxDigTrigger.transform.parent.TryGetComponent(out ExplosiveBox explosiveBox))
                 {
                     _player.StoppedDigging();
                     _player.DigHandler.StopDiggingProcess();
