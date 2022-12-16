@@ -68,6 +68,8 @@ namespace DigFight
             {
                 if (boxCollider.TryGetComponent(out BreakableBox breakableBox))
                     breakableBox.Explode();
+                else if (boxCollider.TryGetComponent(out ChestBase chest))
+                    chest.Explode();
             }
         }
 

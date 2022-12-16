@@ -4,7 +4,7 @@ namespace DigFight
 {
     public class LayerSlotDesigner : MonoBehaviour
     {
-        private GameObject _stoneBox, _copperBox, _diamondBox, _pushableBox, _explosiveBox;
+        private GameObject _stoneBox, _copperBox, _diamondBox, _pushableBox, _explosiveBox, _chestSpeed, _chestPower, _chestDurability;
 
         #region PUBLICS
         public void MakeStoneBox()
@@ -36,15 +36,18 @@ namespace DigFight
         }
         public void MakeSpeedChest()
         {
-
+            InitializeBoxes();
+            _chestSpeed.SetActive(true);
         }
         public void MakePowerChest()
         {
-
+            InitializeBoxes();
+            _chestPower.SetActive(true);
         }
         public void MakeDurabilityChest()
         {
-
+            InitializeBoxes();
+            _chestDurability.SetActive(true);
         }
         #endregion
 
@@ -62,6 +65,13 @@ namespace DigFight
             
             _explosiveBox = transform.GetChild(4).gameObject;
             _explosiveBox.SetActive(false);
+
+            _chestSpeed = transform.GetChild(5).gameObject;
+            _chestSpeed.SetActive(false);
+            _chestPower = transform.GetChild(6).gameObject;
+            _chestPower.SetActive(false);
+            _chestDurability = transform.GetChild(7).gameObject;
+            _chestDurability.SetActive(false);
         }
     }
 }

@@ -5,7 +5,10 @@ namespace DigFight
 {
     public class PickaxeDamageHandler : MonoBehaviour
     {
+        #region COMPONENTS
         private Pickaxe _pickaxe;
+        #endregion
+
         private int _damage = 1;
         public int Damage => _damage;
 
@@ -25,6 +28,6 @@ namespace DigFight
             PlayerEvents.OnSetCurrentPickaxePower -= UpdateDamage;
         }
 
-        private void UpdateDamage() => _damage = DataManager.PickaxePower;
+        private void UpdateDamage() => _damage = DataManager.PickaxePower + _pickaxe.Player.PowerUpHandler.PowerRate;
     }
 }

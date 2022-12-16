@@ -14,6 +14,8 @@ namespace ZestGames
 
         private void OnTriggerEnter(Collider other)
         {
+            if (GameManager.GameState != Enums.GameState.Started) return;
+
             if (other.TryGetComponent(out UpgradeAreaBase upgradeArea) && !upgradeArea.PlayerIsInArea)
                 upgradeArea.StartOpening();
 
@@ -44,6 +46,11 @@ namespace ZestGames
                     _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
                 }
                 else if (boxDigTrigger.transform.parent.TryGetComponent(out ExplosiveBox explosiveBox) && !_player.IsInDigZone)
+                {
+                    boxDigTrigger.AssignInteracter(_player);
+                    _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
+                }
+                else if (boxDigTrigger.transform.parent.TryGetComponent(out ChestBase chest) && !_player.IsInDigZone && !chest.Triggered)
                 {
                     boxDigTrigger.AssignInteracter(_player);
                     _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
@@ -83,6 +90,11 @@ namespace ZestGames
                     _player.DigHandler.StopDiggingProcess();
                 }
                 else if (boxDigTrigger.transform.parent.TryGetComponent(out ExplosiveBox explosiveBox))
+                {
+                    _player.StoppedDigging();
+                    _player.DigHandler.StopDiggingProcess();
+                }
+                else if (boxDigTrigger.transform.parent.TryGetComponent(out ChestBase chest))
                 {
                     _player.StoppedDigging();
                     _player.DigHandler.StopDiggingProcess();

@@ -30,14 +30,14 @@ namespace DigFight
             _durabilityBar.Init(this);
 
             PlayerEvents.OnSetCurrentPickaxeDurability += UpdateDurability;
-            PlayerEvents.OnTakePickaxeDurability += HandleDurabilityPickup;
+            PlayerEvents.OnActivatePickaxeDurability += HandleDurabilityPickup;
         }
 
         private void OnDisable()
         {
             if (_pickaxe == null) return;
             PlayerEvents.OnSetCurrentPickaxeDurability -= UpdateDurability;
-            PlayerEvents.OnTakePickaxeDurability -= HandleDurabilityPickup;
+            PlayerEvents.OnActivatePickaxeDurability -= HandleDurabilityPickup;
         }
 
         #region PUBLICS
@@ -62,9 +62,9 @@ namespace DigFight
             _currentDurability = _maxDurability;
             _durabilityBar.ResetBar();
         }
-        private void HandleDurabilityPickup(int amount)
+        private void HandleDurabilityPickup(PowerUp powerUp)
         {
-            _currentDurability += amount;
+            _currentDurability += (int)powerUp.IncrementValue;
             if (_currentDurability > _maxDurability)
                 _currentDurability = _maxDurability;
 

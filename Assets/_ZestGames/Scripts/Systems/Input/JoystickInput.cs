@@ -83,13 +83,13 @@ namespace ZestGames
         }
         private void SetDigDirection()
         {
-            if (joystick.Horizontal >= .98f)
+            if (joystick.Horizontal >= .9f)
                 DigDirection = Enums.DigDirection.Right;
-            else if (joystick.Horizontal <= -.98f)
+            else if (joystick.Horizontal <= -.9f)
                 DigDirection = Enums.DigDirection.Left;
-            else if (joystick.Vertical >= .98f)
+            else if (joystick.Vertical >= .9f)
                 DigDirection = Enums.DigDirection.Up;
-            else if (joystick.Vertical <= -.98f)
+            else if (joystick.Vertical <= -.9f)
                 DigDirection = Enums.DigDirection.Down;
             else
                 DigDirection = Enums.DigDirection.None;

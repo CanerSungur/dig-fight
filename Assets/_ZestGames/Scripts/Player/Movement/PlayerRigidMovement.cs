@@ -41,7 +41,7 @@ namespace ZestGames
                 if (Input.GetMouseButtonUp(0))
                     ResetAccelerationWalk();
 
-                _player.Rigidbody.velocity = new Vector3(_player.InputHandler.WalkInput, 0, 0) * _currentSpeed * Time.fixedDeltaTime;
+                _player.Rigidbody.velocity = new Vector3(_player.InputHandler.WalkInput, 0, 0) * (_currentSpeed + _player.PowerUpHandler.SpeedRate) * Time.fixedDeltaTime;
 
                 Fall();
             }

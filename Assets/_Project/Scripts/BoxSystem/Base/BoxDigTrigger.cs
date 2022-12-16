@@ -8,6 +8,7 @@ namespace DigFight
         private PushableBox _pushableBox = null;
         private BreakableBox _breakableBox = null;
         private ExplosiveBox _explosiveBox = null;
+        private ChestBase _chest = null;
 
         [Header("-- SETUP --")]
         [SerializeField] private Enums.BoxTriggerDirection triggerDirection;
@@ -24,6 +25,8 @@ namespace DigFight
                 transform.parent.TryGetComponent(out _explosiveBox);
             if (_pushableBox == null)
                 transform.parent.TryGetComponent(out _pushableBox);
+            if (_chest == null)
+                transform.parent.TryGetComponent(out _chest);
         }
 
         #region PUBLICS
@@ -35,6 +38,8 @@ namespace DigFight
                 _explosiveBox.AssignHitter(player);
             else if (_pushableBox)
                 _pushableBox.AssignPusher(player);
+            else if (_chest)
+                _chest.AssignHitter(player);
         }
         #endregion
     }

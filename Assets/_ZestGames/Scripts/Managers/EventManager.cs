@@ -1,4 +1,5 @@
 using System;
+using DigFight;
 using UnityEngine;
 
 namespace ZestGames
@@ -19,8 +20,7 @@ namespace ZestGames
         public static Action OnEmptyNextInQueue, OnStopSpendingMoney;
         public static Action OnRotateLeft, OnRotateRight, OnResetRotation;
         public static Action OnStartDigging, OnStopDigging, OnStagger, OnStartPushing, OnStopPushing;
-        public static Action<int> OnTakePickaxeDurability;
-        public static Action<float> OnTakePickaxeSpeed;
+        public static Action<PowerUp> OnActivatePickaxeDurability, OnActivatePickaxePower, OnActivatePickaxeSpeed;
     }
 
     public static class PlayerUpgradeEvents
@@ -59,5 +59,10 @@ namespace ZestGames
     public static class HapticEvents
     {
         public static Action OnPlayHitBox, OnPlayBreakBox, OnPlayHitExplosive, OnPlayPush;
+    }
+
+    public static class PowerUpEvents
+    {
+        public static Action<ChestBase, PowerUp> OnPickaxeDurabilityTaken, OnPickaxePowerTaken, OnPickaxeSpeedTaken;
     }
 }

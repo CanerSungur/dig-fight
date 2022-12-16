@@ -26,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 393533004873099445}
   m_LocalRotation: {x: -0, y: -0.9999998, z: -0, w: -0.0006474308}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalPosition: {x: 0, y: -0.105, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5611885842034447402}
   m_Father: {fileID: 8549445799305993640}
@@ -696,10 +696,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6099963392591772574}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b34752b4bc8cb4d80a96383741a203f8, type: 3}
+  m_Script: {fileID: 11500000, guid: a5a69577e63e444a1b2df17dcd96e562, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chestType: 0
+  _chestType: 0
+  duration: 1
+  incrementValue: 5
 --- !u!111 &5936765523636378051
 Animation:
   m_ObjectHideFlags: 0

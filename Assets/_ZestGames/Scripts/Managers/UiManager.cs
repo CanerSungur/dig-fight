@@ -1,5 +1,6 @@
 using UnityEngine;
 using ZestCore.Utility;
+using DigFight;
 
 namespace ZestGames
 {
@@ -15,6 +16,7 @@ namespace ZestGames
         [SerializeField] private LevelSuccess levelSuccess;
         [SerializeField] private SettingsMinimalUi settings;
         [SerializeField] private UpgradeCanvas upgradeCanvas;
+        [SerializeField] private PowerUpCanvas _powerUpCanvas;
 
         [Header("-- UI DELAY SETUP --")]
         [SerializeField, Tooltip("The delay in seconds between the game is won and the win screen is loaded.")]
@@ -31,6 +33,7 @@ namespace ZestGames
             levelSuccess.Init(this);
             settings.Init(this);
             upgradeCanvas.Init(this);
+            _powerUpCanvas.Init(this);
 
             if (upgradeCanvas.CurrentType == UpgradeCanvas.Type.Incremental)
                 PlayerUpgradeEvents.OnOpenCanvas?.Invoke();

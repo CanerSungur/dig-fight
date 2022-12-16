@@ -1,12 +1,24 @@
 using UnityEngine;
 using ZestCore.Utility;
+using DigFight;
+using DG.Tweening;
+using System;
+using Random = UnityEngine.Random;
 
 namespace ZestGames
 {
     public class PlayerAnimationController : MonoBehaviour
     {
+        #region COMPONENTS
         private Player _player;
         private Animator _animator;
+        private PlayerAnimationEventListener _animationEventListener;
+        #endregion
+
+        #region PROPERTIES
+        public Player Player => _player;
+        public Animator Animator => _animator;
+        #endregion
 
         #region ANIMATION PARAMETERS
         // Booleans
@@ -31,6 +43,7 @@ namespace ZestGames
         private readonly int _digSideIndexID = Animator.StringToHash("DigSideIndex");
 
         private readonly int _digSpeedID = Animator.StringToHash("DigSpeed");
+        private readonly int _scaleRateID = Animator.StringToHash("ScaleRate");
         #endregion
 
         #region DIG SIDE DATA
@@ -39,14 +52,22 @@ namespace ZestGames
         private const int DIG_RIGHT_SIDE_INDEX = 2;
         #endregion
 
+        #region SEQUENCE
+        private Sequence _scaleSequence;
+        private Guid _scaleSequenceID;
+        #endregion
+
         public void Init(Player player)
         {
             if (_player == null)
             {
                 _player = player;
-                _animator = GetComponent<Animator>();
+                _animator = transform.GetChild(0).GetComponent<Animator>();
+                _animationEventListener = GetComponentInChildren<PlayerAnimationEventListener>();
+                _animationEventListener.Init(this);
             }
 
+            _animator.SetFloat(_scaleRateID, 0f);
             UpdateDigSpeed();
             Land();
 
@@ -129,14 +150,14 @@ namespace ZestGames
         }
         private void StopDigging() => _animator.SetBool(_diggingID, false);
         private void Stagger() => _animator.SetTrigger(_staggerID);
-        private void UpdateDigSpeed() => _animator.SetFloat(_digSpeedID, DataManager.PickaxeSpeed);
+        private void UpdateDigSpeed() => _animator.SetFloat(_digSpeedID, DataManager.PickaxeSpeed + _player.PowerUpHandler.SpeedRate);
         private void StartPushing()
         {
             _animator.SetBool(_kickingID, _player.PushHandler.CurrentPushedBox.RightIsMiddleBox || _player.PushHandler.CurrentPushedBox.LeftIsBorderBox);
 
             _animator.SetInteger(_digSideIndexID, (int)_player.PushHandler.CurrentBoxTriggerDirection);
             _animator.SetBool(_pushingID, true);
-            _animator.applyRootMotion = true;
+            //_animator.applyRootMotion = true;
         }
         private void StopPushing() => _animator.SetBool(_pushingID, false);
         #endregion
@@ -145,60 +166,37 @@ namespace ZestGames
         private void CheckForHeight() => _animator.SetBool(_tooHighID, _player.IsTooHigh);
         #endregion
 
-        #region ANIMATION EVENT FUNCTIONS
-        public void AlertObservers(string message)
+        #region PUBLICS
+        public void StartScaleSequence(float duration)
         {
-            if (message.Equals("DigMotionEnded"))
+            DeleteScaleSequence();
+            CreateScaleSequence(duration);
+            _scaleSequence.Play();
+        }
+        #endregion
+
+        #region DOTWEEN FUNCTIONS
+        private void CreateScaleSequence(float duration)
+        {
+            if (_scaleSequence == null)
             {
-                _player.StoppedDigging();
-                if ((int)_player.InputHandler.DigDirection == (int)_player.DigHandler.CurrentBoxTriggerDirection)
-                    _player.DigHandler.StartDiggingProcess(_player.DigHandler.CurrentBoxTriggerDirection);
+                _scaleSequence = DOTween.Sequence();
+                _scaleSequenceID = Guid.NewGuid();
+                _scaleSequence.id = _scaleSequenceID;
+
+                _scaleSequence.Append(DOVirtual.Float(2f, 0f, duration, r => {
+                    _animator.SetFloat(_scaleRateID, r);
+                }))
+                    .OnComplete(() => {
+                        _animator.SetFloat(_scaleRateID, 0f);
+                        DeleteScaleSequence();
+                    });
             }
-            else if (message.Equals("EnableCanHit"))
-            {
-                PickaxeEvents.OnCanHit?.Invoke();
-                //AudioEvents.OnPlaySwing?.Invoke();
-            }
-            else if (message.Equals("DisableCanHit"))
-                PickaxeEvents.OnCannotHit?.Invoke();
-            else if (message.Equals("SwingAnimStarted"))
-            {
-                AudioEvents.OnPlaySwing?.Invoke();
-
-            }
-            else if (message.Equals("PushNow"))
-            {
-                if (!_player.PushHandler.CurrentPushedBox.IsReadyForPushing) return;
-
-                _player.PushHandler.CurrentPushedBox.GetPushed(_player.PushHandler.CurrentBoxTriggerDirection);
-
-                if (!_player.PushHandler.CurrentPushedBox.RightIsMiddleBox && !_player.PushHandler.CurrentPushedBox.LeftIsBorderBox)
-                    _player.StartPushSequence(_player.PushHandler.CurrentBoxTriggerDirection);
-            }
-            else if (message.Equals("PushFinished"))
-            {
-                //if (_player.PushHandler.CurrentPushedBox)
-
-                AudioManager.StopAudioLoop();
-
-                _player.StoppedPushing();
-                _player.PushHandler.StopPushingProcess();
-                _animator.applyRootMotion = false;
-
-                AudioManager.PlayAudio(Enums.AudioType.PushBoxDrop);
-            }
-            else if (message.Equals("KickFinished"))
-            {
-                Delayer.DoActionAfterDelay(this, 1.2f, () => {
-                    AudioManager.StopAudioLoop();
-
-                    _player.StoppedPushing();
-                    _player.PushHandler.StopPushingProcess();
-                    _animator.applyRootMotion = false;
-
-                    AudioManager.PlayAudio(Enums.AudioType.PushBoxDrop);
-                });
-            }
+        }
+        private void DeleteScaleSequence()
+        {
+            DOTween.Kill(_scaleSequenceID);
+            _scaleSequence = null;
         }
         #endregion
     }

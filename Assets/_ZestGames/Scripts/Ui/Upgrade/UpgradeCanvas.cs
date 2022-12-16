@@ -164,6 +164,8 @@ namespace ZestGames
         }
         private void DisableCanvas()
         {
+            if (!IsOpen) return;
+
             AudioManager.PlayAudio(Enums.AudioType.UpgradeMenu);
             
             if (_currentType == Type.Idle)

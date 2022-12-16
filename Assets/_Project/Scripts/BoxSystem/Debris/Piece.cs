@@ -40,7 +40,7 @@ namespace DigFight
                 _pullOutSequence.Append(transform.DOShakeScale(PULL_OUT_DURATION * 0.5f, 0.2f))
                     //.Join(transform.DOShakePosition(PULL_OUT_DURATION * 0.5f, 5))
                     .Join(transform.DOMove(transform.position + new Vector3(0f, Random.Range(2f, 3.5f), Random.Range(-2.5f, -1.5f)), PULL_OUT_DURATION))
-                    .Join(transform.DORotate(new Vector3(0f, 360f, 0f), PULL_OUT_DURATION, RotateMode.FastBeyond360))
+                    .Join(transform.DOLocalRotate(new Vector3(-90f, 0f, 0f), PULL_OUT_DURATION))
                     .OnComplete(() => {
                         StartPullInSequence();
                         DeletePullOutSequence();

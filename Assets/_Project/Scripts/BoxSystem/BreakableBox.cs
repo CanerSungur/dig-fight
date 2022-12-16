@@ -30,7 +30,6 @@ namespace DigFight
         private Enums.HitPower _affectedHitPower;
         #endregion
 
-
         #region PROPERTIES
         public int MaxHealth => hp;
         public int CurrentHealth { get; set; }

@@ -41,6 +41,8 @@ namespace ZestGames
         public PlayerPushHandler PushHandler => _pushHandler == null ? _pushHandler = GetComponent<PlayerPushHandler>() : _pushHandler;
         private ProgressHandler _progressHandler;
         public ProgressHandler ProgressHandler => _progressHandler == null ? _progressHandler = GetComponent<ProgressHandler>() : _progressHandler;
+        private PlayerPowerUpHandler _powerUpHandler;
+        public PlayerPowerUpHandler PowerUpHandler => _powerUpHandler == null ? _powerUpHandler = GetComponent<PlayerPowerUpHandler>() : _powerUpHandler;
         #endregion
 
         #region PROPERTIES
@@ -82,6 +84,7 @@ namespace ZestGames
             DigHandler.Init(this);
             PushHandler.Init(this);
             ProgressHandler.Init(this);
+            PowerUpHandler.Init(this);
 
             PlayerUpgradeEvents.OnOpenCanvas += HandleUpgradeStart;
             PlayerUpgradeEvents.OnCloseCanvas += HandleUpgradeEnd;
@@ -147,6 +150,12 @@ namespace ZestGames
         public void ExitedDigZone() => IsInDigZone = false;
         public void EnteredPushZone() => IsInPushZone = true;
         public void ExitedPushZone() => IsInPushZone = false;
+
+        public void StartPushSequence(Enums.BoxTriggerDirection pushDirection)
+        {
+            CreatePushSequence(pushDirection);
+            _pushSequence.Play();
+        }
         #endregion
 
         #region DOTWEEN FUNCTIONS
@@ -176,11 +185,6 @@ namespace ZestGames
             _upgradeRotationSequence = null;
         }
         // ######################
-        public void StartPushSequence(Enums.BoxTriggerDirection pushDirection)
-        {
-            CreatePushSequence(pushDirection);
-            _pushSequence.Play();
-        }
         private void CreatePushSequence(Enums.BoxTriggerDirection pushDirection)
         {
             if (_pushSequence == null)

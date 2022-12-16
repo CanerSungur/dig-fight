@@ -21,7 +21,7 @@ namespace ZestCore.Utility
 
         private static IEnumerator ExecuteAction(float delayTime, Action action)
         {
-            yield return new WaitForSeconds(delayTime);
+            yield return new WaitForSecondsRealtime(delayTime);
             action.Invoke();
             yield break;
         }

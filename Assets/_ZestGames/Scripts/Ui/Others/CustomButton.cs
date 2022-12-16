@@ -11,14 +11,16 @@ namespace ZestGames
     /// </summary>
     public class CustomButton : Button
     {
+        private Animator _animator;
         private Animation _anim;
         private float _animationDuration = 0.5f;
         public event Action<Action> OnClicked;
 
         protected override void OnEnable()
         {
+            TryGetComponent(out _animator);
             TryGetComponent(out _anim);
-            if (!_anim)
+            if (!_anim && !_animator)
                 _animationDuration = 0f;
 
             OnClicked += Clicked;
@@ -40,6 +42,9 @@ namespace ZestGames
                 _anim.Rewind();
                 _anim.Play();
             }
+
+            if (_animator)
+                _animator.SetTrigger("Click");
 
             // Do the action with delay
             Delayer.DoActionAfterDelay(this, _animationDuration, () => action());
