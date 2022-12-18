@@ -42,8 +42,11 @@ namespace ZestGames
         private readonly int _loseIndexID = Animator.StringToHash("LoseIndex");
         private readonly int _digSideIndexID = Animator.StringToHash("DigSideIndex");
 
+        // Floats
         private readonly int _digSpeedID = Animator.StringToHash("DigSpeed");
         private readonly int _scaleRateID = Animator.StringToHash("ScaleRate");
+        private readonly int _pushSpeedRateID = Animator.StringToHash("PushSpeedRate");
+        private readonly int _kickSpeedRateID = Animator.StringToHash("KickSpeedRate");
         #endregion
 
         #region DIG SIDE DATA
@@ -69,9 +72,11 @@ namespace ZestGames
 
             _animator.SetFloat(_scaleRateID, 0f);
             UpdateDigSpeed();
+            UpdatePushSpeed();
             Land();
 
             PlayerEvents.OnSetCurrentPickaxeSpeed += UpdateDigSpeed;
+            PlayerEvents.OnSetCurrentPickaxeSpeed += UpdatePushSpeed;
 
             PlayerEvents.OnMove += Move;
             PlayerEvents.OnIdle += Idle;
@@ -94,6 +99,7 @@ namespace ZestGames
             if (_player == null) return;
 
             PlayerEvents.OnSetCurrentPickaxeSpeed -= UpdateDigSpeed;
+            PlayerEvents.OnSetCurrentPickaxeSpeed -= UpdatePushSpeed;
 
             PlayerEvents.OnMove -= Move;
             PlayerEvents.OnIdle -= Idle;
@@ -150,10 +156,15 @@ namespace ZestGames
         }
         private void StopDigging() => _animator.SetBool(_diggingID, false);
         private void Stagger() => _animator.SetTrigger(_staggerID);
-        private void UpdateDigSpeed() => _animator.SetFloat(_digSpeedID, DataManager.PickaxeSpeed + _player.PowerUpHandler.SpeedRate);
+        private void UpdateDigSpeed() => _animator.SetFloat(_digSpeedID, DataManager.PickaxeSpeed + (DataManager.PickaxeSpeed * _player.PowerUpHandler.SpeedRate));
+        private void UpdatePushSpeed()
+        {
+            _animator.SetFloat(_pushSpeedRateID, 2f + (1f * _player.PowerUpHandler.SpeedRate));
+            _animator.SetFloat(_kickSpeedRateID, 1f + (1f * _player.PowerUpHandler.SpeedRate));
+        }
         private void StartPushing()
         {
-            _animator.SetBool(_kickingID, _player.PushHandler.CurrentPushedBox.RightIsMiddleBox || _player.PushHandler.CurrentPushedBox.LeftIsBorderBox);
+            //_animator.SetBool(_kickingID, _player.PushHandler.CurrentPushedBox.RightIsMiddleBox || _player.PushHandler.CurrentPushedBox.LeftIsBorderBox);
 
             _animator.SetInteger(_digSideIndexID, (int)_player.PushHandler.CurrentBoxTriggerDirection);
             _animator.SetBool(_pushingID, true);
@@ -173,6 +184,7 @@ namespace ZestGames
             CreateScaleSequence(duration);
             _scaleSequence.Play();
         }
+        public void SelectPushOrKick() => _animator.SetBool(_kickingID, _player.PushHandler.CurrentPushedBox.RightIsMiddleBox || _player.PushHandler.CurrentPushedBox.LeftIsBorderBox);
         #endregion
 
         #region DOTWEEN FUNCTIONS

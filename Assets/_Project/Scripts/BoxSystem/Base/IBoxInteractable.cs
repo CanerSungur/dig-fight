@@ -1,4 +1,5 @@
 using UnityEngine;
+using ZestGames;
 
 namespace DigFight
 {
@@ -6,5 +7,6 @@ namespace DigFight
     {
         public void Init(Layer layer);
         public void ChangeParent(Transform newParent);
+        public void AssignInteracter(Player player);
     }
 }

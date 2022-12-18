@@ -44,6 +44,10 @@ namespace DigFight
                 if (!_animationController.Player.PushHandler.CurrentPushedBox.RightIsMiddleBox && !_animationController.Player.PushHandler.CurrentPushedBox.LeftIsBorderBox)
                     _animationController.Player.StartPushSequence(_animationController.Player.PushHandler.CurrentBoxTriggerDirection);
             }
+            else if (message.Equals("HopAfterKick"))
+            {
+                _animationController.Player.StartKickSequence(_animationController.Player.PushHandler.CurrentBoxTriggerDirection);
+            }
             else if (message.Equals("PushFinished"))
             {
                 //if (_player.PushHandler.CurrentPushedBox)

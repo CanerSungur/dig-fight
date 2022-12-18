@@ -31,28 +31,26 @@ namespace ZestGames
                 _player.MoneyHandler.StartSpending(examplePoint);
             }
 
-            #region DIGGING
+            #region DIGGING && PUSHING
             if (other.TryGetComponent(out BoxDigTrigger boxDigTrigger))
             {
+                boxDigTrigger.AssignInteracter(_player);
+
                 if (boxDigTrigger.transform.parent.TryGetComponent(out PushableBox pushableBox) && !_player.IsInPushZone)
                 {
-                    boxDigTrigger.AssignInteracter(_player);
                     _player.PushHandler.SetPushedBox(pushableBox);
                     _player.PushHandler.StartPushingProcess(boxDigTrigger.TriggerDirection);
                 }
                 else if (boxDigTrigger.transform.parent.TryGetComponent(out BreakableBox breakableBox) && !_player.IsInDigZone)
                 {
-                    boxDigTrigger.AssignInteracter(_player);
                     _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
                 }
                 else if (boxDigTrigger.transform.parent.TryGetComponent(out ExplosiveBox explosiveBox) && !_player.IsInDigZone)
                 {
-                    boxDigTrigger.AssignInteracter(_player);
                     _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
                 }
                 else if (boxDigTrigger.transform.parent.TryGetComponent(out ChestBase chest) && !_player.IsInDigZone && !chest.Triggered)
                 {
-                    boxDigTrigger.AssignInteracter(_player);
                     _player.DigHandler.StartDiggingProcess(boxDigTrigger.TriggerDirection);
                 }
             }
@@ -76,7 +74,7 @@ namespace ZestGames
                 _player.MoneyHandler.StopSpending();
             }
 
-            #region DIGGING
+            #region DIGGING && PUSHING
             if (other.TryGetComponent(out BoxDigTrigger boxDigTrigger))
             {
                 if (boxDigTrigger.transform.parent.TryGetComponent(out PushableBox pushableBox) && !_player.IsPushing)

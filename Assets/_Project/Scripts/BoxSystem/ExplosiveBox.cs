@@ -27,6 +27,10 @@ namespace DigFight
         {
             this.transform.SetParent(transform);
         }
+        public void AssignInteracter(Player player)
+        {
+            _player = player;
+        }
         public void GetDamaged(int amount)
         {
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxEffect, transform.position + new Vector3(0f, 0f, -1f), Quaternion.identity);
@@ -74,10 +78,10 @@ namespace DigFight
         }
 
         #region PUBLICS
-        public void AssignHitter(Player player)
-        {
-            _player = player;
-        }
+        //public void AssignHitter(Player player)
+        //{
+        //    _player = player;
+        //}
         #endregion
     }
 }

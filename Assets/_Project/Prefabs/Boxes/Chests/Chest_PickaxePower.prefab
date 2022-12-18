@@ -669,7 +669,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _chestType: 2
   duration: 50
-  incrementValue: 3
+  incrementValue: 0.3
 --- !u!111 &8048540333862549737
 Animation:
   m_ObjectHideFlags: 0

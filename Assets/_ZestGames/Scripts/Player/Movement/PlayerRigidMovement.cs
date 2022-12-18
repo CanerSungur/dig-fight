@@ -9,13 +9,14 @@ namespace ZestGames
 
         [Header("-- WALK SETUP --")]
         [SerializeField] private float defaultSpeed = 150f;
-        private float _currentSpeed, _accelerationTimer, _accelerationTimeElapsed;
+        private float _currentWalkSpeed, _accelerationTimer, _accelerationTimeElapsed;
         private const float ACCELERATION_DURATION = 1f;
         private bool _movementStarted = false;
 
         [Header("-- FLY SETUP --")]
         [SerializeField] private float flySpeed = 100f;
         private bool _flyStarted, _onAir = false;
+        private float _currentFlySpeed;
 
         #region PROPERTIES
         public bool IsMoving => _player && _player.Rigidbody.velocity.magnitude > 0.05f;
@@ -29,7 +30,16 @@ namespace ZestGames
 
             _accelerationTimeElapsed = 0f;
             _accelerationTimer = ACCELERATION_DURATION;
-            _currentSpeed = defaultSpeed;
+            _currentWalkSpeed = defaultSpeed;
+            _currentFlySpeed = flySpeed;
+
+            PlayerEvents.OnSetCurrentPickaxeSpeed += UpdateMotorSpeeds;
+        }
+
+        private void OnDisable()
+        {
+            if (_player == null) return;
+            PlayerEvents.OnSetCurrentPickaxeSpeed -= UpdateMotorSpeeds;
         }
 
         public void Motor()
@@ -41,7 +51,7 @@ namespace ZestGames
                 if (Input.GetMouseButtonUp(0))
                     ResetAccelerationWalk();
 
-                _player.Rigidbody.velocity = new Vector3(_player.InputHandler.WalkInput, 0, 0) * (_currentSpeed + _player.PowerUpHandler.SpeedRate) * Time.fixedDeltaTime;
+                _player.Rigidbody.velocity = new Vector3(_player.InputHandler.WalkInput, 0, 0) * (_currentWalkSpeed + _player.PowerUpHandler.SpeedRate) * Time.fixedDeltaTime;
 
                 Fall();
             }
@@ -50,13 +60,16 @@ namespace ZestGames
 
         private void FixedUpdate()
         {
+            Motor();
+            Fly();
+        }
+
+        private void Update()
+        {
             if (_player.IsGrounded)
                 HandleOnGroundStates();
             else
                 HandleOnAirStates();
-
-            Motor();
-            Fly();
         }
 
         #region PRIVATES
@@ -81,13 +94,13 @@ namespace ZestGames
         {
             if (_accelerationTimeElapsed < ACCELERATION_DURATION)
             {
-                _currentSpeed = Mathf.Lerp(defaultSpeed * 0.5f, defaultSpeed, _accelerationTimeElapsed / ACCELERATION_DURATION);
+                _currentWalkSpeed = Mathf.Lerp(defaultSpeed * 0.5f, defaultSpeed, _accelerationTimeElapsed / ACCELERATION_DURATION);
                 _accelerationTimeElapsed += Time.fixedDeltaTime;
             }
         }
         private void ResetAccelerationWalk()
         {
-            _accelerationTimeElapsed = _currentSpeed = 0f;
+            _accelerationTimeElapsed = _currentWalkSpeed = 0f;
         }
         private void HandleOnGroundStates()
         {
@@ -126,6 +139,14 @@ namespace ZestGames
                 _onAir = true;
                 PlayerEvents.OnFall?.Invoke();
             }
+        }
+        #endregion
+
+        #region EVENT HANDLER FUNCTIONS
+        private void UpdateMotorSpeeds()
+        {
+            _currentWalkSpeed = defaultSpeed + (defaultSpeed * _player.PowerUpHandler.SpeedRate);
+            _currentFlySpeed = flySpeed + (flySpeed * _player.PowerUpHandler.SpeedRate);
         }
         #endregion
     }

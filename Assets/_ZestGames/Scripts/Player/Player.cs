@@ -61,10 +61,10 @@ namespace ZestGames
         #endregion
 
         #region SEQUENCE
-        private Sequence _upgradeRotationSequence, _pushSequence;
-        private Guid _upgradeRotationSequenceID, _pushSequenceID;
+        private Sequence _upgradeRotationSequence, _pushSequence, _kickSequence;
+        private Guid _upgradeRotationSequenceID, _pushSequenceID, _kickSequenceID;
         private float _upgradeRotationDuration = 1f;
-        private const float PUSH_SEQUENCE_DURATION = 3f;
+        //private const float PUSH_SEQUENCE_DURATION = 3f;
         #endregion
 
         private void Start()
@@ -136,6 +136,10 @@ namespace ZestGames
         {
             if (GameManager.GameState == Enums.GameState.GameEnded) return;
             IsPushing = true;
+
+            PushHandler.CurrentPushedBox.CheckSurroundings();
+            AnimationController.SelectPushOrKick();
+
             PlayerEvents.OnStartPushing?.Invoke();
             PickaxeEvents.OnCannotHit?.Invoke();
             AudioEvents.OnStopJetpackSound?.Invoke();
@@ -155,6 +159,11 @@ namespace ZestGames
         {
             CreatePushSequence(pushDirection);
             _pushSequence.Play();
+        }
+        public void StartKickSequence(Enums.BoxTriggerDirection pushDirection)
+        {
+            CreateKickSequence(pushDirection);
+            _kickSequence.Play();
         }
         #endregion
 
@@ -194,7 +203,7 @@ namespace ZestGames
                 _pushSequence.id = _pushSequenceID;
 
                 float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? transform.position.x - 2f : transform.position.x + 2f;
-                _pushSequence.Append(transform.DOMoveX(targetPosX, PUSH_SEQUENCE_DURATION))
+                _pushSequence.Append(transform.DOMoveX(targetPosX, PlayerPushHandler.PushDuration))
                     .OnComplete(DeletePushSequence);
             }
         }
@@ -202,6 +211,25 @@ namespace ZestGames
         {
             DOTween.Kill(_pushSequenceID);
             _pushSequence = null;
+        }
+        // #######################
+        private void CreateKickSequence(Enums.BoxTriggerDirection pushDirection)
+        {
+            if (_kickSequence == null)
+            {
+                _kickSequence = DOTween.Sequence();
+                _kickSequenceID = Guid.NewGuid();
+                _kickSequence.id = _kickSequenceID;
+
+                float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? transform.position.x - 2f : transform.position.x + 2f;
+                _kickSequence.Append(transform.DOMoveX(targetPosX, PlayerPushHandler.PushDuration * 0.5f))
+                    .OnComplete(DeleteKickSequence);
+            }
+        }
+        private void DeleteKickSequence()
+        {
+            DOTween.Kill(_kickSequenceID);
+            _kickSequence = null;
         }
         #endregion
     }

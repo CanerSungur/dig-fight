@@ -68,7 +68,10 @@ namespace DigFight
         private void SetPowerUpTexts(PowerUp powerUp)
         {
             _powerUpNameText.text = powerUp.Name;
-            _powerUpValueText.text = "+" + powerUp.IncrementValue;
+            if (powerUp.Name == "SPEED" || powerUp.Name == "POWER")
+                _powerUpValueText.text = "+%" + (powerUp.IncrementValue * 100f);
+            else
+                _powerUpValueText.text = "+" + powerUp.IncrementValue;
         }
         private void SetPowerUpImage(Enums.ChestType chestType)
         {

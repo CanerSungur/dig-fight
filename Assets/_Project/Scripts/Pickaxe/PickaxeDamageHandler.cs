@@ -28,6 +28,6 @@ namespace DigFight
             PlayerEvents.OnSetCurrentPickaxePower -= UpdateDamage;
         }
 
-        private void UpdateDamage() => _damage = DataManager.PickaxePower + _pickaxe.Player.PowerUpHandler.PowerRate;
+        private void UpdateDamage() => _damage = DataManager.PickaxePower + (DataManager.PickaxePower * _pickaxe.Player.PowerUpHandler.PowerRate);
     }
 }

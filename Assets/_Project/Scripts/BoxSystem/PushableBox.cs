@@ -17,7 +17,7 @@ namespace DigFight
         private Guid _moveSequenceID, _enterScreenSequenceID, _leaveScreenSequenceID;
         private bool _moveSeqIsPlaying, _enterScreenSeqIsPlaying, _leaveScreenSeqIsPlaying = false;
         private const float BOX_LENGTH = 2.25f;
-        private const float MOVE_DURATION = 3f;
+        //private const float MOVE_DURATION = 3f;
         #endregion
 
         [SerializeField] private LayerMask hittableLayers;
@@ -29,7 +29,7 @@ namespace DigFight
         #region PROPERTIES
         public bool RightIsMiddleBox => _rightIsMiddleBox;
         public bool LeftIsBorderBox => _leftIsBorderBox;
-        public bool IsReadyForPushing => !(_moveSeqIsPlaying && _enterScreenSeqIsPlaying && _leaveScreenSeqIsPlaying);
+        public bool IsReadyForPushing => !(_moveSeqIsPlaying && _enterScreenSeqIsPlaying && _leaveScreenSeqIsPlaying) && _player;
         #endregion
 
         #region INTERFACE FUNCTIONS
@@ -49,13 +49,17 @@ namespace DigFight
         {
             this.transform.SetParent(transform);
         }
-        #endregion
-
-        #region PUBLICS 
-        public void AssignPusher(Player player)
+        public void AssignInteracter(Player player)
         {
             _player = player;
         }
+        #endregion
+
+        #region PUBLICS 
+        //public void AssignPusher(Player player)
+        //{
+        //    _player = player;
+        //}
         public void GetPushed(Enums.BoxTriggerDirection pushDirection)
         {
             if (pushDirection == Enums.BoxTriggerDirection.Left)
@@ -102,7 +106,7 @@ namespace DigFight
         #endregion
 
         #region HELPERS
-        private void CheckSurroundings()
+        public void CheckSurroundings()
         {
             #region RIGHT RAYCAST
             Physics.Raycast(transform.position, transform.right, out RaycastHit hitRight, 2f, hittableLayers, QueryTriggerInteraction.Ignore);
@@ -138,8 +142,8 @@ namespace DigFight
                 _leaveScreenSequence.id = _leaveScreenSequenceID;
 
                 float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? -_layer.BoxGap : (_layer.BoxCount) * 2 * _layer.BoxGap;
-                _leaveScreenSequence.Append(transform.DOLocalMoveX(targetPosX, MOVE_DURATION * 0.2f))
-                    .Join(_meshTransform.DOScale(Vector3.zero, MOVE_DURATION * 0.2f))
+                _leaveScreenSequence.Append(transform.DOLocalMoveX(targetPosX, PlayerPushHandler.PushDuration * 0.2f))
+                    .Join(_meshTransform.DOScale(Vector3.zero, PlayerPushHandler.PushDuration * 0.2f))
                     .OnComplete(() =>
                     {
                         CreateEnterScreenSequence(pushDirection);
@@ -169,7 +173,7 @@ namespace DigFight
                 float lastJumpPosX = pushDirection == Enums.BoxTriggerDirection.Left ? (_layer.BoxCount) * 2 * _layer.BoxGap : -_layer.BoxGap;
 
                 transform.localPosition = new Vector3(lastJumpPosX, transform.localPosition.y, transform.localPosition.z);
-                _enterScreenSequence.Append(transform.DOLocalMoveX(targetPosX, MOVE_DURATION * 0.8f)).Join(_meshTransform.DOScale(Vector3.one, MOVE_DURATION * 0.8f))
+                _enterScreenSequence.Append(transform.DOLocalMoveX(targetPosX, PlayerPushHandler.PushDuration * 0.8f)).Join(_meshTransform.DOScale(Vector3.one, PlayerPushHandler.PushDuration * 0.8f))
                     .Append(transform.DOShakeScale(1f, .25f))
                     .OnComplete(() =>
                     {
@@ -213,7 +217,7 @@ namespace DigFight
                     else targetPosX = transform.localPosition.x + BOX_LENGTH;
                 }
 
-                _moveSequence.Append(transform.DOLocalMoveX(targetPosX, MOVE_DURATION))
+                _moveSequence.Append(transform.DOLocalMoveX(targetPosX, PlayerPushHandler.PushDuration))
                     .Join(transform.DOLocalRotate(rotation, 1f))
                     .Append(transform.DOShakeScale(1f, .25f))
                     .Join(transform.DOLocalRotate(Vector3.zero, 0.5f))

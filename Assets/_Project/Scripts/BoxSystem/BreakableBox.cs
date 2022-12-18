@@ -71,6 +71,10 @@ namespace DigFight
         {
             this.transform.SetParent(transform);
         }
+        public void AssignInteracter(Player player)
+        {
+            _player = player;
+        }
         public void GetDamaged(int amount)
         {
             CameraManager.OnBoxHitShake?.Invoke();
@@ -110,10 +114,10 @@ namespace DigFight
         #endregion
 
         #region PUBLICS
-        public void AssignHitter(Player player)
-        {
-            _player = player;
-        }
+        //public void AssignHitter(Player player)
+        //{
+        //    _player = player;
+        //}
         public void Explode()
         {
             if (_isBroken) return;

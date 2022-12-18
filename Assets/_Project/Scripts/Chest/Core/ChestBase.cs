@@ -21,6 +21,7 @@ namespace DigFight
         private Transform _coverTransform, _chestTransform;
         private RectTransform _shineRectTransform;
         private Animation _animation;
+        private Collider _collider;
         private Player _player;
         #endregion
 
@@ -61,16 +62,21 @@ namespace DigFight
                 _shineRectTransform.localScale = Vector3.zero;
                 _animation = GetComponent<Animation>();
                 _animation.Rewind();
+                _collider = GetComponent<Collider>();
             }
         }
         public void ChangeParent(Transform transform)
         {
             this.transform.SetParent(transform);
         }
+        public void AssignInteracter(Player player)
+        {
+            _player = player;
+        }
         #endregion
 
         #region PUBLICS
-        public void AssignHitter(Player player) => _player = player;
+        //public void AssignHitter(Player player) => _player = player;
         public void GiveBoost()
         {
             StopHittersDiggingProcess();
@@ -99,6 +105,7 @@ namespace DigFight
         public void StartClosingChestSequence()
         {
             _animation.Play();
+            Delayer.DoActionAfterDelay(this, _animation.clip.averageDuration - 0.25f, () => _collider.enabled = false);
         }
         #endregion
 
