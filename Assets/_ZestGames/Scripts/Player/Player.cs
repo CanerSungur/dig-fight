@@ -122,15 +122,15 @@ namespace ZestGames
             //Debug.Log("started dig");
             IsDigging = true;
             PlayerEvents.OnStartDigging?.Invoke();
-            AudioEvents.OnStopJetpackSound?.Invoke();
-            PickaxeEvents.OnCannotHit?.Invoke();
+            PlayerAudioEvents.OnStopJetpackSound?.Invoke();
+            DigHandler.Pickaxe.OnCannotHit?.Invoke();
         }
         public void StoppedDigging()
         {
             //Debug.Log("stopped dig");
             IsDigging = false;
             PlayerEvents.OnStopDigging?.Invoke();
-            PickaxeEvents.OnCannotHit?.Invoke();
+            DigHandler.Pickaxe.OnCannotHit?.Invoke();
         }
         public void StartedPushing()
         {
@@ -141,14 +141,14 @@ namespace ZestGames
             AnimationController.SelectPushOrKick();
 
             PlayerEvents.OnStartPushing?.Invoke();
-            PickaxeEvents.OnCannotHit?.Invoke();
-            AudioEvents.OnStopJetpackSound?.Invoke();
+            DigHandler.Pickaxe.OnCannotHit?.Invoke();
+            PlayerAudioEvents.OnStopJetpackSound?.Invoke();
         }
         public void StoppedPushing()
         {
             IsPushing = false;
             PlayerEvents.OnStopPushing?.Invoke();
-            PickaxeEvents.OnCannotHit?.Invoke();
+            DigHandler.Pickaxe.OnCannotHit?.Invoke();
         }
         public void EnteredDigZone() => IsInDigZone = true;
         public void ExitedDigZone() => IsInDigZone = false;

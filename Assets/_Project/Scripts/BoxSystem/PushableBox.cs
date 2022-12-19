@@ -10,6 +10,7 @@ namespace DigFight
     {
         private Layer _layer;
         private Player _player;
+        private Ai _ai;
         private Transform _meshTransform;
 
         #region MOVE SEQUENCE
@@ -45,21 +46,12 @@ namespace DigFight
             _leftIsMiddleBox = _leftIsBorderBox = _rightIsMiddleBox = _rightIsBorderBox = false;
             Delayer.DoActionAfterDelay(this, .5f, CheckSurroundings);
         }
-        public void ChangeParent(Transform transform)
-        {
-            this.transform.SetParent(transform);
-        }
-        public void AssignInteracter(Player player)
-        {
-            _player = player;
-        }
+        public void ChangeParent(Transform transform) => this.transform.SetParent(transform);
+        public void AssignInteracter(Player player) => _player = player;
+        public void AssignInteracter(Ai ai) => _ai = ai;
         #endregion
 
         #region PUBLICS 
-        //public void AssignPusher(Player player)
-        //{
-        //    _player = player;
-        //}
         public void GetPushed(Enums.BoxTriggerDirection pushDirection)
         {
             if (pushDirection == Enums.BoxTriggerDirection.Left)

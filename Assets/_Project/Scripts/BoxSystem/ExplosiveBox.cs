@@ -10,6 +10,7 @@ namespace DigFight
         [SerializeField] private LayerMask affectedLayer;
 
         private Player _player;
+        private Ai _ai;
         private Transform _meshTransform;
 
         #region PROPERTIES
@@ -23,14 +24,9 @@ namespace DigFight
             _meshTransform = transform.GetChild(0);
             CurrentHealth = MaxHealth;
         }
-        public void ChangeParent(Transform transform)
-        {
-            this.transform.SetParent(transform);
-        }
-        public void AssignInteracter(Player player)
-        {
-            _player = player;
-        }
+        public void ChangeParent(Transform transform) => this.transform.SetParent(transform);
+        public void AssignInteracter(Player player) => _player = player;
+        public void AssignInteracter(Ai ai) => _ai = ai;
         public void GetDamaged(int amount)
         {
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxEffect, transform.position + new Vector3(0f, 0f, -1f), Quaternion.identity);

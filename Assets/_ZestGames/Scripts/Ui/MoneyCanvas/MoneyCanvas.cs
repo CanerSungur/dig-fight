@@ -46,7 +46,7 @@ namespace ZestGames
             while (examplePoint.MoneyCanBeSpent && examplePoint.gameObject.activeSelf)
             {
                 SpawnSpendMoney(examplePoint.transform);
-                AudioEvents.OnPlaySpendMoney?.Invoke();
+                PlayerAudioEvents.OnPlaySpendMoney?.Invoke();
                 yield return _waitforSpendMoneyDelay;
             }
         }

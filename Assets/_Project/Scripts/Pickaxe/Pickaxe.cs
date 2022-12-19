@@ -1,11 +1,13 @@
 using UnityEngine;
 using ZestGames;
+using System;
 
 namespace DigFight
 {
     public class Pickaxe : MonoBehaviour
     {
         private PlayerDigHandler _playerDigHandler;
+        private AiDigHandler _aiDigHandler;
 
         [Header("-- VISUAL SETUP --")]
         [SerializeField] private GameObject defaultPickaxe;
@@ -25,6 +27,11 @@ namespace DigFight
         public bool IsBroken { get; private set; }
         public bool CanHit { get; private set; }
         public Player Player => _playerDigHandler.Player;
+        public Ai Ai => _aiDigHandler.Ai;
+        #endregion
+
+        #region EVENTS
+        public Action OnCanHit, OnCannotHit, OnBreak;
         #endregion
 
         public void Init(PlayerDigHandler playerDigHandler)
@@ -34,8 +41,8 @@ namespace DigFight
                 _playerDigHandler = playerDigHandler;
                 InitializeParticles();
 
-                DamageHandler.Init(this);
-                DurabilityHandler.Init(this);
+                DamageHandler.Init(this, true);
+                DurabilityHandler.Init(this, true);
             }
 
             CanHit = IsBroken = false;
@@ -44,20 +51,50 @@ namespace DigFight
             PlayerEvents.OnStartDigging += SelectRelevantPickaxe;
             PlayerEvents.OnStopDigging += EnableDefaultPickaxe;
 
-            PickaxeEvents.OnCanHit += EnableCanHit;
-            PickaxeEvents.OnCannotHit += DisableCanHit;
-            PickaxeEvents.OnBreak += Break;
+            OnCanHit += EnableCanHit;
+            OnCannotHit += DisableCanHit;
+            OnBreak += Break;
+        }
+        public void Init(AiDigHandler aiDigHandler)
+        {
+            if (_aiDigHandler == null)
+            {
+                _aiDigHandler = aiDigHandler;
+                InitializeParticles();
+
+                DamageHandler.Init(this, false);
+                DurabilityHandler.Init(this, false);
+            }
+
+            CanHit = IsBroken = false;
+            EnableDefaultPickaxe();
+
+            AiEvents.OnStartDigging += SelectRelevantPickaxe;
+            AiEvents.OnStopDigging += EnableDefaultPickaxe;
+
+            OnCanHit += EnableCanHit;
+            OnCannotHit += DisableCanHit;
+            OnBreak += Break;
         }
 
         private void OnDisable()
         {
-            if (_playerDigHandler == null) return;
-            PlayerEvents.OnStartDigging -= SelectRelevantPickaxe;
-            PlayerEvents.OnStopDigging -= EnableDefaultPickaxe;
+            if (_playerDigHandler == null && _aiDigHandler == null) return;
 
-            PickaxeEvents.OnCanHit -= EnableCanHit;
-            PickaxeEvents.OnCannotHit -= DisableCanHit;
-            PickaxeEvents.OnBreak -= Break;
+            if (_playerDigHandler)
+            {
+                PlayerEvents.OnStartDigging -= SelectRelevantPickaxe;
+                PlayerEvents.OnStopDigging -= EnableDefaultPickaxe;
+            }
+            else if (_aiDigHandler)
+            {
+                AiEvents.OnStartDigging -= SelectRelevantPickaxe;
+                AiEvents.OnStopDigging -= EnableDefaultPickaxe;
+            }
+
+            OnCanHit -= EnableCanHit;
+            OnCannotHit -= DisableCanHit;
+            OnBreak -= Break;
         }
 
         #region EVENT HANDLER FUNCTIONS
@@ -74,20 +111,42 @@ namespace DigFight
             IsBroken = true;
             if (GameManager.GameState != Enums.GameState.GameEnded)
             {
-                GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
-                PlayerEvents.OnLose?.Invoke();
+                if (_playerDigHandler)
+                {
+                    GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
+                    PlayerEvents.OnLose?.Invoke();
+                    AiEvents.OnWin?.Invoke();
+                }
+                else if (_aiDigHandler)
+                {
+                    GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Success);
+                    PlayerEvents.OnWin?.Invoke();
+                    AiEvents.OnLose?.Invoke();
+                }
                 DisablePickaxe();
                 CanHit = false;
             }
         }
         private void SelectRelevantPickaxe()
         {
-            if (_playerDigHandler.CurrentBoxTriggerDirection == Enums.BoxTriggerDirection.Top)
-                EnableDefaultPickaxe();
-            else if (_playerDigHandler.CurrentBoxTriggerDirection == Enums.BoxTriggerDirection.Left)
-                EnableLeftPickaxe();
-            else if (_playerDigHandler.CurrentBoxTriggerDirection == Enums.BoxTriggerDirection.Right)
-                EnableRightPickaxe();
+            if (_playerDigHandler)
+            {
+                if (_playerDigHandler.CurrentBoxTriggerDirection == Enums.BoxTriggerDirection.Top)
+                    EnableDefaultPickaxe();
+                else if (_playerDigHandler.CurrentBoxTriggerDirection == Enums.BoxTriggerDirection.Left)
+                    EnableLeftPickaxe();
+                else if (_playerDigHandler.CurrentBoxTriggerDirection == Enums.BoxTriggerDirection.Right)
+                    EnableRightPickaxe();
+            }
+            else if (_aiDigHandler)
+            {
+                if (_aiDigHandler.CurrentBoxTriggerDirection == Enums.BoxTriggerDirection.Top)
+                    EnableDefaultPickaxe();
+                else if (_aiDigHandler.CurrentBoxTriggerDirection == Enums.BoxTriggerDirection.Left)
+                    EnableLeftPickaxe();
+                else if (_aiDigHandler.CurrentBoxTriggerDirection == Enums.BoxTriggerDirection.Right)
+                    EnableRightPickaxe();
+            }
         }
         #endregion
 

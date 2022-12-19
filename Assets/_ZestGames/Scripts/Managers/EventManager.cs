@@ -46,14 +46,14 @@ namespace ZestGames
         public static Action OnTapHappened, OnTouchStarted, OnTouchStopped;
     }
 
-    public static class AudioEvents
+    public static class PlayerAudioEvents
     {
         public static Action OnPlayCollectMoney, OnPlaySpendMoney, OnPlaySwing, OnEnableJetpackSound, OnDisableJetpackSound, OnStopJetpackSound;
     }
 
-    public static class PickaxeEvents
+    public static class AiAudioEvents
     {
-        public static Action OnCanHit, OnCannotHit, OnBreak;
+        public static Action OnPlaySwing, OnEnableJetpackSound, OnDisableJetpackSound, OnStopJetpackSound;
     }
 
     public static class HapticEvents
@@ -64,5 +64,13 @@ namespace ZestGames
     public static class PowerUpEvents
     {
         public static Action<ChestBase, PowerUp> OnPickaxeDurabilityTaken, OnPickaxePowerTaken, OnPickaxeSpeedTaken;
+    }
+
+    public static class AiEvents
+    {
+        public static Action OnMove, OnIdle, OnDie, OnWin, OnLose, OnFly, OnFall, OnLand;
+        public static Action OnSetCurrentPickaxeSpeed, OnSetCurrentPickaxeDurability, OnSetCurrentPickaxePower;
+        public static Action OnStartDigging, OnStopDigging, OnStagger, OnStartPushing, OnStopPushing;
+        public static Action<PowerUp> OnActivatePickaxeDurability, OnActivatePickaxePower, OnActivatePickaxeSpeed;
     }
 }

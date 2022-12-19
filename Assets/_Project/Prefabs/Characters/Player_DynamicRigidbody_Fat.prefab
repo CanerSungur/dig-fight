@@ -7181,7 +7181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkableLayer:
     serializedVersion: 2
-    m_Bits: 66184
+    m_Bits: 67208
   timerForAction: {fileID: 7920877434634561366}
 --- !u!114 &4767064686349175876
 MonoBehaviour:
@@ -7308,6 +7308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c492f3cb3acae4df3953a5483fca40f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pushSpeed: 3
 --- !u!114 &4767064686349175899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14895,6 +14896,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1465239933343355056}
     m_Modifications:
+    - target: {fileID: 1192726173848077094, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1192726173848077094, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1192726173848077094, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4732336313086093581, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
       propertyPath: m_Name
       value: VFX_PowerUp_Power_Trail (1)
@@ -14905,15 +14918,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8595283261801122175, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.029
       objectReference: {fileID: 0}
     - target: {fileID: 8595283261801122175, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.012
+      value: 0.21
       objectReference: {fileID: 0}
     - target: {fileID: 8595283261801122175, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.008
+      value: 0.065
       objectReference: {fileID: 0}
     - target: {fileID: 8595283261801122175, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -15747,6 +15760,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6331036233349511867}
     m_Modifications:
+    - target: {fileID: 1192726173848077094, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1192726173848077094, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1192726173848077094, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4732336313086093581, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
       propertyPath: m_Name
       value: VFX_PowerUp_Power_Trail
@@ -15757,15 +15782,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8595283261801122175, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: 8595283261801122175, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.194
       objectReference: {fileID: 0}
     - target: {fileID: 8595283261801122175, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.076
       objectReference: {fileID: 0}
     - target: {fileID: 8595283261801122175, guid: 69fcd9e86475547c89ce13371f76940f, type: 3}
       propertyPath: m_LocalRotation.w

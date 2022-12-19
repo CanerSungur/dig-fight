@@ -25,6 +25,16 @@ namespace DigFight
                 _lengthToLevelFinish = GAP_BETWEEN_LAYERS * LayerHandler.TotalLayerCount;
             }
         }
+        public void Init(Ai ai)
+        {
+            if (_progressLine == null)
+            {
+                _progressLine = GetComponentInChildren<ProgressLine>();
+                _progressLine.Init(this, false);
+
+                _lengthToLevelFinish = GAP_BETWEEN_LAYERS * LayerHandler.TotalLayerCount;
+            }
+        }
 
         private void Update()
         {

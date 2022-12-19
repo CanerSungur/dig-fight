@@ -67,7 +67,7 @@ namespace ZestGames
                     .Join(_rectTransform.DOScale(Vector3.one, _collectDuration))
                     .Join(_rectTransform.DORotate(Vector3.zero, _collectDuration))
                     .OnComplete(() => {
-                        AudioEvents.OnPlayCollectMoney?.Invoke();
+                        PlayerAudioEvents.OnPlayCollectMoney?.Invoke();
                         CollectableEvents.OnCollect?.Invoke(DataManager.MoneyValue);
                         DeleteCollectSequence();
                         gameObject.SetActive(false);

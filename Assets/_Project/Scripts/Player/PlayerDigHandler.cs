@@ -23,6 +23,7 @@ namespace DigFight
         #region PROPERTIES
         public Player Player => _player;
         public Enums.BoxTriggerDirection CurrentBoxTriggerDirection => _currentBoxTriggerDirection;
+        public Pickaxe Pickaxe => pickaxe;
         #endregion
 
         public void Init(Player player)

@@ -23,6 +23,7 @@ namespace DigFight
         private Animation _animation;
         private Collider _collider;
         private Player _player;
+        private Ai _ai;
         #endregion
 
         #region BOOST VALUE DATA
@@ -65,14 +66,9 @@ namespace DigFight
                 _collider = GetComponent<Collider>();
             }
         }
-        public void ChangeParent(Transform transform)
-        {
-            this.transform.SetParent(transform);
-        }
-        public void AssignInteracter(Player player)
-        {
-            _player = player;
-        }
+        public void ChangeParent(Transform transform) => this.transform.SetParent(transform);
+        public void AssignInteracter(Player player) => _player = player;
+        public void AssignInteracter(Ai ai) => _ai = ai;
         #endregion
 
         #region PUBLICS

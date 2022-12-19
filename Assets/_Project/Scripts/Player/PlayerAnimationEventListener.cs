@@ -25,14 +25,14 @@ namespace DigFight
             }
             else if (message.Equals("EnableCanHit"))
             {
-                PickaxeEvents.OnCanHit?.Invoke();
+                _animationController.Player.DigHandler.Pickaxe.OnCanHit?.Invoke();
                 //AudioEvents.OnPlaySwing?.Invoke();
             }
             else if (message.Equals("DisableCanHit"))
-                PickaxeEvents.OnCannotHit?.Invoke();
+                _animationController.Player.DigHandler.Pickaxe.OnCannotHit?.Invoke();
             else if (message.Equals("SwingAnimStarted"))
             {
-                AudioEvents.OnPlaySwing?.Invoke();
+                PlayerAudioEvents.OnPlaySwing?.Invoke();
 
             }
             else if (message.Equals("PushNow"))

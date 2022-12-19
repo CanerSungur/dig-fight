@@ -43,11 +43,12 @@ namespace ZestGames
             _collectingMoney = _spendingMoney = false;
             _collectTimer = _spendTimer = _cooldown;
 
-            AudioEvents.OnPlayCollectMoney += HandleCollectMoney;
-            AudioEvents.OnPlaySpendMoney += HandleSpendMoney;
-            AudioEvents.OnPlaySwing += Swing;
-            AudioEvents.OnEnableJetpackSound += EnableJetpackSound;
-            AudioEvents.OnDisableJetpackSound += DisableJetpackSound;
+            PlayerAudioEvents.OnPlayCollectMoney += HandleCollectMoney;
+            PlayerAudioEvents.OnPlaySpendMoney += HandleSpendMoney;
+            PlayerAudioEvents.OnPlaySwing += Swing;
+            PlayerAudioEvents.OnEnableJetpackSound += EnableJetpackSound;
+            PlayerAudioEvents.OnDisableJetpackSound += DisableJetpackSound;
+            PlayerAudioEvents.OnStopJetpackSound += StopJetpackSound;
 
             PlayerEvents.OnFly += StartJetpackSound;
             PlayerEvents.OnFall += StopJetpackSound;
@@ -58,11 +59,14 @@ namespace ZestGames
 
         private void OnDisable()
         {
-            AudioEvents.OnPlayCollectMoney -= HandleCollectMoney;
-            AudioEvents.OnPlaySpendMoney -= HandleSpendMoney;
-            AudioEvents.OnPlaySwing -= Swing;
-            AudioEvents.OnEnableJetpackSound -= EnableJetpackSound;
-            AudioEvents.OnDisableJetpackSound -= DisableJetpackSound;
+            if (_jetpackAudioSource == null) return;
+
+            PlayerAudioEvents.OnPlayCollectMoney -= HandleCollectMoney;
+            PlayerAudioEvents.OnPlaySpendMoney -= HandleSpendMoney;
+            PlayerAudioEvents.OnPlaySwing -= Swing;
+            PlayerAudioEvents.OnEnableJetpackSound -= EnableJetpackSound;
+            PlayerAudioEvents.OnDisableJetpackSound -= DisableJetpackSound;
+            PlayerAudioEvents.OnStopJetpackSound -= StopJetpackSound;
 
             PlayerEvents.OnFly -= StartJetpackSound;
             PlayerEvents.OnFall -= StopJetpackSound;

@@ -1,16 +1,13 @@
 using UnityEngine;
+using ZestGames;
 using DG.Tweening;
 using System;
 
-namespace ZestGames
+namespace DigFight
 {
-    public class AiIdleState : AiBaseState
+    public class AiDigState : AiBaseState
     {
         private Ai _ai;
-
-        private bool _canMakeADecision = false;
-        private readonly float _decisionDelay = 3f;
-        private float _timer;
 
         #region SEQUENCE
         private Sequence _rotationSequence;
@@ -20,46 +17,23 @@ namespace ZestGames
 
         public override void EnterState(AiStateManager aiStateManager)
         {
-            Debug.Log("IDLE");
-            aiStateManager.SwitchStateType(Enums.AiStateType.Idle);
+            Debug.Log("DIG");
+            aiStateManager.SwitchStateType(Enums.AiStateType.Dig);
 
             if (_ai == null)
                 _ai = aiStateManager.Ai;
 
-            _canMakeADecision = false;
-            _timer = _decisionDelay;
-            AiEvents.OnIdle?.Invoke();
-
             if (_ai.MeshTransform.localRotation != Quaternion.Euler(0f, 0f, 0f))
                 StartRotationSequence();
+
+            AiEvents.OnIdle?.Invoke();
+            _ai.DigHandler.StartDiggingProcess();
         }
 
         public override void UpdateState(AiStateManager aiStateManager)
         {
-            if (GameManager.GameState != Enums.GameState.Started) return;
-
-            _timer -= Time.deltaTime;
-            if (_timer <= 0f)
-            {
-                _timer = _decisionDelay;
-                _canMakeADecision = true;
-                MakeDecision(aiStateManager);
-            }
-        }
-
-        private void MakeDecision(AiStateManager aiStateManager)
-        {
-            if (_canMakeADecision)
-            {
-                // priority: dig, push, run, fly
-                // dice    : 40,  30  , 20,  10
-                if (_ai.SurroundingChecker.CanRun)
-                    aiStateManager.SwitchState(aiStateManager.RunState);
-                else
-                    Debug.Log("Cannot run");
-
-                _canMakeADecision = false;
-            }
+            if (!_ai.IsGrounded)
+                aiStateManager.SwitchState(aiStateManager.FallState);
         }
 
         #region DOTWEEN FUNCTIONS

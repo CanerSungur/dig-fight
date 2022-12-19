@@ -98,22 +98,22 @@ namespace ZestGames
         }
         public void UpdateQueue()
         {
-            _updatingQueue = true;
+            //_updatingQueue = true;
 
-            Ai firstAi = AisInQueue[0];
-            RemoveAiFromQueue(firstAi);
-            firstAi.StateManager.GetIntoQueueState.CurrentQueuePoint.QueueIsReleased();
-            firstAi.StateManager.GetIntoQueueState.ActivateStateAfterQueue();
+            //Ai firstAi = AisInQueue[0];
+            //RemoveAiFromQueue(firstAi);
+            //firstAi.StateManager.GetIntoQueueState.CurrentQueuePoint.QueueIsReleased();
+            //firstAi.StateManager.GetIntoQueueState.ActivateStateAfterQueue();
 
-            for (int i = 0; i < AisInQueue.Count; i++)
-            {
-                Ai ai = AisInQueue[i];
-                //ai.StateManager.GetIntoQueueState.CurrentQueuePoint.QueueIsReleased();
-                ai.StateManager.GetIntoQueueState.UpdateQueue(EmptyQueuePoints[0]);
-                // go to next queue
-            }
+            //for (int i = 0; i < AisInQueue.Count; i++)
+            //{
+            //    Ai ai = AisInQueue[i];
+            //    //ai.StateManager.GetIntoQueueState.CurrentQueuePoint.QueueIsReleased();
+            //    ai.StateManager.GetIntoQueueState.UpdateQueue(EmptyQueuePoints[0]);
+            //    // go to next queue
+            //}
 
-            _updatingQueue = false;
+            //_updatingQueue = false;
         }
         #endregion
     }

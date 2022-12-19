@@ -1,4 +1,5 @@
 using UnityEngine;
+using DigFight;
 
 namespace ZestGames
 {
@@ -10,8 +11,10 @@ namespace ZestGames
 
         #region STATES
         public AiIdleState IdleState = new AiIdleState();
-        public AiWalkState WalkState = new AiWalkState();
-        public AiGetIntoQueue GetIntoQueueState = new AiGetIntoQueue();
+        public AiFallState FallState = new AiFallState();
+        public AiRunState RunState = new AiRunState();
+        public AiFlyState FlyState = new AiFlyState();
+        public AiDigState DigState = new AiDigState();
         #endregion
 
         #region PROPERTIES
@@ -28,7 +31,7 @@ namespace ZestGames
             _currentState.EnterState(this);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (_ai == null) return;
             _currentState.UpdateState(this);

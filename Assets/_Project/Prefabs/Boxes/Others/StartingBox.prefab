@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3173150260311812730}
   - component: {fileID: 3173150260311812729}
-  m_Layer: 7
+  m_Layer: 10
   m_Name: StartingBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 2541181223763131578}
   - component: {fileID: 2079271758497128380}
   - component: {fileID: 4104232196497962089}
-  m_Layer: 7
+  m_Layer: 10
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}

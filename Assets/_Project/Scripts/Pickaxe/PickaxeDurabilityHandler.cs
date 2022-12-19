@@ -11,6 +11,7 @@ namespace DigFight
 
         private Pickaxe _pickaxe;
 
+        private bool _isItPlayer = false;
         private int _maxDurability;
         private int _currentDurability;
 
@@ -20,24 +21,43 @@ namespace DigFight
         public Pickaxe Pickaxe => _pickaxe;
         #endregion
 
-        public void Init(Pickaxe pickaxe)
+        public void Init(Pickaxe pickaxe, bool isItPlayer)
         {
             if (_pickaxe == null)
+            {
                 _pickaxe = pickaxe;
-
-            _maxDurability = DataManager.PickaxeDurability;
+                _isItPlayer = isItPlayer;
+            }
+            _maxDurability = _isItPlayer == true ? DataManager.PickaxeDurability : AiStats.PickaxeDurability;
             _currentDurability = _maxDurability;
-            _durabilityBar.Init(this);
 
-            PlayerEvents.OnSetCurrentPickaxeDurability += UpdateDurability;
-            PlayerEvents.OnActivatePickaxeDurability += HandleDurabilityPickup;
+            if (_isItPlayer)
+            {
+                PlayerEvents.OnSetCurrentPickaxeDurability += UpdateDurability;
+                PlayerEvents.OnActivatePickaxeDurability += HandleDurabilityPickup;
+                _durabilityBar.Init(this);
+            }
+            else
+            {
+                AiEvents.OnSetCurrentPickaxeDurability += UpdateDurability;
+                AiEvents.OnActivatePickaxeDurability += HandleDurabilityPickup;
+            }
         }
 
         private void OnDisable()
         {
             if (_pickaxe == null) return;
-            PlayerEvents.OnSetCurrentPickaxeDurability -= UpdateDurability;
-            PlayerEvents.OnActivatePickaxeDurability -= HandleDurabilityPickup;
+
+            if (_isItPlayer)
+            {
+                PlayerEvents.OnSetCurrentPickaxeDurability -= UpdateDurability;
+                PlayerEvents.OnActivatePickaxeDurability -= HandleDurabilityPickup;
+            }
+            else
+            {
+                AiEvents.OnSetCurrentPickaxeDurability -= UpdateDurability;
+                AiEvents.OnActivatePickaxeDurability -= HandleDurabilityPickup;
+            }
         }
 
         #region PUBLICS
@@ -46,21 +66,20 @@ namespace DigFight
             _currentDurability--;
             if (_currentDurability <= 0)
                 Break();
-
-            _durabilityBar.GetDamaged();
+            if (_isItPlayer) _durabilityBar.GetDamaged();
         }
         #endregion
 
         private void Break()
         {
             if (!_pickaxe.IsBroken)
-                PickaxeEvents.OnBreak?.Invoke();
+                _pickaxe.OnBreak?.Invoke();
         }
         private void UpdateDurability()
         {
-            _maxDurability = DataManager.PickaxeDurability;
+            _maxDurability = _isItPlayer == true ? DataManager.PickaxeDurability : AiStats.PickaxeDurability;
             _currentDurability = _maxDurability;
-            _durabilityBar.ResetBar();
+            if (_isItPlayer) _durabilityBar.ResetBar();
         }
         private void HandleDurabilityPickup(PowerUp powerUp)
         {
@@ -68,7 +87,7 @@ namespace DigFight
             if (_currentDurability > _maxDurability)
                 _currentDurability = _maxDurability;
 
-            _durabilityBar.GetRepaired();
+            if (_isItPlayer) _durabilityBar.GetRepaired();
         }
     }
 }

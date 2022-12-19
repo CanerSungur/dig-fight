@@ -8,6 +8,8 @@ namespace ZestGames
         #region PLAYER
         public static Transform PlayerTransform { get; private set; }
         public static void SetPlayerTransform(Transform transform) => PlayerTransform = transform;
+        public static Transform AiTransform { get; private set; }
+        public static void SetAiTransform(Transform transform) => AiTransform = transform;
         #endregion
 
         #region AI

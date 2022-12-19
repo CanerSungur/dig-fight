@@ -14,12 +14,12 @@ namespace DigFight
         #region FIXED CANVAS POSITION
         private bool _isItPlayer = false;
         private const float FIXED_X_POSITION_FOR_PLAYER = -1.7f;
-        private const float FIXED_X_POSITION_FOR_AI = 11f;
+        private const float FIXED_X_POSITION_FOR_AI = 9f;
         #endregion
 
         #region LINE TO TARGET
         private LineRenderer _lineRenderer;
-        private const float LINE_RENDERER_OFFSET = 0.7f;
+        private const float LINE_RENDERER_OFFSET = -0.7f;
         #endregion
 
         #region TEXT OF REMAINING BOXES TO FINISH
@@ -67,7 +67,10 @@ namespace DigFight
         private void SetLineRendererTargetPosition()
         {
             if (_progressHandler.transform.position.x > 0)
-                _lineRenderer.SetPosition(1, new Vector3(_progressHandler.transform.position.x + LINE_RENDERER_OFFSET, 0f, 0f));
+            {
+                float distance = _progressHandler.transform.position.x - transform.position.x;
+                _lineRenderer.SetPosition(1, new Vector3(distance + LINE_RENDERER_OFFSET, 0f, 0f));
+            }
             else
                 _lineRenderer.SetPosition(1, Vector3.zero);
         }

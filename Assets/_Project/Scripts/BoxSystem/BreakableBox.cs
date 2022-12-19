@@ -16,6 +16,7 @@ namespace DigFight
 
         #region SCRIPT REFERENCES
         private Player _player;
+        private Ai _ai;
         private DebrisHandler _debrisHandler;
         private CrackHandler _crackHandler;
         private PieceHandler _pieceHandler;
@@ -36,6 +37,7 @@ namespace DigFight
         public DebrisHandler DebrisHandler => _debrisHandler;
         public Enums.BoxType BoxType => _boxType;
         public Player Player => _player;
+        public Ai Ai => _ai;
         #endregion
 
         #region SEQUENCE
@@ -67,14 +69,9 @@ namespace DigFight
             _crackHandler.Init(this);
             _debrisHandler.Init(this);
         }
-        public void ChangeParent(Transform transform)
-        {
-            this.transform.SetParent(transform);
-        }
-        public void AssignInteracter(Player player)
-        {
-            _player = player;
-        }
+        public void ChangeParent(Transform transform) => this.transform.SetParent(transform);
+        public void AssignInteracter(Player player) => _player = player;
+        public void AssignInteracter(Ai ai) => _ai = ai;
         public void GetDamaged(int amount)
         {
             CameraManager.OnBoxHitShake?.Invoke();
@@ -114,10 +111,6 @@ namespace DigFight
         #endregion
 
         #region PUBLICS
-        //public void AssignHitter(Player player)
-        //{
-        //    _player = player;
-        //}
         public void Explode()
         {
             if (_isBroken) return;
@@ -146,13 +139,18 @@ namespace DigFight
         #region PRIVATES
         private void StopHittersDiggingProcess()
         {
-            if (_player == null)
-                Debug.Log("Player is not assigned!");
-            else
+            if (_player)
             {
                 _player.StoppedDigging();
                 _player.DigHandler.StopDiggingProcess();
             }
+            else if (_ai)
+            {
+                _ai.StoppedDigging();
+                _ai.DigHandler.StopDiggingProcess();
+            }
+            else
+                Debug.Log("NO INTERACTOR is assigned!", this);
         }
         private void SetHitPower(int damageAmount)
         {
