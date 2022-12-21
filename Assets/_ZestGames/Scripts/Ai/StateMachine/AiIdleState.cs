@@ -9,7 +9,7 @@ namespace ZestGames
         private Ai _ai;
 
         private bool _canMakeADecision = false;
-        private readonly float _decisionDelay = 3f;
+        private readonly float _decisionDelay = 1f;
         private float _timer;
 
         #region SEQUENCE
@@ -53,14 +53,31 @@ namespace ZestGames
             {
                 // priority: dig, push, run, fly
                 // dice    : 40,  30  , 20,  10
-                if (_ai.SurroundingChecker.CanRun)
-                    aiStateManager.SwitchState(aiStateManager.RunState);
+                //if (_ai.IsInDigZone && _ai.SurroundingChecker.CanDig)
+                //    aiStateManager.SwitchState(aiStateManager.DigState);
+                //else if (_ai.IsInPushZone && _ai.SurroundingChecker.CanPush)
+                //    aiStateManager.SwitchState(aiStateManager.PushState);
+                if (!_ai.IsGrounded)
+                    aiStateManager.SwitchState(aiStateManager.FallState);
                 else
-                    Debug.Log("Cannot run");
+                {
+                    if (_ai.SurroundingChecker.CanRun)
+                        aiStateManager.SwitchState(aiStateManager.RunState);
+                    else if (_ai.SurroundingChecker.CanDig && _ai.IsInDigZone)
+                        aiStateManager.SwitchState(aiStateManager.DigState);
+                    //else if (_ai.SurroundingChecker.CanPush && _ai.IsInPushZone)
+                    //    aiStateManager.SwitchState(aiStateManager.PushState);
+                    else if (_ai.SurroundingChecker.CanFly)
+                        aiStateManager.SwitchState(aiStateManager.FlyState);
+                }
 
                 _canMakeADecision = false;
             }
         }
+
+        #region PUBLICS
+        public void ReverseRunDirection() => _ai.StateManager.RunState.RunToTheOtherSide();
+        #endregion
 
         #region DOTWEEN FUNCTIONS
         private void StartRotationSequence()

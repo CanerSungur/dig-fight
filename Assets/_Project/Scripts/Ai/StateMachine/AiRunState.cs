@@ -8,12 +8,12 @@ namespace DigFight
     public class AiRunState : AiBaseState
     {
         private Ai _ai;
-        private bool _leftIsEmpty, _rightIsEmpty, _movementStarted, _onAir = false;
-        private Vector3 _direction = Vector3.zero;
+        private bool _leftIsRunnable, _rightIsRunnable, _movementStarted, _reverseDirection = false;
+        private Vector3 _direction;
 
         #region FALL DELAY
         private float _counter;
-        private const float FALL_DELAY = 0.5f;
+        private const float FALL_DELAY = 0.1f;
         #endregion
 
         public override void EnterState(AiStateManager aiStateManager)
@@ -25,10 +25,9 @@ namespace DigFight
                 _ai = aiStateManager.Ai;
 
             _counter = FALL_DELAY;
-            _movementStarted = _onAir = false;
-            _leftIsEmpty = _ai.SurroundingChecker.Left == Enums.Surrounding.Empty;
-            _rightIsEmpty = _ai.SurroundingChecker.Right == Enums.Surrounding.Empty;
-            if (!_leftIsEmpty && !_rightIsEmpty)
+            _movementStarted = false;
+            CheckSides();
+            if (!_leftIsRunnable && !_rightIsRunnable && !_ai.SurroundingChecker.CanDig && !_ai.SurroundingChecker.CanPush)
                 aiStateManager.SwitchState(aiStateManager.IdleState);
 
             DecideDirection();
@@ -50,15 +49,31 @@ namespace DigFight
             }
         }
 
+        #region HELPERS
+        private void CheckSides()
+        {
+            _leftIsRunnable = _ai.SurroundingChecker.Left != Enums.Surrounding.Wall;
+            _rightIsRunnable = _ai.SurroundingChecker.Right != Enums.Surrounding.Wall;
+        }
         private void DecideDirection()
         {
-            if (_leftIsEmpty && !_rightIsEmpty)
+            if (_reverseDirection)
+            {
+                _direction *= -1f;
+                Debug.Log("Reverse Direction!");
+                _reverseDirection = false;
+                return;
+            }
+
+            if (_leftIsRunnable && !_rightIsRunnable)
                 _direction = Vector3.left;
-            else if (!_leftIsEmpty && _rightIsEmpty)
+            else if (!_leftIsRunnable && _rightIsRunnable)
                 _direction = Vector3.right;
-            else if (_leftIsEmpty && _rightIsEmpty)
+            else if (_leftIsRunnable && _rightIsRunnable)
                 _direction = RNG.RollDice(50) ? Vector3.left : Vector3.right;
         }
+        #endregion
+
         private void Move(Vector3 direction)// left or right
         {
             _ai.Rigidbody.velocity = direction * (_ai.CurrentMovementSpeed + _ai.PowerUpHandler.SpeedRate) * Time.deltaTime;
@@ -75,5 +90,12 @@ namespace DigFight
 
             _ai.MeshTransform.localRotation = Quaternion.Lerp(_ai.MeshTransform.localRotation, Quaternion.Euler(0f, eulerY, 0f), 10f * Time.deltaTime);
         }
+
+        #region PUBLICS
+        public void RunToTheOtherSide()
+        {
+            _reverseDirection = true;
+        }
+        #endregion
     }
 }

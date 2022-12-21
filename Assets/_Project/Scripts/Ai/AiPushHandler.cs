@@ -1,4 +1,5 @@
 using UnityEngine;
+using ZestCore.Utility;
 using ZestGames;
 
 namespace DigFight
@@ -12,9 +13,8 @@ namespace DigFight
         private Enums.BoxTriggerDirection _currentBoxTriggerDirection;
         private PushableBox _currentPushedBox = null;
 
-        #region PUSHING DELAY
-        private float _delayedTime;
-        private const float PUSH_DELAY = 0.5f;
+        #region DIG CHANCE
+        private bool _pushIsEnabled;
         #endregion
 
         #region PROPERTIES
@@ -31,6 +31,7 @@ namespace DigFight
             if (_ai == null)
                 _ai = ai;
 
+            _pushIsEnabled = true;
             PushDuration = _pushSpeed;
 
             AiEvents.OnSetCurrentPickaxeSpeed += UpdatePushSpeed;
@@ -42,23 +43,33 @@ namespace DigFight
             AiEvents.OnSetCurrentPickaxeSpeed -= UpdatePushSpeed;
         }
 
+        //private void Update()
+        //{
+        //    if (_ai.IsInPushZone && !_ai.IsDigging && !_ai.IsPushing && Time.time >= _delayedTime && _currentPushedBox.IsReadyForPushing)
+        //        _ai.StartedPushing();
+        //}
+
         #region PUBLICS
-        public void StartPushingProcess(Enums.BoxTriggerDirection triggerDirection)
+        public void AssignCurrentTriggerDirection(Enums.BoxTriggerDirection boxTriggerDirection) => _currentBoxTriggerDirection = boxTriggerDirection;
+        public void StartPushingProcess()
         {
-            //_player.DigHandler.StopDiggingProcess();
-
-            //EnablePickaxe();
-            _currentBoxTriggerDirection = triggerDirection;
             _ai.EnteredPushZone();
-            _delayedTime = Time.time + PUSH_DELAY;
 
-            //Debug.Log("Side: " + triggerDirection);
+            if (_pushIsEnabled && _ai.IsInPushZone && !_ai.IsDigging && !_ai.IsPushing && _ai.IsGrounded/* && _ai.StateManager.CurrentStateType != Enums.AiStateType.Fall*/)
+            {
+                _ai.StateManager.SwitchState(_ai.StateManager.PushState);
+                _pushIsEnabled = false;
+            }
         }
         public void StopPushingProcess()
         {
-            //DisablePickaxe();
             _currentBoxTriggerDirection = Enums.BoxTriggerDirection.None;
             _ai.ExitedPushZone();
+
+            if (_ai.IsGrounded)
+                _ai.StateManager.SwitchState(_ai.StateManager.IdleState);
+            else
+                _ai.StateManager.SwitchState(_ai.StateManager.FallState);
         }
         public void SetPushedBox(PushableBox box) => _currentPushedBox = box;
         #endregion

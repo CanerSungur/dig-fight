@@ -19,7 +19,7 @@ namespace DigFight
 
         #region CONTROLS
         public bool CanFly => _up == Enums.Surrounding.Empty;
-        public bool CanRun => _left == Enums.Surrounding.Empty || _right == Enums.Surrounding.Empty;
+        public bool CanRun => _left != Enums.Surrounding.Wall || _right != Enums.Surrounding.Wall;
         public bool CanDig => _left == Enums.Surrounding.BreakableBox || _left == Enums.Surrounding.ExplosiveBox || _left == Enums.Surrounding.Chest
             || _right == Enums.Surrounding.BreakableBox || _right == Enums.Surrounding.ExplosiveBox || _right == Enums.Surrounding.Chest
             || _down == Enums.Surrounding.BreakableBox || _down == Enums.Surrounding.ExplosiveBox || _down == Enums.Surrounding.Chest;

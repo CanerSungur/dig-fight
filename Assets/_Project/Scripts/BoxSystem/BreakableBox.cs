@@ -24,6 +24,7 @@ namespace DigFight
 
         #region COMPONENTS
         private Transform _meshTransform;
+        private Collider _collider;
         #endregion
 
         #region EFFECT RELATED
@@ -55,6 +56,7 @@ namespace DigFight
             if (_meshTransform == null)
             {
                 _meshTransform = transform.GetChild(0);
+                _collider = GetComponent<Collider>();
 
                 _debrisHandler = GetComponent<DebrisHandler>();
                 _crackHandler = GetComponent<CrackHandler>();
@@ -66,6 +68,7 @@ namespace DigFight
                 }
             }
 
+            _collider.enabled = true;
             _crackHandler.Init(this);
             _debrisHandler.Init(this);
         }
@@ -96,8 +99,6 @@ namespace DigFight
         }
         public void Break()
         {
-            StopHittersDiggingProcess();
-
             _isBroken = true;
             AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
             CameraManager.OnBoxBreakShake?.Invoke();
@@ -105,6 +106,9 @@ namespace DigFight
 
             _crackHandler.DisposeCracks();
             _debrisHandler.ActivateDebrises();
+            _collider.enabled = false;
+
+            StopHittersDiggingProcess();
 
             Destroy(gameObject);
         }
@@ -148,6 +152,10 @@ namespace DigFight
             {
                 _ai.StoppedDigging();
                 _ai.DigHandler.StopDiggingProcess();
+                if (_ai.IsGrounded)
+                    _ai.StateManager.SwitchState(_ai.StateManager.IdleState);
+                else
+                    _ai.StateManager.SwitchState(_ai.StateManager.FallState);
             }
             else
                 Debug.Log("NO INTERACTOR is assigned!", this);
@@ -197,6 +205,8 @@ namespace DigFight
         }
         private void SpawnMoneyOnHit(int amount)
         {
+            if (_ai && !_player) return;
+
             if (amount <= CurrentHealth)
                 CollectableEvents.OnSpawnMoney?.Invoke(amount, transform.position);
             else

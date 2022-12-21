@@ -47,7 +47,7 @@ namespace ZestGames
 
         #region CONTROLS
         public bool CanMove => GameManager.GameState == Enums.GameState.Started;
-        public bool IsGrounded => Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 0.01f, groundLayerMask);
+        public bool IsGrounded => Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 0.05f, groundLayerMask);
         public bool IsTooHigh => !Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 2f, groundLayerMask);
         public bool IsMoving => Rigidbody.velocity.magnitude > 0.05f;
         #endregion

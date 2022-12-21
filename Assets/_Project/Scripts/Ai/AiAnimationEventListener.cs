@@ -24,17 +24,11 @@ namespace DigFight
                 //    _animationController.Ai.DigHandler.StartDiggingProcess(_animationController.Ai.DigHandler.CurrentBoxTriggerDirection);
             }
             else if (message.Equals("EnableCanHit"))
-            {
                 _animationController.Ai.DigHandler.Pickaxe.OnCanHit?.Invoke();
-                //AudioEvents.OnPlaySwing?.Invoke();
-            }
             else if (message.Equals("DisableCanHit"))
                 _animationController.Ai.DigHandler.Pickaxe.OnCannotHit?.Invoke();
             else if (message.Equals("SwingAnimStarted"))
-            {
                 AiAudioEvents.OnPlaySwing?.Invoke();
-
-            }
             else if (message.Equals("PushNow"))
             {
                 if (!_animationController.Ai.PushHandler.CurrentPushedBox.IsReadyForPushing) return;

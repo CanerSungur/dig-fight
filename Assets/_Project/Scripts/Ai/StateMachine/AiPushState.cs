@@ -1,17 +1,17 @@
+using DG.Tweening;
 using UnityEngine;
 using ZestGames;
-using DG.Tweening;
 using System;
 
 namespace DigFight
 {
-    public class AiDigState : AiBaseState
+    public class AiPushState : AiBaseState
     {
         private Ai _ai;
-        
+
         #region DELAY
         private float _delayedTime;
-        private const float DIG_DELAY = 2f;
+        private const float PUSH_DELAY = 2f;
         #endregion
 
         #region SEQUENCE
@@ -22,8 +22,8 @@ namespace DigFight
 
         public override void EnterState(AiStateManager aiStateManager)
         {
-            Debug.Log("DIG");
-            aiStateManager.SwitchStateType(Enums.AiStateType.Dig);
+            Debug.Log("PUSH");
+            aiStateManager.SwitchStateType(Enums.AiStateType.Push);
 
             if (_ai == null)
                 _ai = aiStateManager.Ai;
@@ -32,15 +32,15 @@ namespace DigFight
                 StartRotationSequence();
 
             AiEvents.OnIdle?.Invoke();
-            _delayedTime = Time.time + DIG_DELAY;
+            _delayedTime = Time.time + PUSH_DELAY;
         }
 
         public override void UpdateState(AiStateManager aiStateManager)
         {
             if (!_ai.IsGrounded)
                 aiStateManager.SwitchState(aiStateManager.FallState);
-            else if (_ai.IsGrounded && Time.time > _delayedTime && !_ai.IsDigging)
-                _ai.StartedDigging();
+            else if (_ai.IsGrounded && Time.time > _delayedTime && !_ai.IsPushing)
+                _ai.StartedPushing();
         }
 
         #region DOTWEEN FUNCTIONS

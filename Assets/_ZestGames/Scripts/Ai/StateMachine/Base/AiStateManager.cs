@@ -1,5 +1,6 @@
 using UnityEngine;
 using DigFight;
+using System;
 
 namespace ZestGames
 {
@@ -15,6 +16,7 @@ namespace ZestGames
         public AiRunState RunState = new AiRunState();
         public AiFlyState FlyState = new AiFlyState();
         public AiDigState DigState = new AiDigState();
+        public AiPushState PushState = new AiPushState();
         #endregion
 
         #region PROPERTIES
@@ -38,10 +40,12 @@ namespace ZestGames
         }
 
         #region PUBLICS
-        public void SwitchState(AiBaseState state)
+        public void SwitchState(AiBaseState state, Action action = null)
         {
             _currentState = state;
             state.EnterState(this);
+
+            action?.Invoke();
         }
         public void SwitchStateType(Enums.AiStateType stateType)
         {
