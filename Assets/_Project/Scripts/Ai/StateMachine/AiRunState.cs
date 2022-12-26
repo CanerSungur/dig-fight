@@ -16,6 +16,11 @@ namespace DigFight
         private const float FALL_DELAY = 0.1f;
         #endregion
 
+        #region MAX RUN TIMER
+        private float _maxRunTimer;
+        private const float MAX_RUN_TIME = 10f;
+        #endregion
+
         public override void EnterState(AiStateManager aiStateManager)
         {
             Debug.Log("RUN");
@@ -25,6 +30,7 @@ namespace DigFight
                 _ai = aiStateManager.Ai;
 
             _counter = FALL_DELAY;
+            _maxRunTimer = MAX_RUN_TIME;
             _movementStarted = false;
             CheckSides();
             if (!_leftIsRunnable && !_rightIsRunnable && !_ai.SurroundingChecker.CanDig && !_ai.SurroundingChecker.CanPush)
@@ -40,6 +46,9 @@ namespace DigFight
             {
                 Move(_direction);
                 Rotate(_direction);
+
+                if (Time.time > _maxRunTimer)
+                    aiStateManager.SwitchState(aiStateManager.IdleState);
             }
             else
             {

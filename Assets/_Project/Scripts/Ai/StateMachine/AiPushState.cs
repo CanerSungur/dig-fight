@@ -11,7 +11,7 @@ namespace DigFight
 
         #region DELAY
         private float _delayedTime;
-        private const float PUSH_DELAY = 2f;
+        //private const float PUSH_DELAY = 2f;
         #endregion
 
         #region SEQUENCE
@@ -32,7 +32,7 @@ namespace DigFight
                 StartRotationSequence();
 
             AiEvents.OnIdle?.Invoke();
-            _delayedTime = Time.time + PUSH_DELAY;
+            _delayedTime = Time.time + _ai.PushHandler.PushDelay;
         }
 
         public override void UpdateState(AiStateManager aiStateManager)

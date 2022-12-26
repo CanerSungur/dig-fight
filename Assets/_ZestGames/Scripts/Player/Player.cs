@@ -90,6 +90,8 @@ namespace ZestGames
             PlayerUpgradeEvents.OnCloseCanvas += HandleUpgradeEnd;
             PlayerEvents.OnFly += StartFlying;
             PlayerEvents.OnFall += StopFlying;
+
+            GameEvents.OnGameEnd += HandleGameEnd;
         }
 
         private void OnDisable()
@@ -98,6 +100,8 @@ namespace ZestGames
             PlayerUpgradeEvents.OnCloseCanvas -= HandleUpgradeEnd;
             PlayerEvents.OnFly -= StartFlying;
             PlayerEvents.OnFall -= StopFlying;
+
+            GameEvents.OnGameEnd -= HandleGameEnd;
         }
 
         #region EVENT HANDLER FUNCTIONS
@@ -113,6 +117,13 @@ namespace ZestGames
         }
         private void StartFlying() => IsFlying = true;
         private void StopFlying() => IsFlying = false;
+        private void HandleGameEnd(Enums.GameEnd gameEnd)
+        {
+            if (gameEnd == Enums.GameEnd.Success)
+                PlayerEvents.OnWin?.Invoke();
+            else if (gameEnd == Enums.GameEnd.Fail)
+                PlayerEvents.OnLose?.Invoke();
+        }
         #endregion
 
         #region PUBLICS

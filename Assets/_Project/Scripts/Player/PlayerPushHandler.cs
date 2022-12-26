@@ -63,6 +63,7 @@ namespace DigFight
         public void StopPushingProcess()
         {
             //DisablePickaxe();
+            _currentPushedBox.Layer.ResetLayer();
             _currentBoxTriggerDirection = Enums.BoxTriggerDirection.None;
             _player.ExitedPushZone();
         }

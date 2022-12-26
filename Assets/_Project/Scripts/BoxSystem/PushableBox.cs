@@ -30,7 +30,8 @@ namespace DigFight
         #region PROPERTIES
         public bool RightIsMiddleBox => _rightIsMiddleBox;
         public bool LeftIsBorderBox => _leftIsBorderBox;
-        public bool IsReadyForPushing => !(_moveSeqIsPlaying && _enterScreenSeqIsPlaying && _leaveScreenSeqIsPlaying) && (_player || _ai);
+        public bool IsReadyForPushing => /*!(_moveSeqIsPlaying && _enterScreenSeqIsPlaying && _leaveScreenSeqIsPlaying) && (_player || _ai) && */!_layer.IsBeingPushed;
+        public Layer Layer => _layer;
         #endregion
 
         #region INTERFACE FUNCTIONS

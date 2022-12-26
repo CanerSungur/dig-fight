@@ -114,14 +114,14 @@ namespace DigFight
                 if (_playerDigHandler)
                 {
                     GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
-                    PlayerEvents.OnLose?.Invoke();
-                    AiEvents.OnWin?.Invoke();
+                    //PlayerEvents.OnLose?.Invoke();
+                    //AiEvents.OnWin?.Invoke();
                 }
                 else if (_aiDigHandler)
                 {
                     GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Success);
-                    PlayerEvents.OnWin?.Invoke();
-                    AiEvents.OnLose?.Invoke();
+                    //PlayerEvents.OnWin?.Invoke();
+                    //AiEvents.OnLose?.Invoke();
                 }
                 DisablePickaxe();
                 CanHit = false;

@@ -121,7 +121,12 @@ namespace ZestGames
         private void Idle() => _animator.SetBool(_moveID, false);
         private void Move() => _animator.SetBool(_moveID, true);
         private void Die() => _animator.SetTrigger(_dieID);
-        private void Win() => _animator.SetTrigger(_winID);
+        private void Win()
+        {
+            SelectRandomCheer();
+            _animator.SetTrigger(_winID);
+        }
+            
         private void SelectRandomLose() => _animator.SetInteger(_loseIndexID, Random.Range(1, 4));
         private void Lose()
         {

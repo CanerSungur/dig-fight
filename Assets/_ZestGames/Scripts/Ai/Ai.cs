@@ -35,6 +35,8 @@ namespace ZestGames
         public ProgressHandler ProgressHandler => _progressHandler == null ? _progressHandler = GetComponent<ProgressHandler>() : _progressHandler;
         private AiSurroundingChecker _surroundingChecker;
         public AiSurroundingChecker SurroundingChecker => _surroundingChecker == null ? _surroundingChecker = GetComponent<AiSurroundingChecker>() : _surroundingChecker;
+        private AiEffectHandler _effectHandler;
+        public AiEffectHandler EffectHandler => _effectHandler == null ? _effectHandler = GetComponent<AiEffectHandler>() : _effectHandler;
         #endregion
 
         [Header("-- MOVEMENT SETUP --")]
@@ -91,6 +93,7 @@ namespace ZestGames
             PushHandler.Init(this);
             ProgressHandler.Init(this);
             PowerUpHandler.Init(this);
+            EffectHandler.Init(this);
 
             AiEvents.OnFly += StartFlying;
             AiEvents.OnFall += StopFlying;

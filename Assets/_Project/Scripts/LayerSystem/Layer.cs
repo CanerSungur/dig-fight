@@ -18,8 +18,13 @@ namespace DigFight
         private List<PushableBox> _pushableBoxes = new List<PushableBox>();
         #endregion
 
+        #region PUBLIC READONLY
         public readonly int BoxCount = 4;
         public readonly float BoxGap = 2.25f;
+        #endregion
+
+        private bool _isBeingPushed, _resetHappening;
+        public bool IsBeingPushed => _isBeingPushed;
 
         public void Init(LayerHandler layerHandler)
         {
@@ -27,6 +32,7 @@ namespace DigFight
             _borderContainer = transform.GetChild(0).gameObject;
             _boxContainer = transform.GetChild(1).gameObject;
             InitializeInteractiveBoxes();
+            _isBeingPushed = _resetHappening = false;
         }
 
         #region HELPERS
@@ -48,17 +54,19 @@ namespace DigFight
         #region PUBLICS
         public void PushBoxesLeft()
         {
+            if (_isBeingPushed) return;
+            _isBeingPushed = true;
+
             foreach (PushableBox pushableBox in _pushableBoxes)
-            {
                 pushableBox.StartMoveSequence(Enums.BoxTriggerDirection.Left);
-            }
         }
         public void PushBoxesRight()
         {
+            if (_isBeingPushed) return;
+            _isBeingPushed = true;
+
             foreach (PushableBox pushableBox in _pushableBoxes)
-            {
                 pushableBox.StartMoveSequence(Enums.BoxTriggerDirection.Right);
-            }
         }
         public void AddPushableBox(PushableBox pushableBox)
         {
@@ -69,6 +77,13 @@ namespace DigFight
         {
             if (_pushableBoxes.Contains(pushableBox))
                 _pushableBoxes.Remove(pushableBox);
+        }
+        public void ResetLayer()
+        {
+            if (_resetHappening) return;
+
+            _resetHappening = true;
+            Delayer.DoActionAfterDelay(this, PlayerPushHandler.PushDuration * 1.1f, () => _isBeingPushed = _resetHappening = false);
         }
         #endregion
 

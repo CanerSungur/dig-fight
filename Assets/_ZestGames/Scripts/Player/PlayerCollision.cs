@@ -7,9 +7,48 @@ namespace ZestGames
     {
         private Player _player;
 
+        private bool _collidingWithPushableBox, _collidingWithBorderBox;
+
         public void Init(Player player)
         {
             _player = player;
+            _collidingWithBorderBox = _collidingWithPushableBox = false;
+        }
+
+        private void CheckIfSquishedBetweenBorderAndPushable()
+        {
+            if (_collidingWithBorderBox && _collidingWithPushableBox)
+            {
+                AudioManager.PlayAudio(Enums.AudioType.CharacterPop);
+                GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
+                //AiEvents.OnWin?.Invoke();
+                PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.CharacterPop_Confetti, transform.position + new Vector3(0f, 1f, 2f), Quaternion.identity);
+                gameObject.SetActive(false);
+            }
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject.TryGetComponent(out PushableBox pushableBox))
+            {
+                _collidingWithPushableBox = true;
+                CheckIfSquishedBetweenBorderAndPushable();
+            }
+
+            if (collision.gameObject.layer == LayerMask.NameToLayer("MiddleBox") || collision.gameObject.layer == LayerMask.NameToLayer("BorderBox"))
+            {
+                _collidingWithBorderBox = true;
+                CheckIfSquishedBetweenBorderAndPushable();
+            }
+        }
+
+        private void OnCollisionExit(Collision collision)
+        {
+            if (collision.gameObject.TryGetComponent(out PushableBox pushableBox))
+                _collidingWithPushableBox = false;
+
+            if (collision.gameObject.layer == LayerMask.NameToLayer("MiddleBox") || collision.gameObject.layer == LayerMask.NameToLayer("BorderBox"))
+                _collidingWithBorderBox = false;
         }
 
         private void OnTriggerEnter(Collider other)

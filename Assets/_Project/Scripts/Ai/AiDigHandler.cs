@@ -9,26 +9,24 @@ namespace DigFight
         private Ai _ai;
         private Enums.BoxTriggerDirection _currentBoxTriggerDirection;
 
+        private const float DIG_DELAY = 1f;
+
         #region DIG CHANCE
         private int _currentDiggedBoxCount = 0;
         private bool _decidedToDig = false;
         private const int MAX_DIG_COUNT_FOR_RESET = 5;
-        private const int DIG_CHANCE = 0;
-        private const int DIG_CHANCE_REDUCTION = 0;
+        private const int DIG_CHANCE = 80;
+        private const int DIG_CHANCE_REDUCTION = 10;
         #endregion
 
         [Header("-- SETUP --")]
         [SerializeField] private Pickaxe pickaxe;
 
-        //#region DIGGING DELAY
-        //private float _delayedTime;
-        //private const float DIG_DELAY = 2f;
-        //#endregion
-
         #region PROPERTIES
         public Ai Ai => _ai;
         public Enums.BoxTriggerDirection CurrentBoxTriggerDirection => _currentBoxTriggerDirection;
         public Pickaxe Pickaxe => pickaxe;
+        public float DigDelay => DIG_DELAY;
         #endregion
 
         public void Init(Ai ai)
@@ -38,14 +36,6 @@ namespace DigFight
 
             pickaxe.Init(this);
         }
-
-        //private void Update()
-        //{
-        //    if (_ai.IsInDigZone && !_ai.IsDigging && !_ai.IsPushing && _decidedToDig)
-        //    {
-        //        _ai.StateManager.SwitchState(_ai.StateManager.DigState);
-        //    }
-        //}
 
         #region PUBLICS
         public void AssignCurrentTriggerDirection(Enums.BoxTriggerDirection boxTriggerDirection) => _currentBoxTriggerDirection = boxTriggerDirection;

@@ -1,15 +1,19 @@
 using UnityEngine;
 using DG.Tweening;
 using System;
+using ZestCore.Utility;
 
 namespace ZestGames
 {
     public class AiIdleState : AiBaseState
     {
+        private enum Decisions { Run, Fly, Dig, Push }
+        private Decisions _decision;
+
         private Ai _ai;
 
         private bool _canMakeADecision = false;
-        private readonly float _decisionDelay = 1f;
+        private readonly float _decisionDelay = 0.25f;
         private float _timer;
 
         #region SEQUENCE
@@ -57,18 +61,21 @@ namespace ZestGames
                 //    aiStateManager.SwitchState(aiStateManager.DigState);
                 //else if (_ai.IsInPushZone && _ai.SurroundingChecker.CanPush)
                 //    aiStateManager.SwitchState(aiStateManager.PushState);
+
                 if (!_ai.IsGrounded)
                     aiStateManager.SwitchState(aiStateManager.FallState);
                 else
                 {
-                    if (_ai.SurroundingChecker.CanRun)
-                        aiStateManager.SwitchState(aiStateManager.RunState);
-                    else if (_ai.SurroundingChecker.CanDig && _ai.IsInDigZone)
-                        aiStateManager.SwitchState(aiStateManager.DigState);
-                    //else if (_ai.SurroundingChecker.CanPush && _ai.IsInPushZone)
+                    RollDiceForAction(aiStateManager);
+
+                    //if (_ai.SurroundingChecker.CanRun)
+                    //    aiStateManager.SwitchState(aiStateManager.RunState);
+                    //else if (_ai.SurroundingChecker.CanDig && _ai.IsInDigZone)
+                    //    aiStateManager.SwitchState(aiStateManager.DigState);
+                    //else if (_ai.SurroundingChecker.CanPush && _ai.IsInPushZone && (_ai.SurroundingChecker.Left == Enums.Surrounding.Wall || _ai.SurroundingChecker.Right == Enums.Surrounding.Wall) && _ai.PushHandler.CurrentPushedBox.IsReadyForPushing)
                     //    aiStateManager.SwitchState(aiStateManager.PushState);
-                    else if (_ai.SurroundingChecker.CanFly)
-                        aiStateManager.SwitchState(aiStateManager.FlyState);
+                    //else if (_ai.SurroundingChecker.CanFly)
+                    //    aiStateManager.SwitchState(aiStateManager.FlyState);
                 }
 
                 _canMakeADecision = false;
@@ -77,6 +84,27 @@ namespace ZestGames
 
         #region PUBLICS
         public void ReverseRunDirection() => _ai.StateManager.RunState.RunToTheOtherSide();
+        #endregion
+
+        #region HELPERS
+        private void RollDiceForAction(AiStateManager aiStateManager)
+        {
+            if (_ai.SurroundingChecker.CanDig && _ai.IsInDigZone)
+                aiStateManager.SwitchState(aiStateManager.DigState);
+            else if (_ai.SurroundingChecker.CanPush && _ai.IsInPushZone && (_ai.SurroundingChecker.Left == Enums.Surrounding.Wall || _ai.SurroundingChecker.Right == Enums.Surrounding.Wall) && _ai.PushHandler.CurrentPushedBox.IsReadyForPushing)
+                aiStateManager.SwitchState(aiStateManager.PushState);
+            else if (!_ai.SurroundingChecker.CanRun)
+                aiStateManager.SwitchState(aiStateManager.FlyState);
+            else if (!_ai.SurroundingChecker.CanFly)
+                aiStateManager.SwitchState(aiStateManager.RunState);
+            else
+            {
+                if (RNG.RollDice(70))
+                    aiStateManager.SwitchState(aiStateManager.RunState);
+                else
+                    aiStateManager.SwitchState(aiStateManager.FlyState);
+            }
+        }
         #endregion
 
         #region DOTWEEN FUNCTIONS

@@ -12,6 +12,7 @@ namespace DigFight
         private Player _player;
         private Ai _ai;
         private Transform _meshTransform;
+        private Collider _collider;
 
         #region PROPERTIES
         public int MaxHealth => hp;
@@ -22,6 +23,8 @@ namespace DigFight
         public void Init(Layer layer)
         {
             _meshTransform = transform.GetChild(0);
+            _collider = GetComponent<Collider>();
+            _collider.enabled = true;
             CurrentHealth = MaxHealth;
         }
         public void ChangeParent(Transform transform) => this.transform.SetParent(transform);
@@ -43,6 +46,8 @@ namespace DigFight
         }
         public void Break()
         {
+            _collider.enabled = false;
+
             if (_player)
             {
                 _player.StoppedDigging();

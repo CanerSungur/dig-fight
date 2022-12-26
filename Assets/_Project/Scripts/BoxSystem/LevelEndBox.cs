@@ -10,7 +10,7 @@ namespace DigFight
             if (collision.gameObject.TryGetComponent(out Player player) && GameManager.GameState != Enums.GameState.GameEnded)
             {
                 GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Success);
-                PlayerEvents.OnWin?.Invoke();
+                //PlayerEvents.OnWin?.Invoke();
             }
         }
     }

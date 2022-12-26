@@ -115,13 +115,22 @@ namespace DigFight
         }
         private void StopHittersDiggingProcess()
         {
-            if (_player == null)
-                Debug.Log("Player is not assigned!");
-            else
+            if (_player)
             {
                 _player.StoppedDigging();
                 _player.DigHandler.StopDiggingProcess();
             }
+            else if (_ai)
+            {
+                _ai.StoppedDigging();
+                _ai.DigHandler.StopDiggingProcess();
+                if (_ai.IsGrounded)
+                    _ai.StateManager.SwitchState(_ai.StateManager.IdleState);
+                else
+                    _ai.StateManager.SwitchState(_ai.StateManager.FallState);
+            }
+            else
+                Debug.Log("NO INTERACTOR is assigned!", this);
         }
         #endregion
 

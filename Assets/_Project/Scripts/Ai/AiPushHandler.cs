@@ -13,13 +13,17 @@ namespace DigFight
         private Enums.BoxTriggerDirection _currentBoxTriggerDirection;
         private PushableBox _currentPushedBox = null;
 
-        #region DIG CHANCE
-        private bool _pushIsEnabled;
+        private const float PUSH_DELAY = 1.5f;
+
+        #region PUSH RESET
+        private float _pushResetTimer;
+        private const float PUSH_RESET_TIME = 10f;
         #endregion
 
         #region PROPERTIES
         public Enums.BoxTriggerDirection CurrentBoxTriggerDirection => _currentBoxTriggerDirection;
         public PushableBox CurrentPushedBox => _currentPushedBox;
+        public float PushDelay => PUSH_DELAY;
         #endregion
 
         #region STATICS
@@ -31,7 +35,7 @@ namespace DigFight
             if (_ai == null)
                 _ai = ai;
 
-            _pushIsEnabled = true;
+            _pushResetTimer = 0f;
             PushDuration = _pushSpeed;
 
             AiEvents.OnSetCurrentPickaxeSpeed += UpdatePushSpeed;
@@ -43,26 +47,21 @@ namespace DigFight
             AiEvents.OnSetCurrentPickaxeSpeed -= UpdatePushSpeed;
         }
 
-        //private void Update()
-        //{
-        //    if (_ai.IsInPushZone && !_ai.IsDigging && !_ai.IsPushing && Time.time >= _delayedTime && _currentPushedBox.IsReadyForPushing)
-        //        _ai.StartedPushing();
-        //}
-
         #region PUBLICS
         public void AssignCurrentTriggerDirection(Enums.BoxTriggerDirection boxTriggerDirection) => _currentBoxTriggerDirection = boxTriggerDirection;
         public void StartPushingProcess()
         {
             _ai.EnteredPushZone();
 
-            if (_pushIsEnabled && _ai.IsInPushZone && !_ai.IsDigging && !_ai.IsPushing && _ai.IsGrounded/* && _ai.StateManager.CurrentStateType != Enums.AiStateType.Fall*/)
+            if (_currentPushedBox.IsReadyForPushing && Time.time > _pushResetTimer && _ai.IsInPushZone && !_ai.IsDigging && !_ai.IsPushing && _ai.IsGrounded && _ai.StateManager.CurrentStateType != Enums.AiStateType.Fall)
             {
                 _ai.StateManager.SwitchState(_ai.StateManager.PushState);
-                _pushIsEnabled = false;
+                _pushResetTimer = Time.time + PUSH_RESET_TIME;
             }
         }
         public void StopPushingProcess()
         {
+            _currentPushedBox.Layer.ResetLayer();
             _currentBoxTriggerDirection = Enums.BoxTriggerDirection.None;
             _ai.ExitedPushZone();
 
