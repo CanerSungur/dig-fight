@@ -23,18 +23,21 @@ namespace DigFight
 
         public override void EnterState(AiStateManager aiStateManager)
         {
-            Debug.Log("RUN");
+            //Debug.Log("RUN");
             aiStateManager.SwitchStateType(Enums.AiStateType.Run);
 
             if (_ai == null)
                 _ai = aiStateManager.Ai;
 
             _counter = FALL_DELAY;
-            _maxRunTimer = MAX_RUN_TIME;
+            _maxRunTimer = Time.time + MAX_RUN_TIME;
             _movementStarted = false;
             CheckSides();
             if (!_leftIsRunnable && !_rightIsRunnable && !_ai.SurroundingChecker.CanDig && !_ai.SurroundingChecker.CanPush)
+            {
                 aiStateManager.SwitchState(aiStateManager.IdleState);
+                //Debug.Log("force exit run");
+            }
 
             DecideDirection();
             AiEvents.OnMove?.Invoke();

@@ -77,7 +77,8 @@ namespace DigFight
         public void AssignInteracter(Ai ai) => _ai = ai;
         public void GetDamaged(int amount)
         {
-            CameraManager.OnBoxHitShake?.Invoke();
+            if (_player)
+                CameraManager.OnBoxHitShake?.Invoke();
             AudioManager.PlayAudio(Enums.AudioType.HitBox, 0.5f);
 
             SpawnMoneyOnHit(amount);
@@ -101,8 +102,11 @@ namespace DigFight
         {
             _isBroken = true;
             AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
-            CameraManager.OnBoxBreakShake?.Invoke();
-            HapticEvents.OnPlayBreakBox?.Invoke();
+            if (_player)
+            {
+                CameraManager.OnBoxBreakShake?.Invoke();
+                HapticEvents.OnPlayBreakBox?.Invoke();
+            }
 
             _crackHandler.DisposeCracks();
             _debrisHandler.ActivateDebrises();
@@ -122,11 +126,16 @@ namespace DigFight
             Delayer.DoActionAfterDelay(this, Random.Range(0f, 0.75f), () => {
                 SpawnEffect(Enums.HitPower.High);
 
-                CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
+                if (_player)
+                    CollectableEvents.OnSpawnMoney?.Invoke(CurrentHealth, transform.position);
+
                 CurrentHealth = 0;
                 AudioManager.PlayAudio(Enums.AudioType.BreakBox, 0.3f);
-                CameraManager.OnBoxBreakShake?.Invoke();
-                HapticEvents.OnPlayBreakBox?.Invoke();
+                if (_player)
+                {
+                    CameraManager.OnBoxBreakShake?.Invoke();
+                    HapticEvents.OnPlayBreakBox?.Invoke();
+                }
 
                 if (_pieceHandler != null)
                     _pieceHandler.Release();

@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DurabilityBar_Pickaxe_Enable_Legacy
+  m_Name: DurabilityBar_Pickaxe_Enable_2_Legacy
   serializedVersion: 6
   m_Legacy: 1
   m_Compressed: 0

@@ -13,7 +13,7 @@ namespace ZestGames
         private Ai _ai;
 
         private bool _canMakeADecision = false;
-        private readonly float _decisionDelay = 0.25f;
+        private readonly float _decisionDelay = 1f;
         private float _timer;
 
         #region SEQUENCE
@@ -24,7 +24,7 @@ namespace ZestGames
 
         public override void EnterState(AiStateManager aiStateManager)
         {
-            Debug.Log("IDLE");
+            //Debug.Log("IDLE");
             aiStateManager.SwitchStateType(Enums.AiStateType.Idle);
 
             if (_ai == null)
@@ -89,20 +89,32 @@ namespace ZestGames
         #region HELPERS
         private void RollDiceForAction(AiStateManager aiStateManager)
         {
-            if (_ai.SurroundingChecker.CanDig && _ai.IsInDigZone)
+            if (_ai.SurroundingChecker.CanDig && _ai.IsInDigZone && RNG.RollDice(50))
                 aiStateManager.SwitchState(aiStateManager.DigState);
             else if (_ai.SurroundingChecker.CanPush && _ai.IsInPushZone && (_ai.SurroundingChecker.Left == Enums.Surrounding.Wall || _ai.SurroundingChecker.Right == Enums.Surrounding.Wall) && _ai.PushHandler.CurrentPushedBox.IsReadyForPushing)
                 aiStateManager.SwitchState(aiStateManager.PushState);
             else if (!_ai.SurroundingChecker.CanRun)
+            {
                 aiStateManager.SwitchState(aiStateManager.FlyState);
+                //Debug.Log("cant run");
+            }
             else if (!_ai.SurroundingChecker.CanFly)
+            {
                 aiStateManager.SwitchState(aiStateManager.RunState);
+                //Debug.Log("cant fly");
+            }
             else
             {
-                if (RNG.RollDice(70))
+                if (RNG.RollDice(80))
+                {
                     aiStateManager.SwitchState(aiStateManager.RunState);
+                    //Debug.Log("dice run");
+                }
                 else
+                {
                     aiStateManager.SwitchState(aiStateManager.FlyState);
+                    //Debug.Log("dice fly");
+                }
             }
         }
         #endregion

@@ -9,6 +9,8 @@ namespace ZestGames
         public static Enums.GameState GameState { get; private set; }
         public static Enums.GameEnd GameEnd { get; private set; }
 
+        [SerializeField] private float _gameTime = 1f;
+
         [Header("-- REFERENCES --")]
         private UiManager _uiManager;
         private LevelManager _levelManager;
@@ -49,12 +51,12 @@ namespace ZestGames
             _moneySpawnManager.Init(this);
             _hapticManager = GetComponent<HapticManager>();
             _hapticManager.Init(this);
-            _postProcessManager.Init(this);
+            //_postProcessManager.Init(this);
 
             UiEvents.OnUpdateCollectableText?.Invoke(DataManager.TotalMoney);
             UiEvents.OnUpdateLevelText?.Invoke(LevelHandler.Level);
 
-            _postProcessManager.EnableBlur(this);
+            //_postProcessManager.EnableBlur(this);
         }
 
         private void Awake()
@@ -76,12 +78,17 @@ namespace ZestGames
             DOTween.KillAll();
         }
 
+        private void Update()
+        {
+            //Time.timeScale = _gameTime;
+        }
+
+        #region EVENT HANDLER FUNCTIONS
         private void HandleGameStart()
         {
             GameState = Enums.GameState.Started;
-            _postProcessManager.DisableBlur(this);
+            //_postProcessManager.DisableBlur(this);
         }
-
         private void HandleGameEnd(Enums.GameEnd gameEnd)
         {
             GameState = Enums.GameState.GameEnded;
@@ -92,5 +99,6 @@ namespace ZestGames
             else if (gameEnd == Enums.GameEnd.Fail)
                 GameEvents.OnLevelFail?.Invoke();
         }
+        #endregion
     }
 }

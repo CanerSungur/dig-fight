@@ -12,6 +12,19 @@ namespace DigFight
         {
             if (_animationController == null)
                 _animationController = animationController;
+
+            GameEvents.OnGameEnd += DisableLoopAudio;
+        }
+
+        private void OnDisable()
+        {
+            if (_animationController == null) return;
+            GameEvents.OnGameEnd -= DisableLoopAudio;
+        }
+
+        private void DisableLoopAudio(Enums.GameEnd gameEnd)
+        {
+            AudioManager.StopAudioLoop();
         }
 
         #region ANIMATION EVENT FUNCTIONS

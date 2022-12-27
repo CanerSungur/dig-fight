@@ -22,7 +22,7 @@ namespace DigFight
 
         public override void EnterState(AiStateManager aiStateManager)
         {
-            Debug.Log("PUSH");
+            //Debug.Log("PUSH");
             aiStateManager.SwitchStateType(Enums.AiStateType.Push);
 
             if (_ai == null)

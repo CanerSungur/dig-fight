@@ -9,10 +9,18 @@ namespace DigFight
         [SerializeField] private int hp = 1;
         [SerializeField] private LayerMask affectedLayer;
 
+        #region COMPONENTS
         private Player _player;
         private Ai _ai;
         private Transform _meshTransform;
         private Collider _collider;
+        #endregion
+
+        #region SKULL ANIMATION
+        private ExplosiveBoxSkullCanvas _skullCanvas;
+        private Animator _animator;
+        private readonly int _enableID = Animator.StringToHash("Enable");
+        #endregion
 
         #region PROPERTIES
         public int MaxHealth => hp;
@@ -22,6 +30,9 @@ namespace DigFight
         #region INTERFACE FUNCTIONS
         public void Init(Layer layer)
         {
+            _animator = GetComponent<Animator>();
+            _skullCanvas = GetComponentInChildren<ExplosiveBoxSkullCanvas>();
+            _skullCanvas.Init(this);
             _meshTransform = transform.GetChild(0);
             _collider = GetComponent<Collider>();
             _collider.enabled = true;
@@ -92,6 +103,11 @@ namespace DigFight
         //{
         //    _player = player;
         //}
+        #endregion
+
+        #region SKULL ANIMATION FUNCTIONS
+        public void EnableSkull() => _animator.SetBool(_enableID, true);
+        public void DisableSkull() => _animator.SetBool(_enableID, false);
         #endregion
     }
 }

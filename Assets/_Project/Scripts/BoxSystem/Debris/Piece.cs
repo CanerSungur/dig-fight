@@ -8,8 +8,13 @@ namespace DigFight
 {
     public class Piece : MonoBehaviour
     {
+        private PieceHandler _pieceHandler;
+
         public void Init(PieceHandler pieceHandler)
         {
+            if (_pieceHandler == null)
+                _pieceHandler = pieceHandler;
+
             transform.localRotation = Quaternion.Euler(Random.Range(0f, 180f), Random.Range(0f, 180f), Random.Range(0f, 180f));
         }
 
@@ -66,11 +71,17 @@ namespace DigFight
                 _pullInSequenceID = Guid.NewGuid();
                 _pullInSequence.id = _pullInSequenceID;
 
-                transform.SetParent(CharacterTracker.PlayerTransform);
+                if (_pieceHandler.BreakableBox.Player)
+                    transform.SetParent(CharacterTracker.PlayerTransform);
+                else if (_pieceHandler.BreakableBox.Ai)
+                    transform.SetParent(CharacterTracker.AiTransform);
+
                 _pullInSequence.Append(transform.DOLocalJump(Vector3.up, Random.Range(2f, 3f), 1, PULL_OUT_DURATION))
                     //.Join(transform.DOScale(Vector3.zero, PULL_OUT_DURATION))
                     .OnComplete(() => {
-                        CollectableEvents.OnSpawnMoney?.Invoke(1, transform.position);
+                        if (_pieceHandler.BreakableBox.Player)
+                            CollectableEvents.OnSpawnMoney?.Invoke(1, transform.position);
+
                         DeletePullInSequence();
                         Destroy(gameObject);
                     });

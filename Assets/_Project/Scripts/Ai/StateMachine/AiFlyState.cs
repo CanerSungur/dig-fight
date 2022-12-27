@@ -15,15 +15,21 @@ namespace DigFight
         private float _timer;
         #endregion
 
+        #region MAX RUN TIMER
+        private float _maxFlyTimer;
+        private const float MAX_FLY_TIME = 10f;
+        #endregion
+
         public override void EnterState(AiStateManager aiStateManager)
         {
-            Debug.Log("FLY");
+            //Debug.Log("FLY");
             aiStateManager.SwitchStateType(Enums.AiStateType.Fly);
 
             if (_ai == null)
                 _ai = aiStateManager.Ai;
 
             _timer = CHECK_SIDE_TIMER;
+            _maxFlyTimer = Time.time + MAX_FLY_TIME;
             _directionDecided = false;
             CheckSides();
             DecideDirection();
@@ -48,6 +54,9 @@ namespace DigFight
 
             Motor(_direction);
             Rotate(_direction);
+
+            if (Time.time > _maxFlyTimer)
+                aiStateManager.SwitchState(aiStateManager.FlyState);
         }
 
         private void CheckSides()

@@ -17,7 +17,7 @@ namespace DigFight
 
         public override void EnterState(AiStateManager aiStateManager)
         {
-            Debug.Log("FALL");
+            //Debug.Log("FALL");
             aiStateManager.SwitchStateType(Enums.AiStateType.Fall);
 
             if (_ai == null)

@@ -68,6 +68,13 @@ namespace DigFight
                 Break();
             if (_isItPlayer) _durabilityBar.GetDamaged();
         }
+        public void GetDamagedForExplosive()
+        {
+            _currentDurability -= (int)(MaxDurability * 0.5f);
+            if (_currentDurability <= 0)
+                Break();
+            if (_isItPlayer) _durabilityBar.GetDamaged();
+        }
         #endregion
 
         private void Break()

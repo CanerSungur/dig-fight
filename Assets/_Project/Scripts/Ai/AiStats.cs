@@ -6,14 +6,14 @@ namespace DigFight
     {
         #region CORE DATA
         private const int CORE_PICAXE_POWER = 1;
-        private const int CORE_PICKAXE_DURABILITY = 15;
+        private const int CORE_PICKAXE_DURABILITY = 50;
         private const float CORE_PICKAXE_SPEED = 1f;
         #endregion
 
         #region INCREMENT DATA
         private const int PICKAXE_POWER_INCREMENT = 1;
         private const int PICKAXE_DURABILITY_INCREMENT = 2;
-        private const float PICKAXE_SPEED_INCREMENT = 0.1f;
+        private const float PICKAXE_SPEED_INCREMENT = 0.25f;
         #endregion
 
         public static int PickaxePower => CORE_PICAXE_POWER + (LevelHandler.Level * PICKAXE_POWER_INCREMENT);

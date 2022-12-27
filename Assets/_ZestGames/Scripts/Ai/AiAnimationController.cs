@@ -152,7 +152,7 @@ namespace ZestGames
         }
         private void StopDigging() => _animator.SetBool(_diggingID, false);
         private void Stagger() => _animator.SetTrigger(_staggerID);
-        private void UpdateDigSpeed() => _animator.SetFloat(_digSpeedID, DataManager.PickaxeSpeed + (DataManager.PickaxeSpeed * _ai.PowerUpHandler.SpeedRate));
+        private void UpdateDigSpeed() => _animator.SetFloat(_digSpeedID, AiStats.PickaxeSpeed + (AiStats.PickaxeSpeed * _ai.PowerUpHandler.SpeedRate));
         private void UpdatePushSpeed()
         {
             _animator.SetFloat(_pushSpeedRateID, 2f + (1f * _ai.PowerUpHandler.SpeedRate));

@@ -84,7 +84,7 @@ namespace DigFight
         {
             _changedDurabilityImage.fillAmount = _remainingDurabilityImage.fillAmount;
 
-            StartShakeSequence();
+            //StartShakeSequence();
             StartGetDamagedSequence();
 
             _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();
@@ -93,7 +93,7 @@ namespace DigFight
         {
             _changedDurabilityImage.fillAmount = GetDurabilityNormalized();
 
-            StartShakeSequence();
+            //StartShakeSequence();
             StartGetRepairedSequence();
         }
         public void ResetBar() => _changedDurabilityImage.fillAmount = _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();

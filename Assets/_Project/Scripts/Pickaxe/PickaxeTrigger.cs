@@ -39,7 +39,7 @@ namespace DigFight
 
                     explosiveBox.GetDamaged(_pickaxe.DamageHandler.Damage);
                     _pickaxe.HitHappened();
-                    _pickaxe.DurabilityHandler.GetDamaged();
+                    _pickaxe.DurabilityHandler.GetDamagedForExplosive();
                     _pickaxe.OnCannotHit?.Invoke();
                 }
 
@@ -68,7 +68,7 @@ namespace DigFight
 
                     aiExplosiveBox.GetDamaged(_pickaxe.DamageHandler.Damage);
                     _pickaxe.HitHappened();
-                    _pickaxe.DurabilityHandler.GetDamaged();
+                    _pickaxe.DurabilityHandler.GetDamagedForExplosive();
                     _pickaxe.OnCannotHit?.Invoke();
                 }
 

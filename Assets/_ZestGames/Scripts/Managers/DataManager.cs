@@ -32,7 +32,7 @@ namespace ZestGames
         // core data
         private readonly float _coreMovementSpeed = 3f;
         private readonly float _coreMoneyValue = 1;
-        private readonly float _corePickaxeSpeed = 1f;
+        private readonly float _corePickaxeSpeed = 1.3f;
         private readonly int _corePickaxeDurability = 10;
         private readonly int _corePickaxePower = 1;
 

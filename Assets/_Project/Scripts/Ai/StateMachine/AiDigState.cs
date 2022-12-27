@@ -22,7 +22,7 @@ namespace DigFight
 
         public override void EnterState(AiStateManager aiStateManager)
         {
-            Debug.Log("DIG");
+            //Debug.Log("DIG");
             aiStateManager.SwitchStateType(Enums.AiStateType.Dig);
 
             if (_ai == null)

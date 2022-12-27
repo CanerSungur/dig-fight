@@ -92,8 +92,11 @@ namespace DigFight
                 SpawnEffects();
         
                 AudioManager.PlayAudio(Enums.AudioType.BreakChest, 0.3f);
-                CameraManager.OnBoxBreakShake?.Invoke();
-                HapticEvents.OnPlayBreakBox?.Invoke();
+                if (_player)
+                {
+                    CameraManager.OnBoxBreakShake?.Invoke();
+                    HapticEvents.OnPlayBreakBox?.Invoke();
+                }
 
                 Destroy(gameObject);
             });
