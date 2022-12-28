@@ -25,8 +25,8 @@ namespace ZestGames
         private float _pushBackTimer;
         private float _currentFOV, _currentFollowOffsetX;
 
-        private const float DEFAULT_FOV = 60f;
-        private const float PUSHED_BACK_FOV = 80f;
+        private const float DEFAULT_FOV = 65f;
+        private const float PUSHED_BACK_FOV = 75f;
         private const float PUSHED_BACK_DURATION = 3f;
 
         private const float DEFAULT_FOLLOW_OFFSET_X = 0f;

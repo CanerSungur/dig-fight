@@ -56,7 +56,7 @@ namespace DigFight
             Rotate(_direction);
 
             if (Time.time > _maxFlyTimer)
-                aiStateManager.SwitchState(aiStateManager.FlyState);
+                aiStateManager.SwitchState(aiStateManager.FallState);
         }
 
         private void CheckSides()

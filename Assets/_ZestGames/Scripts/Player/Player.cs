@@ -232,7 +232,7 @@ namespace ZestGames
                 _kickSequenceID = Guid.NewGuid();
                 _kickSequence.id = _kickSequenceID;
 
-                float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? transform.position.x - 2f : transform.position.x + 2f;
+                float targetPosX = pushDirection == Enums.BoxTriggerDirection.Left ? transform.position.x - 1.8f : transform.position.x + 1.8f;
                 _kickSequence.Append(transform.DOMoveX(targetPosX, PlayerPushHandler.PushDuration * 0.5f))
                     .OnComplete(DeleteKickSequence);
             }

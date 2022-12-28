@@ -13,8 +13,8 @@ namespace DigFight
 
         #region FIXED CANVAS POSITION
         private bool _isItPlayer = false;
-        private const float FIXED_X_POSITION_FOR_PLAYER = -1.7f;
-        private const float FIXED_X_POSITION_FOR_AI = 9f;
+        private const float FIXED_X_POSITION_FOR_PLAYER = -1.2f;
+        private const float FIXED_X_POSITION_FOR_AI = 7.25f;
         #endregion
 
         #region LINE TO TARGET

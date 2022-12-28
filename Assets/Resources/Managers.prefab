@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 1124688366865923144}
   - component: {fileID: 466320068415017879}
   - component: {fileID: 8100756653816973517}
+  - component: {fileID: 8562139990069545057}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -50,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1aad1b47c1b3fa419e3a32f4a47383a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameTime: 1
   _postProcessManager: {fileID: 0}
 --- !u!114 &1232470294
 MonoBehaviour:
@@ -106,6 +108,7 @@ MonoBehaviour:
   levelSuccess: {fileID: 0}
   settings: {fileID: 0}
   upgradeCanvas: {fileID: 0}
+  _powerUpCanvas: {fileID: 0}
   successScreenDelay: 1
   failScreenDelay: 1
 --- !u!114 &1124688366865923144
@@ -146,5 +149,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16346ac059f7f476d8bdf4123b144059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8562139990069545057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5491084403859615924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d39883f02263034e8bfeff1d34be249, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

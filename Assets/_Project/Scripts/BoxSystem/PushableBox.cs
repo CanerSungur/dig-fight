@@ -17,7 +17,8 @@ namespace DigFight
         private Sequence _moveSequence, _enterScreenSequence, _leaveScreenSequence;
         private Guid _moveSequenceID, _enterScreenSequenceID, _leaveScreenSequenceID;
         private bool _moveSeqIsPlaying, _enterScreenSeqIsPlaying, _leaveScreenSeqIsPlaying = false;
-        private const float BOX_LENGTH = 2.25f;
+        private const float BOX_LENGTH = 2f;
+        private const float MID_MOVEMENT_LENGTH = 2.5f;
         //private const float MOVE_DURATION = 3f;
         #endregion
 
@@ -199,14 +200,14 @@ namespace DigFight
                 {
                     rotation = new Vector3(0f, 0f, 5f);
 
-                    if (_leftIsMiddleBox) targetPosX = transform.localPosition.x - (BOX_LENGTH * 2);
+                    if (_leftIsMiddleBox) targetPosX = transform.localPosition.x - MID_MOVEMENT_LENGTH;
                     else targetPosX = transform.localPosition.x - BOX_LENGTH;
                 }
                 else
                 {
                     rotation = new Vector3(0f, 0f, -5f);
 
-                    if (_rightIsMiddleBox) targetPosX = transform.localPosition.x + (BOX_LENGTH * 2);
+                    if (_rightIsMiddleBox) targetPosX = transform.localPosition.x + MID_MOVEMENT_LENGTH;
                     else targetPosX = transform.localPosition.x + BOX_LENGTH;
                 }
 
