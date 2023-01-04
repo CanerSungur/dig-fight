@@ -19,6 +19,7 @@ namespace ZestGames
         public AiPushState PushState = new AiPushState();
         public AiWinState WinState = new AiWinState();
         public AiLoseState LoseState = new AiLoseState();
+        public AiReviveState ReviveState = new AiReviveState();
         #endregion
 
         #region PROPERTIES

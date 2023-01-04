@@ -113,7 +113,7 @@ namespace DigFight
             {
                 if (_playerDigHandler)
                 {
-                    GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
+                    GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.AskForRevive);
                     //PlayerEvents.OnLose?.Invoke();
                     //AiEvents.OnWin?.Invoke();
                 }

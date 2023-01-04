@@ -11,14 +11,20 @@ namespace ZestGames
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private TextMeshProUGUI collectableText;
         [SerializeField] private GameObject collectableImage;
+        [SerializeField] private TextMeshProUGUI coinText;
+        [SerializeField] private GameObject coinImage;
 
         [Header("-- BOOST SETUP --")]
         [SerializeField] private PowerUpIndicator _durabilityPowerUpIndicator;
         [SerializeField] private PowerUpIndicator _speedPowerUpIndicator;
         [SerializeField] private PowerUpIndicator _powerPowerUpIndicator;
 
+        #region STATICS
         public static Transform CollectableHUDTransform { get; private set; }
         public static Vector2 MoneyAnchoredPosition { get; private set; }
+        public static Transform CoinHUDTransform { get; private set; }
+        public static Vector2 CoinAnchoredPosition { get; private set; }
+        #endregion
 
         public void Init(UiManager uiManager)
         {
@@ -28,9 +34,12 @@ namespace ZestGames
 
             UiEvents.OnUpdateLevelText += UpdateLevelText;
             UiEvents.OnUpdateCollectableText += UpdateMoneyText;
+            UiEvents.OnUpdateCoinText += UpdateCoinText;
 
             CollectableHUDTransform = collectableText.transform.parent;
             MoneyAnchoredPosition = collectableImage.GetComponent<RectTransform>().anchoredPosition;
+            CoinHUDTransform = coinText.transform.parent;
+            CoinAnchoredPosition = coinImage.GetComponent<RectTransform>().anchoredPosition;
 
             PlayerEvents.OnActivatePickaxeDurability += ActivateDurabilityIndicator;
             PlayerEvents.OnActivatePickaxeSpeed += ActivateSpeedIndicator;
@@ -43,15 +52,21 @@ namespace ZestGames
 
             UiEvents.OnUpdateLevelText -= UpdateLevelText;
             UiEvents.OnUpdateCollectableText -= UpdateMoneyText;
+            UiEvents.OnUpdateCoinText -= UpdateCoinText;
 
             PlayerEvents.OnActivatePickaxeSpeed -= ActivateSpeedIndicator;
         }
 
-        #region UPDATERS
+        #region EVENT HANDLER FUNCTIONS
         private void UpdateLevelText(int level) => levelText.text = $"Level {level}";
         private void UpdateMoneyText(float money)
         {
             collectableText.text = money.ToString("#0");
+            DOTweenUtils.ShakeTransform(transform, 0.25f);
+        }
+        private void UpdateCoinText(int coin)
+        {
+            coinText.text = coin.ToString();
             DOTweenUtils.ShakeTransform(transform, 0.25f);
         }
         #endregion

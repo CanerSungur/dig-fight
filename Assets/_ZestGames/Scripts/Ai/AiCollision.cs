@@ -58,7 +58,7 @@ namespace ZestGames
             }
 
             if (collision.gameObject.TryGetComponent(out LevelEndBox levelEndBox) && GameManager.GameState == Enums.GameState.Started)
-                GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
+                GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.AskForRevive);
         }
 
         private void OnCollisionExit(Collision collision)

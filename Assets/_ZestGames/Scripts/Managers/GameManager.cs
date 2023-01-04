@@ -6,8 +6,11 @@ namespace ZestGames
 {
     public class GameManager : MonoBehaviour
     {
+        #region STATICS
         public static Enums.GameState GameState { get; private set; }
         public static Enums.GameEnd GameEnd { get; private set; }
+        public static bool PlayerIsRevived { get; private set; }
+        #endregion
 
         [SerializeField] private float _gameTime = 1f;
 
@@ -33,6 +36,7 @@ namespace ZestGames
             Application.targetFrameRate = 240;
             DOTween.Init(true, true, LogBehaviour.Verbose).SetCapacity(500, 125);
 
+            PlayerIsRevived = false;
             GameState = Enums.GameState.WaitingToStart;
             GameEnd = Enums.GameEnd.None;
 
@@ -57,6 +61,7 @@ namespace ZestGames
             //_postProcessManager.Init(this);
 
             UiEvents.OnUpdateCollectableText?.Invoke(DataManager.TotalMoney);
+            UiEvents.OnUpdateCoinText?.Invoke(DataManager.TotalCoin);
             UiEvents.OnUpdateLevelText?.Invoke(LevelHandler.Level);
 
             //_postProcessManager.EnableBlur(this);
@@ -71,12 +76,14 @@ namespace ZestGames
         {
             GameEvents.OnGameStart += HandleGameStart;
             GameEvents.OnGameEnd += HandleGameEnd;
+            PlayerEvents.OnRevive += HandlePlayerRevive;
         }
 
         private void OnDisable()
         {
             GameEvents.OnGameStart -= HandleGameStart;
             GameEvents.OnGameEnd -= HandleGameEnd;
+            PlayerEvents.OnRevive -= HandlePlayerRevive;
 
             DOTween.KillAll();
         }
@@ -92,15 +99,27 @@ namespace ZestGames
             GameState = Enums.GameState.Started;
             //_postProcessManager.DisableBlur(this);
         }
+        private void HandlePlayerRevive()
+        {
+            GameState = Enums.GameState.Started;
+            PlayerIsRevived = true;
+        }
         private void HandleGameEnd(Enums.GameEnd gameEnd)
         {
-            GameState = Enums.GameState.GameEnded;
             GameEnd = gameEnd;
 
             if (gameEnd == Enums.GameEnd.Success)
+            {
                 GameEvents.OnLevelSuccess?.Invoke();
+                GameState = Enums.GameState.GameEnded;
+            }
             else if (gameEnd == Enums.GameEnd.Fail)
+            {
                 GameEvents.OnLevelFail?.Invoke();
+                GameState = Enums.GameState.GameEnded;
+            }
+            else if (gameEnd == Enums.GameEnd.AskForRevive)
+                GameState = Enums.GameState.GameEnded;
         }
         #endregion
     }

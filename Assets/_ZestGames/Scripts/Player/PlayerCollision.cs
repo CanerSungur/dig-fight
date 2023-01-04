@@ -20,7 +20,15 @@ namespace ZestGames
             if (_collidingWithBorderBox && _collidingWithPushableBox)
             {
                 AudioManager.PlayAudio(Enums.AudioType.CharacterPop);
-                GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
+                if (GameManager.PlayerIsRevived)
+                {
+                    AdEventHandler.OnInterstitialActivate?.Invoke(() => {
+                        GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
+                    });
+                }
+                else
+                    GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
+
                 //AiEvents.OnWin?.Invoke();
                 PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.CharacterPop_Confetti, transform.position + new Vector3(0f, 1f, 2f), Quaternion.identity);
                 gameObject.SetActive(false);

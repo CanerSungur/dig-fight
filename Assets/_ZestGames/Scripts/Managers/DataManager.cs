@@ -46,6 +46,7 @@ namespace ZestGames
         #endregion
 
         public static float TotalMoney { get; private set; }
+        public static int TotalCoin { get; private set; }
 
         public void Init(GameManager gameManager)
         {
@@ -65,6 +66,8 @@ namespace ZestGames
 
             CollectableEvents.OnCollect += IncreaseTotalMoney;
             CollectableEvents.OnSpend += DecreaseTotalMoney;
+            CoinEvents.OnCollect += IncreaseTotalCoin;
+            CoinEvents.OnSpend += DecreaseTotalCoin;
         }
 
         private void OnDisable()
@@ -77,6 +80,8 @@ namespace ZestGames
 
             CollectableEvents.OnCollect -= IncreaseTotalMoney;
             CollectableEvents.OnSpend -= DecreaseTotalMoney;
+            CoinEvents.OnCollect -= IncreaseTotalCoin;
+            CoinEvents.OnSpend -= DecreaseTotalCoin;
 
             SaveData();
         }
@@ -105,6 +110,16 @@ namespace ZestGames
             TotalMoney -= amount;
             UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
             PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
+        }
+        private void IncreaseTotalCoin(int amount)
+        {
+            TotalCoin += amount;
+            UiEvents.OnUpdateCoinText?.Invoke(TotalCoin);
+        }
+        private void DecreaseTotalCoin(int amount)
+        {
+            TotalCoin -= amount;
+            UiEvents.OnUpdateCoinText?.Invoke(TotalCoin);
         }
         #endregion
 

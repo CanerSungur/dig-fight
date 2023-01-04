@@ -14,7 +14,7 @@ namespace ZestGames
 
     public static class PlayerEvents 
     {
-        public static Action OnMove, OnIdle, OnDie, OnWin, OnLose, OnCheer, OnFly, OnFall, OnLand;
+        public static Action OnMove, OnIdle, OnDie, OnWin, OnLose, OnCheer, OnFly, OnFall, OnLand, OnRevive;
         public static Action OnSetCurrentMovementSpeed, OnSetCurrentMoneyValue, OnSetCurrentPickaxeSpeed, OnSetCurrentPickaxeDurability, OnSetCurrentPickaxePower;
         public static Action OnOpenedUpgradeCanvas, OnClosedUpgradeCanvas;
         public static Action OnEmptyNextInQueue, OnStopSpendingMoney;
@@ -31,7 +31,7 @@ namespace ZestGames
 
     public static class UiEvents
     {
-        public static Action<int> OnUpdateLevelText;
+        public static Action<int> OnUpdateLevelText, OnUpdateCoinText;
         public static Action<float> OnUpdateCollectableText;
         public static Action<string, FeedBackUi.Colors> OnGiveFeedBack;
     }
@@ -41,7 +41,13 @@ namespace ZestGames
         public static Action<float> OnCollect, OnSpend;
         public static Action<int, Vector3> OnSpawnMoney;
     }
-    
+
+    public static class CoinEvents
+    {
+        public static Action<int> OnCollect, OnSpend;
+        public static Action<int, Vector3> OnSpawnCoin;
+    }
+
     public static class InputEvents
     {
         public static Action OnTapHappened, OnTouchStarted, OnTouchStopped;

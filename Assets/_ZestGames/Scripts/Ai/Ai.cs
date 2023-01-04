@@ -55,13 +55,13 @@ namespace ZestGames
         #endregion
 
         #region PROPERTIES
-        public bool IsDead { get; private set; }
         public bool IsInDigZone { get; private set; }
         public bool IsDigging { get; private set; }
         public bool IsInPushZone { get; private set; }
         public bool IsPushing { get; private set; }
         public bool IsFlying { get; private set; }
         public Transform MeshTransform { get; private set; }
+        public Vector3 StartingPosition { get; private set; }
         #endregion
 
         #region GETTERS
@@ -76,10 +76,15 @@ namespace ZestGames
         //private const float PUSH_SEQUENCE_DURATION = 3f;
         #endregion
 
+        private void Awake()
+        {
+            StartingPosition = transform.position;
+        }
+
         private void Start()
         {
             MeshTransform = transform.GetChild(0);
-            IsDead = IsInDigZone = IsDigging = IsFlying = IsInPushZone = IsPushing = false;
+            IsInDigZone = IsDigging = IsFlying = IsInPushZone = IsPushing = false;
             _currentMovementSpeed = _movementSpeed;
             _currentFlySpeed = _flySpeed;
 
@@ -99,6 +104,8 @@ namespace ZestGames
             AiEvents.OnFall += StopFlying;
 
             AiEvents.OnSetCurrentPickaxeSpeed += UpdateMotorSpeeds;
+
+            PlayerEvents.OnRevive += Revive;
         }
 
         private void OnDisable()
@@ -107,9 +114,15 @@ namespace ZestGames
             AiEvents.OnFall -= StopFlying;
 
             AiEvents.OnSetCurrentPickaxeSpeed -= UpdateMotorSpeeds;
+
+            PlayerEvents.OnRevive -= Revive;
         }
 
         #region EVENT HANDLER FUNCTIONS
+        private void Revive()
+        {
+            StateManager.SwitchState(StateManager.ReviveState);
+        }
         private void StartFlying() => IsFlying = true;
         private void StopFlying() => IsFlying = false;
         private void UpdateMotorSpeeds()

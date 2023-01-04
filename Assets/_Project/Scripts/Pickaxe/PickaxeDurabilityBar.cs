@@ -75,7 +75,11 @@ namespace DigFight
 
         #region PRIVATES
         private void EnableBar() => StartEnableSequence();
-        private void DisableBar(Enums.GameEnd gameEnd) => StartDisableSequence();
+        private void DisableBar(Enums.GameEnd gameEnd)
+        {
+            if (gameEnd == Enums.GameEnd.Fail || gameEnd == Enums.GameEnd.Success)
+                StartDisableSequence();
+        }
         private float GetDurabilityNormalized() => (float)_durabilityHandler.CurrentDurability / _durabilityHandler.MaxDurability;
         #endregion
 
@@ -96,7 +100,12 @@ namespace DigFight
             //StartShakeSequence();
             StartGetRepairedSequence();
         }
-        public void ResetBar() => _changedDurabilityImage.fillAmount = _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();
+        public void UpdateBar() => _changedDurabilityImage.fillAmount = _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();
+        public void ResetBar()
+        {
+            EnableBar();
+            UpdateBar();
+        }
         #endregion
 
         #region DOTWEEN FUNCTIONS

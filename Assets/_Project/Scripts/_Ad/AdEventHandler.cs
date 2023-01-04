@@ -6,10 +6,10 @@ namespace DigFight
 {
     public class AdEventHandler : MonoBehaviour
     {
-        public static Action OnInterstitialActivate, OnInterstitialClose, OnRewardedAdSuccessful;
-        public static Action<Action> OnRewardedAdActivate;
+        public static Action OnInterstitialClose, OnRewardedAdSuccessful;
+        public static Action<Action> OnRewardedAdActivate, OnInterstitialActivate;
 
-        private Action _currentRewardedAction = null;
+        private Action _currentAction = null;
 
         [Header("-- SETUP --")]
         [SerializeField] private GameObject rewardedAdCanvas;
@@ -39,24 +39,27 @@ namespace DigFight
         {
             Time.timeScale = 0f;
             rewardedAdCanvas.SetActive(true);
-            _currentRewardedAction = action;
+            _currentAction = action;
         }
         private void RewardAdSuccessful()
         {
             Time.timeScale = 1f;
             rewardedAdCanvas.SetActive(false);
-            _currentRewardedAction?.Invoke();
-            _currentRewardedAction = null;
+            _currentAction?.Invoke();
+            _currentAction = null;
         }
-        private void ActivateInterstitial()
+        private void ActivateInterstitial(Action action)
         {
             Time.timeScale = 0f;
             interstitialAdCanvas.SetActive(true);
+            _currentAction = action;
         }
         private void CloseInterstitial()
         {
             Time.timeScale = 1f;
             interstitialAdCanvas.SetActive(false);
+            _currentAction?.Invoke();
+            _currentAction = null;
         }
         #endregion
     }

@@ -46,7 +46,6 @@ namespace ZestGames
         #endregion
 
         #region PROPERTIES
-        public bool IsDead { get; private set; }
         public bool IsUpgrading { get; private set; }
         public bool IsInDigZone { get; private set; }
         public bool IsDigging { get; private set; }
@@ -61,16 +60,22 @@ namespace ZestGames
         #endregion
 
         #region SEQUENCE
-        private Sequence _upgradeRotationSequence, _pushSequence, _kickSequence;
-        private Guid _upgradeRotationSequenceID, _pushSequenceID, _kickSequenceID;
+        private Sequence _upgradeRotationSequence, _pushSequence, _kickSequence, _reviveSequence;
+        private Guid _upgradeRotationSequenceID, _pushSequenceID, _kickSequenceID, _reviveSequenceID;
         private float _upgradeRotationDuration = 1f;
+        private Vector3 _startingPosition;
         //private const float PUSH_SEQUENCE_DURATION = 3f;
         #endregion
+
+        private void Awake()
+        {
+            _startingPosition = transform.position;
+        }
 
         private void Start()
         {
             CharacterTracker.SetPlayerTransform(transform);
-            IsDead = IsUpgrading = IsInDigZone = IsDigging = IsFlying = IsInPushZone = IsPushing = false;
+            IsUpgrading = IsInDigZone = IsDigging = IsFlying = IsInPushZone = IsPushing = false;
 
             InputHandler.Init(this);
             PlayerMovement.Init(this);
@@ -90,6 +95,7 @@ namespace ZestGames
             PlayerUpgradeEvents.OnCloseCanvas += HandleUpgradeEnd;
             PlayerEvents.OnFly += StartFlying;
             PlayerEvents.OnFall += StopFlying;
+            PlayerEvents.OnRevive += Revive;
 
             GameEvents.OnGameEnd += HandleGameEnd;
         }
@@ -100,6 +106,7 @@ namespace ZestGames
             PlayerUpgradeEvents.OnCloseCanvas -= HandleUpgradeEnd;
             PlayerEvents.OnFly -= StartFlying;
             PlayerEvents.OnFall -= StopFlying;
+            PlayerEvents.OnRevive -= Revive;
 
             GameEvents.OnGameEnd -= HandleGameEnd;
         }
@@ -123,6 +130,11 @@ namespace ZestGames
                 PlayerEvents.OnWin?.Invoke();
             else if (gameEnd == Enums.GameEnd.Fail)
                 PlayerEvents.OnLose?.Invoke();
+        }
+        private void Revive()
+        {
+            Debug.Log("Player is revived!");
+            StartReviveSequence();
         }
         #endregion
 
@@ -165,7 +177,9 @@ namespace ZestGames
         public void ExitedDigZone() => IsInDigZone = false;
         public void EnteredPushZone() => IsInPushZone = true;
         public void ExitedPushZone() => IsInPushZone = false;
+        #endregion
 
+        #region SEQUENCE TRIGGER FUNCTIONS
         public void StartPushSequence(Enums.BoxTriggerDirection pushDirection)
         {
             CreatePushSequence(pushDirection);
@@ -176,9 +190,43 @@ namespace ZestGames
             CreateKickSequence(pushDirection);
             _kickSequence.Play();
         }
+        private void StartReviveSequence()
+        {
+            CreateReviveSequence();
+            _reviveSequence.Play();
+        }
         #endregion
 
-        #region DOTWEEN FUNCTIONS
+        #region REVIVE SEQUENCE
+        private void CreateReviveSequence()
+        {
+            if (_reviveSequence == null)
+            {
+                _reviveSequence = DOTween.Sequence();
+                _reviveSequenceID = Guid.NewGuid();
+                _reviveSequence.id = _reviveSequenceID;
+
+                Rigidbody.useGravity = false;
+
+                _reviveSequence.Append(transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBounce))
+                    .Append(transform.DOMove(_startingPosition, 0.5f))
+                    .Append(transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBounce))
+                    .OnComplete(() => {
+                        transform.localScale = Vector3.one;
+                        transform.position = _startingPosition;
+                        Rigidbody.useGravity = true;
+                        DeleteReviveSequence();
+                    });
+            }
+        }
+        private void DeleteReviveSequence()
+        {
+            DOTween.Kill(_reviveSequenceID);
+            _reviveSequence = null;
+        }
+        #endregion
+
+        #region UPGRADE ROTATION SEQUENCE
         private void StartUpgradeRotationSequence()
         {
             DeleteUpgradeRotationSequence();
@@ -204,7 +252,9 @@ namespace ZestGames
             DOTween.Kill(_upgradeRotationSequenceID);
             _upgradeRotationSequence = null;
         }
-        // ######################
+        #endregion
+
+        #region PUSH SEQUENCE
         private void CreatePushSequence(Enums.BoxTriggerDirection pushDirection)
         {
             if (_pushSequence == null)
@@ -223,7 +273,9 @@ namespace ZestGames
             DOTween.Kill(_pushSequenceID);
             _pushSequence = null;
         }
-        // #######################
+        #endregion
+
+        #region KICK SEQUENCE
         private void CreateKickSequence(Enums.BoxTriggerDirection pushDirection)
         {
             if (_kickSequence == null)
