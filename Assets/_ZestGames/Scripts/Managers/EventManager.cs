@@ -25,7 +25,8 @@ namespace ZestGames
 
     public static class PlayerUpgradeEvents
     {
-        public static Action OnOpenCanvas, OnCloseCanvas, OnUpdateUpgradeTexts, OnUpgradeMovementSpeed, OnUpgradeMoneyValue, OnUpgradePickaxeSpeed, OnUpgradePickaxeDurability, OnUpgradePickaxePower;
+        public static Action OnOpenCanvas, OnCloseCanvas, OnUpdateUpgradeTexts;
+        public static Action<bool> OnUpgradeMovementSpeed, OnUpgradeMoneyValue, OnUpgradePickaxeSpeed, OnUpgradePickaxeDurability, OnUpgradePickaxePower;
     }
 
     public static class UiEvents

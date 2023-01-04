@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using UnityEngine;
 
 namespace ZestGames
@@ -109,33 +110,33 @@ namespace ZestGames
 
         #region UPGRADEABLE VALUE FUNCTIONS
         #region UPGRADE FUNCTIONS
-        private void MovementSpeedUpgrade()
+        private void MovementSpeedUpgrade(bool isItAd)
         {
-            IncreaseMovementSpeedLevel();
+            IncreaseMovementSpeedLevel(isItAd);
             UpdateMovementSpeed();
             PlayerEvents.OnCheer?.Invoke();
         }
-        private void MoneyValueUpgrade()
+        private void MoneyValueUpgrade(bool isItAd)
         {
-            IncreaseMoneyValueLevel();
+            IncreaseMoneyValueLevel(isItAd);
             UpdateMoneyValue();
             PlayerEvents.OnCheer?.Invoke();
         }
-        private void PickaxeSpeedUpgrade()
+        private void PickaxeSpeedUpgrade(bool isItAd)
         {
-            IncreasePickaxeSpeedLevel();
+            IncreasePickaxeSpeedLevel(isItAd);
             UpdatePickaxeSpeed();
             PlayerEvents.OnCheer?.Invoke();
         }
-        private void PickaxeDurabilityUpgrade()
+        private void PickaxeDurabilityUpgrade(bool isItAd)
         {
-            IncreasePickaxeDurabilityLevel();
+            IncreasePickaxeDurabilityLevel(isItAd);
             UpdatePickaxeDurability();
             PlayerEvents.OnCheer?.Invoke();
         }
-        private void PickaxePowerUpgrade()
+        private void PickaxePowerUpgrade(bool isItAd)
         {
-            IncreasePickaxePowerLevel();
+            IncreasePickaxePowerLevel(isItAd);
             UpdatePickaxePower();
             PlayerEvents.OnCheer?.Invoke();
         }
@@ -170,8 +171,15 @@ namespace ZestGames
         #endregion
 
         #region INCREMENT FUNCTIONS
-        private void IncreaseMovementSpeedLevel()
+        private void IncreaseMovementSpeedLevel(bool isItAd)
         {
+            if (isItAd)
+            {
+                MovementSpeed++;
+                PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
+                return;
+            }
+
             if (TotalMoney >= MovementSpeedCost)
             {
                 DecreaseTotalMoney(MovementSpeedCost);
@@ -180,8 +188,15 @@ namespace ZestGames
                 UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
             }
         }
-        private void IncreaseMoneyValueLevel()
+        private void IncreaseMoneyValueLevel(bool isItAd)
         {
+            if (isItAd)
+            {
+                MoneyValueLevel++;
+                PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
+                return;
+            }
+
             if (TotalMoney >= MoneyValueCost)
             {
                 DecreaseTotalMoney(MoneyValueCost);
@@ -190,8 +205,15 @@ namespace ZestGames
                 UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
             }
         }
-        private void IncreasePickaxeSpeedLevel()
+        private void IncreasePickaxeSpeedLevel(bool isItAd)
         {
+            if (isItAd)
+            {
+                PickaxeSpeedLevel++;
+                PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
+                return;
+            }
+
             if (TotalMoney >= PickaxeSpeedCost)
             {
                 DecreaseTotalMoney(PickaxeSpeedCost);
@@ -200,8 +222,15 @@ namespace ZestGames
                 UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
             }
         }
-        private void IncreasePickaxeDurabilityLevel()
+        private void IncreasePickaxeDurabilityLevel(bool isItAd)
         {
+            if (isItAd)
+            {
+                PickaxeDurabilityLevel++;
+                PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
+                return;
+            }
+
             if (TotalMoney >= PickaxeDurabilityCost)
             {
                 DecreaseTotalMoney(PickaxeDurabilityCost);
@@ -210,8 +239,15 @@ namespace ZestGames
                 UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
             }
         }
-        private void IncreasePickaxePowerLevel()
+        private void IncreasePickaxePowerLevel(bool isItAd)
         {
+            if (isItAd)
+            {
+                PickaxePowerLevel++;
+                PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
+                return;
+            }
+
             if (TotalMoney >= PickaxePowerCost)
             {
                 DecreaseTotalMoney(PickaxePowerCost);

@@ -35,8 +35,7 @@ namespace ZestGames
             upgradeCanvas.Init(this);
             _powerUpCanvas.Init(this);
 
-            if (upgradeCanvas.CurrentType == UpgradeCanvas.Type.Incremental)
-                PlayerUpgradeEvents.OnOpenCanvas?.Invoke();
+            PlayerUpgradeEvents.OnOpenCanvas?.Invoke();
 
             touchToStart.gameObject.SetActive(true);
             levelFail.gameObject.SetActive(false);

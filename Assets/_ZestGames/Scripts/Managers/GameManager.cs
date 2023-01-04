@@ -20,6 +20,7 @@ namespace ZestGames
         //private BoxSpawnManager _boxSpawnManager;
         private MoneySpawnManager _moneySpawnManager;
         private HapticManager _hapticManager;
+        private AdEventHandler _adEventHandler;
         [SerializeField] private PostProcessManager _postProcessManager;
 
         #region PROPERTIES
@@ -51,6 +52,8 @@ namespace ZestGames
             _moneySpawnManager.Init(this);
             _hapticManager = GetComponent<HapticManager>();
             _hapticManager.Init(this);
+            _adEventHandler = GetComponent<AdEventHandler>();
+            _adEventHandler.Init(this);
             //_postProcessManager.Init(this);
 
             UiEvents.OnUpdateCollectableText?.Invoke(DataManager.TotalMoney);
