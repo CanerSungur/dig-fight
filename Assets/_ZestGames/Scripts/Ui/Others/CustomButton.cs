@@ -13,8 +13,9 @@ namespace ZestGames
     {
         private Animator _animator;
         private Animation _anim;
-        private float _animationDuration = 0.5f;
-        public event Action<Action> OnClicked;
+        private float _animationDuration = 0.35f;
+        private bool _clicked;
+        //public event Action<Action> OnClicked;
 
         protected override void OnEnable()
         {
@@ -23,16 +24,18 @@ namespace ZestGames
             if (!_anim && !_animator)
                 _animationDuration = 0f;
 
-            OnClicked += Clicked;
+            _clicked = false;
+            //OnClicked += Clicked;
         }
 
-        protected override void OnDisable()
-        {
-            OnClicked -= Clicked;
-        }
+        //protected override void OnDisable()
+        //{
+        //    OnClicked -= Clicked;
+        //}
 
         private void Clicked(Action action)
         {
+            _clicked = true;
             // Play audio
             AudioManager.PlayAudio(Enums.AudioType.Button_Click);
 
@@ -47,13 +50,18 @@ namespace ZestGames
                 _animator.SetTrigger("Click");
 
             // Do the action with delay
-            Delayer.DoActionAfterDelay(this, _animationDuration, () => action());
+            Delayer.DoActionAfterDelay(this, _animationDuration, () => {
+                action();
+                _clicked = false;
+                });
         }
 
         public void TriggerClick(Action action, Action simultaniousAction = null)
         {
+            if (_clicked) return;
             simultaniousAction?.Invoke();
-            OnClicked?.Invoke(action);
+            //OnClicked?.Invoke(action);
+            Clicked(action);
         }
     }
 }

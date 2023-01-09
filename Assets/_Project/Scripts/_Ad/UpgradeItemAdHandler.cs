@@ -25,7 +25,7 @@ namespace DigFight
         public void CheckForAd(int level)
         {
             _upgradeIsEnabled = !(level != 1 && level != 2 && IsFibonacci(level));
-            Debug.Log(gameObject.name + ": " + _upgradeIsEnabled);
+            //Debug.Log(gameObject.name + ": " + _upgradeIsEnabled);
         }
         public void OpenRewardedAd(Action action)
         {

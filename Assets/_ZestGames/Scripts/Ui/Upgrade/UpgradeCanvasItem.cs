@@ -81,7 +81,7 @@ namespace ZestGames
         #region CHECK FUNCTIONS
         private void CheckForForcedUpgrade()
         {
-            Debug.Log(_currentLevel);
+            //Debug.Log(_currentLevel);
             _adHandler.CheckForAd(_currentLevel);
             CheckUpgradeButtonActivation();
         }

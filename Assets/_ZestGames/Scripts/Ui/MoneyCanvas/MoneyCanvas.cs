@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using DigFight;
 
 namespace ZestGames
 {
@@ -19,6 +20,19 @@ namespace ZestGames
 
             MiddlePointRectTransform = transform.GetChild(0).GetComponent<RectTransform>();
             SpendMoneyEnumIsPlaying = false;
+        }
+        #endregion
+
+        #region COLLECT COIN
+        public void SpawnCollectCoin(RectTransform rectTransform)
+        {
+            CollectCoin2D coin = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.CoinCollect2D, Vector3.zero, Quaternion.identity, transform).GetComponent<CollectCoin2D>();
+            coin.Init(this, rectTransform);
+        }
+        public void SpawnCollectShopCoin(RectTransform spawnerRect, RectTransform targetRect)
+        {
+            CollectShopCoin2D coin = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.ShopCoinCollect2D, Vector3.zero, Quaternion.identity, transform).GetComponent<CollectShopCoin2D>();
+            coin.Init(this, spawnerRect, targetRect);
         }
         #endregion
 

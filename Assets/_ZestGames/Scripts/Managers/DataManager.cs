@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using UnityEngine;
+using DigFight;
 
 namespace ZestGames
 {
@@ -104,22 +104,30 @@ namespace ZestGames
             TotalMoney += amount;
             UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
             PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
+
+            ShopCanvas.OnCollectMoney?.Invoke(amount);
         }
         private void DecreaseTotalMoney(float amount)
         {
             TotalMoney -= amount;
             UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
             PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
+
+            ShopCanvas.OnSpendMoney?.Invoke(amount);
         }
         private void IncreaseTotalCoin(int amount)
         {
             TotalCoin += amount;
             UiEvents.OnUpdateCoinText?.Invoke(TotalCoin);
+
+            ShopCanvas.OnCollectCoin?.Invoke(amount);
         }
         private void DecreaseTotalCoin(int amount)
         {
             TotalCoin -= amount;
             UiEvents.OnUpdateCoinText?.Invoke(TotalCoin);
+
+            ShopCanvas.OnSpendCoin?.Invoke(amount);
         }
         #endregion
 
@@ -278,6 +286,7 @@ namespace ZestGames
         private void LoadData()
         {
             TotalMoney = PlayerPrefs.GetFloat("TotalMoney", 0);
+            TotalCoin = PlayerPrefs.GetInt("TotalCoin", 0);
             MovementSpeedLevel = PlayerPrefs.GetInt("MovementSpeedLevel", 1);
             MoneyValueLevel = PlayerPrefs.GetInt("MoneyValueLevel", 1);
             PickaxeSpeedLevel = PlayerPrefs.GetInt("PickaxeSpeedLevel", 1);
@@ -287,6 +296,7 @@ namespace ZestGames
         private void SaveData()
         {
             PlayerPrefs.SetFloat("TotalMoney", TotalMoney);
+            PlayerPrefs.SetInt("TotalCoin", TotalCoin);
             PlayerPrefs.SetInt("MovementSpeedLevel", MovementSpeedLevel);
             PlayerPrefs.SetInt("MoneyValueLevel", MoneyValueLevel);
             PlayerPrefs.SetInt("PickaxeSpeedLevel", PickaxeSpeedLevel);

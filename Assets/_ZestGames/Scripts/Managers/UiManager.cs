@@ -18,6 +18,7 @@ namespace ZestGames
         [SerializeField] private UpgradeCanvas upgradeCanvas;
         [SerializeField] private PowerUpCanvas _powerUpCanvas;
         [SerializeField] private ReviveCanvas _reviveCanvas;
+        [SerializeField] private ShopCanvas _shopCanvas;
 
         [Header("-- UI DELAY SETUP --")]
         [SerializeField, Tooltip("The delay in seconds between the game is won and the win screen is loaded.")]
@@ -36,6 +37,7 @@ namespace ZestGames
             upgradeCanvas.Init(this);
             _powerUpCanvas.Init(this);
             _reviveCanvas.Init(this);
+            _shopCanvas.Init(this);
 
             PlayerUpgradeEvents.OnOpenCanvas?.Invoke();
 
@@ -72,6 +74,7 @@ namespace ZestGames
         private void GameStarted()
         {
             touchToStart.gameObject.SetActive(false);
+            _shopCanvas.gameObject.SetActive(false);
             settings.gameObject.SetActive(true);
             levelTextGO.SetActive(true);
         }
