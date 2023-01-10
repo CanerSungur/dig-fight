@@ -9,7 +9,7 @@ namespace ZestGames
 {
     public class UpgradeCanvasItem : MonoBehaviour
     {
-        public enum UpgradeItemType { MoneyValue, PickaxeSpeed, PickaxePower, PickaxeDurability }
+        public enum UpgradeItemType { MovementSpeed, MoneyValue, DigSpeed }
         private UpgradeItemType _upgradeItemType;
 
         #region COMPONENTS
@@ -43,13 +43,15 @@ namespace ZestGames
                 _upgradeItemType = upgradeItemType;
                 _adHandler = GetComponent<UpgradeItemAdHandler>();
                 _adHandler.Init(this);
-            }
 
-            LevelText = transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
+                LevelText = transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
             CostText = transform.GetChild(2).GetChild(1).GetComponent<TextMeshProUGUI>();
             _upgradeButton = transform.GetChild(2).GetComponent<CustomButton>();
             _forcedAdButton = transform.GetChild(3).GetComponent<CustomButton>();
             _optionalAdButton = transform.GetChild(4).GetComponent<CustomButton>();
+            }
+
+            
 
             _upgradeButton.onClick.AddListener(() => UpgradeButtonClicked(_upgradeButton));
             _forcedAdButton.onClick.AddListener(() => UpgradeButtonClicked(_forcedAdButton));
@@ -108,64 +110,52 @@ namespace ZestGames
         private void ShakeLevelImage() => StartShakeLevelImageSequence();
         private void GetCurrentLevel()
         {
-            if (_upgradeItemType == UpgradeItemType.MoneyValue)
+            if (_upgradeItemType == UpgradeItemType.MovementSpeed)
+                _currentLevel = DataManager.MovementSpeedLevel;
+            else if (_upgradeItemType == UpgradeItemType.MoneyValue)
                 _currentLevel = DataManager.MoneyValueLevel;
-            else if (_upgradeItemType == UpgradeItemType.PickaxeDurability)
-                _currentLevel = DataManager.PickaxeDurabilityLevel;
-            else if (_upgradeItemType == UpgradeItemType.PickaxePower)
-                _currentLevel = DataManager.PickaxePowerLevel;
-            else if (_upgradeItemType == UpgradeItemType.PickaxeSpeed)
-                _currentLevel = DataManager.PickaxeSpeedLevel;
+            else if (_upgradeItemType == UpgradeItemType.DigSpeed)
+                _currentLevel = DataManager.DigSpeedLevel;
         }
         #endregion
 
         #region UPGRADE FUNCTIONS
         private void Upgrade()
         {
-            if (_upgradeItemType == UpgradeItemType.MoneyValue)
+            if (_upgradeItemType == UpgradeItemType.MovementSpeed)
+            {
+                PlayerUpgradeEvents.OnUpgradeMovementSpeed?.Invoke(false);
+                _currentLevel = DataManager.MovementSpeedLevel;
+            }
+            else if (_upgradeItemType == UpgradeItemType.MoneyValue)
             {
                 PlayerUpgradeEvents.OnUpgradeMoneyValue?.Invoke(false);
                 _currentLevel = DataManager.MoneyValueLevel;
             }
-            else if (_upgradeItemType == UpgradeItemType.PickaxeDurability)
+            else if (_upgradeItemType == UpgradeItemType.DigSpeed)
             {
-                PlayerUpgradeEvents.OnUpgradePickaxeDurability?.Invoke(false);
-                _currentLevel = DataManager.PickaxeDurabilityLevel;
-            }
-            else if (_upgradeItemType == UpgradeItemType.PickaxePower)
-            {
-                PlayerUpgradeEvents.OnUpgradePickaxePower?.Invoke(false);
-                _currentLevel = DataManager.PickaxePowerLevel;
-            }
-            else if (_upgradeItemType == UpgradeItemType.PickaxeSpeed)
-            {
-                PlayerUpgradeEvents.OnUpgradePickaxeSpeed?.Invoke(false);
-                _currentLevel = DataManager.PickaxeSpeedLevel;
+                PlayerUpgradeEvents.OnUpgradeDigSpeed?.Invoke(false);
+                _currentLevel = DataManager.DigSpeedLevel;
             }
 
             CheckForForcedUpgrade();
         }
         private void RewardedAdUpgrade()
         {
-            if (_upgradeItemType == UpgradeItemType.MoneyValue)
+            if (_upgradeItemType == UpgradeItemType.MovementSpeed)
+            {
+                PlayerUpgradeEvents.OnUpgradeMovementSpeed?.Invoke(true);
+                _currentLevel = DataManager.MovementSpeedLevel;
+            }
+            else if (_upgradeItemType == UpgradeItemType.MoneyValue)
             {
                 PlayerUpgradeEvents.OnUpgradeMoneyValue?.Invoke(true);
                 _currentLevel = DataManager.MoneyValueLevel;
             }
-            else if (_upgradeItemType == UpgradeItemType.PickaxeDurability)
+            else if (_upgradeItemType == UpgradeItemType.DigSpeed)
             {
-                PlayerUpgradeEvents.OnUpgradePickaxeDurability?.Invoke(true);
-                _currentLevel = DataManager.PickaxeDurabilityLevel;
-            }
-            else if (_upgradeItemType == UpgradeItemType.PickaxePower)
-            {
-                PlayerUpgradeEvents.OnUpgradePickaxePower?.Invoke(true);
-                _currentLevel = DataManager.PickaxePowerLevel;
-            }
-            else if (_upgradeItemType == UpgradeItemType.PickaxeSpeed)
-            {
-                PlayerUpgradeEvents.OnUpgradePickaxeSpeed?.Invoke(true);
-                _currentLevel = DataManager.PickaxeSpeedLevel;
+                PlayerUpgradeEvents.OnUpgradeDigSpeed?.Invoke(true);
+                _currentLevel = DataManager.DigSpeedLevel;
             }
 
             CheckForForcedUpgrade();
@@ -178,14 +168,12 @@ namespace ZestGames
         public void CheckForMoneySufficiency()
         {
             int requiredMoney;
-            if (_upgradeItemType == UpgradeItemType.MoneyValue)
+            if (_upgradeItemType == UpgradeItemType.MovementSpeed)
+                requiredMoney = DataManager.MovementSpeedCost;
+            else if (_upgradeItemType == UpgradeItemType.MoneyValue)
                 requiredMoney = DataManager.MoneyValueCost;
-            else if (_upgradeItemType == UpgradeItemType.PickaxeDurability)
-                requiredMoney = DataManager.PickaxeDurabilityCost;
-            else if (_upgradeItemType == UpgradeItemType.PickaxePower)
-                requiredMoney = DataManager.PickaxePowerCost;
-            else if (_upgradeItemType == UpgradeItemType.PickaxeSpeed)
-                requiredMoney = DataManager.PickaxeSpeedCost;
+            else if (_upgradeItemType == UpgradeItemType.DigSpeed)
+                requiredMoney = DataManager.DigSpeedCost;
             else
             {
                 requiredMoney = 0;

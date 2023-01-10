@@ -33,13 +33,13 @@ namespace ZestGames
             _currentWalkSpeed = defaultSpeed;
             _currentFlySpeed = flySpeed;
 
-            PlayerEvents.OnSetCurrentPickaxeSpeed += UpdateMotorSpeeds;
+            PlayerEvents.OnSetCurrentDigSpeed += UpdateMotorSpeeds;
         }
 
         private void OnDisable()
         {
             if (_player == null) return;
-            PlayerEvents.OnSetCurrentPickaxeSpeed -= UpdateMotorSpeeds;
+            PlayerEvents.OnSetCurrentDigSpeed -= UpdateMotorSpeeds;
         }
 
         public void Motor()

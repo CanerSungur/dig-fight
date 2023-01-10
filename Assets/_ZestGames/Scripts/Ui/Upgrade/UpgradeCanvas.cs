@@ -15,10 +15,9 @@ namespace ZestGames
         #endregion
 
         [Header("-- STAMINA SETUP --")]
-        [SerializeField] private UpgradeCanvasItem moneyValue;
-        [SerializeField] private UpgradeCanvasItem pickaxeSpeed;
-        [SerializeField] private UpgradeCanvasItem pickaxeDurability;
-        [SerializeField] private UpgradeCanvasItem pickaxePower;
+        [SerializeField] private UpgradeCanvasItem _movementSpeed;
+        [SerializeField] private UpgradeCanvasItem _moneyValue;
+        [SerializeField] private UpgradeCanvasItem _digSpeed;
 
         public void Init(UiManager uiManager)
         {
@@ -26,10 +25,9 @@ namespace ZestGames
             {
                 _animator = GetComponent<Animator>();
 
-                moneyValue.Init(this, UpgradeCanvasItem.UpgradeItemType.MoneyValue);
-                pickaxeSpeed.Init(this, UpgradeCanvasItem.UpgradeItemType.PickaxeSpeed);
-                pickaxeDurability.Init(this, UpgradeCanvasItem.UpgradeItemType.PickaxeDurability);
-                pickaxePower.Init(this, UpgradeCanvasItem.UpgradeItemType.PickaxePower);
+                _movementSpeed.Init(this, UpgradeCanvasItem.UpgradeItemType.MovementSpeed);
+                _moneyValue.Init(this, UpgradeCanvasItem.UpgradeItemType.MoneyValue);
+                _digSpeed.Init(this, UpgradeCanvasItem.UpgradeItemType.DigSpeed);
             }
 
             Delayer.DoActionAfterDelay(this, 0.5f, UpdateTexts);
@@ -53,21 +51,17 @@ namespace ZestGames
         #region UPDATERS
         private void UpdateTexts()
         {
-            moneyValue.LevelText.text = $"Level {DataManager.MoneyValueLevel}";
-            moneyValue.CostText.text = DataManager.MoneyValueCost.ToString();
-            moneyValue.CheckForMoneySufficiency();
+            _movementSpeed.LevelText.text = $"Level {DataManager.MovementSpeedLevel}";
+            _movementSpeed.CostText.text = DataManager.MovementSpeedCost.ToString();
+            _movementSpeed.CheckForMoneySufficiency();
 
-            pickaxeSpeed.LevelText.text = $"Level {DataManager.PickaxeSpeedLevel}";
-            pickaxeSpeed.CostText.text = DataManager.PickaxeSpeedCost.ToString();
-            pickaxeSpeed.CheckForMoneySufficiency();
+            _moneyValue.LevelText.text = $"Level {DataManager.MoneyValueLevel}";
+            _moneyValue.CostText.text = DataManager.MoneyValueCost.ToString();
+            _moneyValue.CheckForMoneySufficiency();
 
-            pickaxeDurability.LevelText.text = $"Level {DataManager.PickaxeDurabilityLevel}";
-            pickaxeDurability.CostText.text = DataManager.PickaxeDurabilityCost.ToString();
-            pickaxeDurability.CheckForMoneySufficiency();
-
-            pickaxePower.LevelText.text = $"Level {DataManager.PickaxePowerLevel}";
-            pickaxePower.CostText.text = DataManager.PickaxePowerCost.ToString();
-            pickaxePower.CheckForMoneySufficiency();
+            _digSpeed.LevelText.text = $"Level {DataManager.DigSpeedLevel}";
+            _digSpeed.CostText.text = DataManager.DigSpeedCost.ToString();
+            _digSpeed.CheckForMoneySufficiency();
         }
         #endregion
 

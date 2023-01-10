@@ -31,13 +31,13 @@ namespace DigFight
 
             PushDuration = _pushSpeed;
 
-            PlayerEvents.OnSetCurrentPickaxeSpeed += UpdatePushSpeed;
+            PlayerEvents.OnSetCurrentDigSpeed += UpdatePushSpeed;
         }
 
         private void OnDisable()
         {
             if (_player == null) return;
-            PlayerEvents.OnSetCurrentPickaxeSpeed -= UpdatePushSpeed;
+            PlayerEvents.OnSetCurrentDigSpeed -= UpdatePushSpeed;
         }
 
         private void Update()

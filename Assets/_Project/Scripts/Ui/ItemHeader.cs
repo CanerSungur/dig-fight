@@ -3,7 +3,7 @@ using TMPro;
 
 namespace DigFight
 {
-    public class ShopItemHeader : MonoBehaviour
+    public class ItemHeader : MonoBehaviour
     {
         private TextMeshProUGUI _headerText;
 

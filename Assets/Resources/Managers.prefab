@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 8100756653816973517}
   - component: {fileID: 8562139990069545057}
   - component: {fileID: 7111165851453209676}
+  - component: {fileID: 131353865420923394}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -110,6 +111,9 @@ MonoBehaviour:
   settings: {fileID: 0}
   upgradeCanvas: {fileID: 0}
   _powerUpCanvas: {fileID: 0}
+  _reviveCanvas: {fileID: 0}
+  _shopCanvas: {fileID: 0}
+  _pickaxeUpgradeCanvas: {fileID: 0}
   successScreenDelay: 1
   failScreenDelay: 1
 --- !u!114 &1124688366865923144
@@ -178,3 +182,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rewardedAdCanvas: {fileID: 0}
   interstitialAdCanvas: {fileID: 0}
+--- !u!114 &131353865420923394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5491084403859615924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5b8ee4a2abc64c39b2a07fa70a2f94a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

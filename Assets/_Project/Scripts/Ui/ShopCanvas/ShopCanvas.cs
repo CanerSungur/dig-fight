@@ -8,7 +8,10 @@ namespace DigFight
 {
     public class ShopCanvas : MonoBehaviour
     {
+        #region COMPONENTS
         private Animator _animator;
+        private UiManager _uiManager;
+        #endregion
 
         #region ANIMATION ID SETUP
         private readonly int _openTabID = Animator.StringToHash("OpenTab");
@@ -28,7 +31,7 @@ namespace DigFight
         private Transform _coinBgTransform, _moneyBgTransform;
 
         [Header("-- SHOP ITEM SETUP --")]
-        [SerializeField] private ItemDB _shopItemDB;
+        [SerializeField] private ShopItemDB _shopItemDB;
         [SerializeField] private Transform _contentTransform;
 
         [Header("-- PREFABS --")]
@@ -64,6 +67,7 @@ namespace DigFight
         {
             if (_animator == null)
             {
+                _uiManager = uiManager;
                 _animator = GetComponent<Animator>();
                 _openShopButton = transform.GetChild(0).GetChild(1).GetComponent<CustomButton>();
                 _closeShopButton = transform.GetChild(1).GetChild(0).GetChild(2).GetChild(0).GetComponent<CustomButton>();
@@ -102,29 +106,40 @@ namespace DigFight
         }
 
         #region OPEN-CLOSE FUNCTIONS
-        private void OpenShopTab() => _animator.SetBool(_openTabID, true);
-        private void CloseShopTab() => _animator.SetBool(_openTabID, false);
+        public void OpenShopTab() 
+        {
+            _animator.SetBool(_openTabID, true);
+        }
+        public void CloseShopTab() 
+        {
+            _animator.SetBool(_openTabID, false);
+        }
         private void OpenShop()
         {
+            _uiManager.ClosePickaxeUpgradeTab();
             _animator.SetTrigger(_openShopID);
             UpdateCoinText();
             UpdateMoneyText();
         }
-        private void CloseShop() => _animator.SetTrigger(_closeShopID);
+        private void CloseShop() 
+        {
+            _uiManager.OpenPickaxeUpgradeTab();
+            _animator.SetTrigger(_closeShopID);
+        }
         #endregion
 
         #region SHOP ITEM FUNCTIONS
         private void GenerateShopItems()
         {
-            Item.ItemTypeEnum lastType = Item.ItemTypeEnum.NotAssigned;
+            ShopItem.ItemTypeEnum lastType = ShopItem.ItemTypeEnum.NotAssigned;
             for (int i = 0; i < _shopItemDB.ShopItemCount; i++)
             {
-                Item item = _shopItemDB.GetShopItem(i);
+                ShopItem item = _shopItemDB.GetShopItem(i);
 
                 #region FIRST ROW
                 if (i == 0)
                 {
-                    ShopItemHeader header = Instantiate(_headerPrefab, _contentTransform).GetComponent<ShopItemHeader>();
+                    ItemHeader header = Instantiate(_headerPrefab, _contentTransform).GetComponent<ItemHeader>();
                     header.SetHeader(item.Header);
                     _headerCount++;
                     lastType = item.ItemType;
@@ -135,7 +150,7 @@ namespace DigFight
                 if (lastType != item.ItemType)
                 {
                     Instantiate(_seperatorPrefab, _contentTransform);
-                    ShopItemHeader header = Instantiate(_headerPrefab, _contentTransform).GetComponent<ShopItemHeader>();
+                    ItemHeader header = Instantiate(_headerPrefab, _contentTransform).GetComponent<ItemHeader>();
                     header.SetHeader(item.Header);
                     _headerCount++;
                     _seperatorCount++;
@@ -143,7 +158,7 @@ namespace DigFight
                 }
                 #endregion
 
-                ShopItem shopItem = Instantiate(_shopItemPrefab, _contentTransform).GetComponent<ShopItem>();
+                ShopItemUi shopItem = Instantiate(_shopItemPrefab, _contentTransform).GetComponent<ShopItemUi>();
                 shopItem.Init(this, item, i);
             }
 

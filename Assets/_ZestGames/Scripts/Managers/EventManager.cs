@@ -15,18 +15,19 @@ namespace ZestGames
     public static class PlayerEvents 
     {
         public static Action OnMove, OnIdle, OnDie, OnWin, OnLose, OnCheer, OnFly, OnFall, OnLand, OnRevive;
-        public static Action OnSetCurrentMovementSpeed, OnSetCurrentMoneyValue, OnSetCurrentPickaxeSpeed, OnSetCurrentPickaxeDurability, OnSetCurrentPickaxePower;
+        public static Action OnSetCurrentMovementSpeed, OnSetCurrentMoneyValue, OnSetCurrentDigSpeed, OnSetCurrentPickaxeDurability, OnSetCurrentPickaxePower;
         public static Action OnOpenedUpgradeCanvas, OnClosedUpgradeCanvas;
         public static Action OnEmptyNextInQueue, OnStopSpendingMoney;
         public static Action OnRotateLeft, OnRotateRight, OnResetRotation;
         public static Action OnStartDigging, OnStopDigging, OnStagger, OnStartPushing, OnStopPushing;
         public static Action<PowerUp> OnActivatePickaxeDurability, OnActivatePickaxePower, OnActivatePickaxeSpeed;
+        public static Action OnPurchaseSilverPickaxe, OnPurchaseGoldPickaxe;
     }
 
     public static class PlayerUpgradeEvents
     {
         public static Action OnOpenCanvas, OnCloseCanvas, OnUpdateUpgradeTexts;
-        public static Action<bool> OnUpgradeMovementSpeed, OnUpgradeMoneyValue, OnUpgradePickaxeSpeed, OnUpgradePickaxeDurability, OnUpgradePickaxePower;
+        public static Action<bool> OnUpgradeMovementSpeed, OnUpgradeMoneyValue, OnUpgradeDigSpeed;
     }
 
     public static class UiEvents

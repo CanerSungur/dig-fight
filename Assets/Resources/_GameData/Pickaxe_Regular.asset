@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd209bea6ec8b427c8013b27254dceb2, type: 3}
+  m_Name: Pickaxe_Regular
+  m_EditorClassIdentifier: 
+  _pickaxeType: 1
+  _upgrades:
+  - OwnerType: 1
+    UpgradeType: 1
+    Image: {fileID: 21300000, guid: 8716f860e0d47476d9319e885746c55c, type: 3}
+    Name: Regular Pickaxe
+    Title: Durability
+    Description: Increases pickaxe health to hit more stones
+    PriceType: 0
+    BaseUpgradeCost: 350
+    UpgradeCostIncreaseRate: 1.5
+    CanAfford: 0
+    CoreValue: 10
+    ValueIncrement: 1
+  - OwnerType: 1
+    UpgradeType: 2
+    Image: {fileID: 21300000, guid: 0f5ca65d164284160956c0473a3ac7d8, type: 3}
+    Name: Regular Pickaxe
+    Title: Power
+    Description: Increases pickaxe power for breaking stones faster
+    PriceType: 0
+    BaseUpgradeCost: 400
+    UpgradeCostIncreaseRate: 1.5
+    CanAfford: 0
+    CoreValue: 1
+    ValueIncrement: 1

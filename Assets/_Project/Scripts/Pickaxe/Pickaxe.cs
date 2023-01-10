@@ -6,6 +6,10 @@ namespace DigFight
 {
     public class Pickaxe : MonoBehaviour
     {
+        [Header("-- PICKAXE DATA --")]
+        [SerializeField] private PickaxeBase _pickaxeBase;
+        public PickaxeBase PickaxeBase => _pickaxeBase;
+
         private PlayerDigHandler _playerDigHandler;
         private AiDigHandler _aiDigHandler;
 
@@ -21,6 +25,8 @@ namespace DigFight
         public PickaxeDamageHandler DamageHandler => _damageHandler == null ? _damageHandler = GetComponent<PickaxeDamageHandler>() : _damageHandler;
         private PickaxeDurabilityHandler _durabilityHandler;
         public PickaxeDurabilityHandler DurabilityHandler => _durabilityHandler == null ? _durabilityHandler = GetComponent<PickaxeDurabilityHandler>() : _durabilityHandler;
+        private PickaxeStats _stats;
+        public PickaxeStats Stats => _stats == null ? _stats = GetComponent<PickaxeStats>() : _stats;
         #endregion
 
         #region PROPERTIES
@@ -41,6 +47,7 @@ namespace DigFight
                 _playerDigHandler = playerDigHandler;
                 InitializeParticles();
 
+                Stats.Init(this);
                 DamageHandler.Init(this, true);
                 DurabilityHandler.Init(this, true);
             }

@@ -78,13 +78,13 @@ namespace DigFight
         private IEnumerator PickaxeSpeedCoroutine(PowerUp powerUp)
         {
             _speedRate = powerUp.IncrementValue;
-            PlayerEvents.OnSetCurrentPickaxeSpeed?.Invoke();
+            PlayerEvents.OnSetCurrentDigSpeed?.Invoke();
             _player.AnimationController.StartScaleSequence(powerUp.Duration);
 
             yield return _waitForSpeedDuration;
 
             _speedRate = 0;
-            PlayerEvents.OnSetCurrentPickaxeSpeed?.Invoke();
+            PlayerEvents.OnSetCurrentDigSpeed?.Invoke();
             _player.EffectHandler.StopPickaxeSpeed();
             StopPickaxeSpeed();
         }

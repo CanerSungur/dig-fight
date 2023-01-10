@@ -16,5 +16,7 @@ namespace ZestGames
         public enum HitPower { Low, Medium, High }
         public enum LayerType { Breakable, Pushable, DurabilityChest, SpeedChest }
         public enum Surrounding { Empty, Wall, BreakableBox, ExplosiveBox, PushableBox, Chest, FinishLine }
+        public enum PickaxeType { NotAssigned, Regular, Silver, Gold }
+        public enum PickaxeUpgradeType { NotAssigned, Durability, Power }
     }
 }

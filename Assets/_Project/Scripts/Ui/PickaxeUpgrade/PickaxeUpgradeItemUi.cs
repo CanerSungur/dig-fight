@@ -7,23 +7,24 @@ using System;
 
 namespace DigFight
 {
-    public class ShopItem : MonoBehaviour
+    public class PickaxeUpgradeItemUi : MonoBehaviour
     {
         [Header("-- GENERAL --")]
         [SerializeField] private Image _itemImage;
         [SerializeField] private RectTransform _purchaseButtonImageRect;
+        [SerializeField] private TextMeshProUGUI _levelText;
 
         [Header("-- INFO --")]
-        [SerializeField] private TextMeshProUGUI _infoAmount;
-        [SerializeField] private TextMeshProUGUI _infoRegular;
+        [SerializeField] private TextMeshProUGUI _infoTitleText;
+        [SerializeField] private TextMeshProUGUI _infoDescriptionText;
 
         [Header("-- PURCHASE --")]
-        [SerializeField] private TextMeshProUGUI _price;
+        [SerializeField] private TextMeshProUGUI _priceText;
         [SerializeField] private Image _priceTypeImage;
 
         #region COMPONENTS
-        private ShopCanvas _shopCanvas;
-        private Item _item;
+        private PickaxeUpgradeCanvas _pickaxeUpgradeCanvas;
+        private PickaxeUpgrade _pickaxeUpgrade;
         private CustomButton _purchaseButton;
         private Image _image;
         #endregion
@@ -35,20 +36,23 @@ namespace DigFight
         private Color _redColor = Color.red;
         #endregion
 
-        public void Init(ShopCanvas shopCanvas, Item item, int index)
+        public void Init(PickaxeUpgradeCanvas pickaxeUpgradeCanvas, PickaxeUpgrade pickaxeUpgrade, int index)
         {
-            if (_shopCanvas == null)
+            if (_pickaxeUpgradeCanvas == null)
             {
-                _shopCanvas = shopCanvas;
-                _item = item;
+                _pickaxeUpgradeCanvas = pickaxeUpgradeCanvas;
+                _pickaxeUpgrade = pickaxeUpgrade;
                 _purchaseButton = transform.GetChild(1).GetChild(1).GetComponent<CustomButton>();
                 _image = GetComponent<Image>();
                 _defaultColor = _image.color;
             }
 
-            SetImage(_item);
-            SetPrice(_item);
-            SetInfo(_item);
+            _pickaxeUpgrade.LoadLevel();
+
+            SetImage(_pickaxeUpgrade);
+            SetPrice(_pickaxeUpgrade);
+            SetInfo(_pickaxeUpgrade);
+            SetLevel(_pickaxeUpgrade);
 
             UiEvents.OnUpdateCollectableText += CheckCanAfford;
             UiEvents.OnUpdateCoinText += CheckCanAfford;
@@ -58,7 +62,7 @@ namespace DigFight
 
         private void OnDisable()
         {
-            if (_shopCanvas == null) return;
+            if (_pickaxeUpgradeCanvas == null) return;
 
             UiEvents.OnUpdateCollectableText -= CheckCanAfford;
             UiEvents.OnUpdateCoinText -= CheckCanAfford;
@@ -69,18 +73,18 @@ namespace DigFight
         #region EVENT HANDLER FUNCTIONS
         private void CheckCanAfford(float ignoreThis)
         {
-            _item.CanAfford = _item.PriceType == Item.PriceTypeEnum.Money && DataManager.TotalMoney >= _item.Price;
+            _pickaxeUpgrade.CanAfford = _pickaxeUpgrade.PriceType == PickaxeUpgrade.PriceTypeEnum.Money && DataManager.TotalMoney >= _pickaxeUpgrade.Price;
         }
         private void CheckCanAfford(int ignoreThis)
         {
-            _item.CanAfford = _item.PriceType == Item.PriceTypeEnum.Coin && DataManager.TotalCoin >= _item.Price;
+            _pickaxeUpgrade.CanAfford = _pickaxeUpgrade.PriceType == PickaxeUpgrade.PriceTypeEnum.Coin && DataManager.TotalCoin >= _pickaxeUpgrade.Price;
         }
         private void CheckCanAfford()
         {
-            if (_item.PriceType == Item.PriceTypeEnum.Money)
-                _item.CanAfford = DataManager.TotalMoney >= _item.Price;
-            else if (_item.PriceType == Item.PriceTypeEnum.Coin)
-                _item.CanAfford = DataManager.TotalCoin >= _item.Price;
+            if (_pickaxeUpgrade.PriceType == PickaxeUpgrade.PriceTypeEnum.Money)
+                _pickaxeUpgrade.CanAfford = DataManager.TotalMoney >= _pickaxeUpgrade.Price;
+            else if (_pickaxeUpgrade.PriceType == PickaxeUpgrade.PriceTypeEnum.Coin)
+                _pickaxeUpgrade.CanAfford = DataManager.TotalCoin >= _pickaxeUpgrade.Price;
         }
         #endregion
 
@@ -89,12 +93,12 @@ namespace DigFight
         {
             CheckCanAfford();
 
-            if (_item.CanAfford)
+            if (_pickaxeUpgrade.CanAfford)
             {
-                if (_item.PriceType == Item.PriceTypeEnum.Money)
-                    CollectableEvents.OnSpend?.Invoke(_item.Price);
-                else if (_item.PriceType == Item.PriceTypeEnum.Coin)
-                    CoinEvents.OnSpend?.Invoke(_item.Price);
+                if (_pickaxeUpgrade.PriceType == PickaxeUpgrade.PriceTypeEnum.Money)
+                    CollectableEvents.OnSpend?.Invoke(_pickaxeUpgrade.Price);
+                else if (_pickaxeUpgrade.PriceType == PickaxeUpgrade.PriceTypeEnum.Coin)
+                    CoinEvents.OnSpend?.Invoke(_pickaxeUpgrade.Price);
 
                 ActionIfPurchased();
             }
@@ -103,49 +107,32 @@ namespace DigFight
         }
         private void ActionIfPurchased()
         {
-            if (_item.ItemType == Item.ItemTypeEnum.PurchaseCoin)
-                CoinEvents.OnCollect?.Invoke(_item.PurchaseAmount);
-            else if (_item.ItemType == Item.ItemTypeEnum.PurchasePickaxe)
-            {
-                if (_item.Name == "Silver Pickaxe")
-                    Debug.Log("Purchased Silver Pickaxe!");
-                else if (_item.Name == "Golden Pickaxe")
-                    Debug.Log("Purchased Golden Pickaxe!");
-            }
+            _pickaxeUpgrade.Upgrade();
+
+            SetPrice(_pickaxeUpgrade);
+            SetLevel(_pickaxeUpgrade);
         }
         #endregion
 
         #region SETTERS
-        private void SetImage(Item item)
+        private void SetImage(PickaxeUpgrade item) => _itemImage.sprite = item.Image;
+        private void SetPrice(PickaxeUpgrade item)
         {
-            _itemImage.sprite = item.Image;
-        }
-        private void SetPrice(Item item)
-        {
-            if (item.PriceType == Item.PriceTypeEnum.Money)
-                _priceTypeImage.sprite = _shopCanvas.MoneySprite;
-            else if (item.PriceType == Item.PriceTypeEnum.Coin)
-                _priceTypeImage.sprite = _shopCanvas.CoinSprite;
+            if (item.PriceType == PickaxeUpgrade.PriceTypeEnum.Money)
+                _priceTypeImage.sprite = _pickaxeUpgradeCanvas.MoneySprite;
+            else if (item.PriceType == PickaxeUpgrade.PriceTypeEnum.Coin)
+                _priceTypeImage.sprite = _pickaxeUpgradeCanvas.CoinSprite;
             else
                 Debug.Log("Unknown price type!", this);
 
-            _price.text = item.Price.ToString();
+            _priceText.text = item.Price.ToString();
         }
-        private void SetInfo(Item item)
+        private void SetInfo(PickaxeUpgrade item)
         {
-            if (item.ItemType == Item.ItemTypeEnum.PurchaseCoin)
-            {
-                _infoRegular.transform.parent.gameObject.SetActive(false);
-                _infoAmount.text = item.PurchaseAmount.ToString();
-            }
-            else if (item.ItemType == Item.ItemTypeEnum.PurchasePickaxe)
-            {
-                _infoAmount.transform.parent.gameObject.SetActive(false);
-                _infoRegular.text = item.Name;
-            }
-            else
-                Debug.Log("Unknown item type!", this);
+            _infoTitleText.text = item.Title;
+            _infoDescriptionText.text = item.Description;
         }
+        private void SetLevel(PickaxeUpgrade item) => _levelText.text = "Level " + item.Level;
         #endregion
 
         #region DOTWEEN FUNCTIONS

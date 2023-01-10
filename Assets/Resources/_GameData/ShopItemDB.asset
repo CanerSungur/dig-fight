@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a61e96e388fe642d4a9ade69179b8d96, type: 3}
+  m_Script: {fileID: 11500000, guid: 72b70607efc434b24889fee9b754772a, type: 3}
   m_Name: ShopItemDB
   m_EditorClassIdentifier: 
   _items:
-  - Image: {fileID: 21300000, guid: c1e2f21f5ea3e457091c2e9c4e393017, type: 3}
+  - Image: {fileID: 21300000, guid: 48eee3e7911ef4796bb839b10a51f94c, type: 3}
     Header: Buy Coin
     Name: Coin
     ItemType: 1
@@ -22,7 +22,7 @@ MonoBehaviour:
     PurchaseAmount: 1
     IsPurchased: 0
     CanAfford: 0
-  - Image: {fileID: 21300000, guid: 4acae162a90034808b40572aa4ec5b05, type: 3}
+  - Image: {fileID: 21300000, guid: c1e2f21f5ea3e457091c2e9c4e393017, type: 3}
     Header: Buy Coin
     Name: Coin
     ItemType: 1
@@ -31,13 +31,22 @@ MonoBehaviour:
     PurchaseAmount: 2
     IsPurchased: 0
     CanAfford: 0
+  - Image: {fileID: 21300000, guid: 4acae162a90034808b40572aa4ec5b05, type: 3}
+    Header: Buy Coin
+    Name: Coin
+    ItemType: 1
+    PriceType: 0
+    Price: 3000
+    PurchaseAmount: 3
+    IsPurchased: 0
+    CanAfford: 0
   - Image: {fileID: 21300000, guid: fa22a12a93f1a4f35b4bdd6180cfe5a8, type: 3}
     Header: Buy Coin
     Name: Coin
     ItemType: 1
     PriceType: 0
-    Price: 2750
-    PurchaseAmount: 3
+    Price: 4000
+    PurchaseAmount: 4
     IsPurchased: 0
     CanAfford: 0
   - Image: {fileID: 21300000, guid: 346392310e2884c1b991f4d247e1bf01, type: 3}
@@ -45,34 +54,25 @@ MonoBehaviour:
     Name: Coin
     ItemType: 1
     PriceType: 0
-    Price: 4500
+    Price: 5000
     PurchaseAmount: 5
     IsPurchased: 0
     CanAfford: 0
-  - Image: {fileID: 21300000, guid: 48eee3e7911ef4796bb839b10a51f94c, type: 3}
-    Header: Buy Coin
-    Name: Coin
-    ItemType: 1
-    PriceType: 1
-    Price: 4500
-    PurchaseAmount: 5
-    IsPurchased: 0
-    CanAfford: 0
-  - Image: {fileID: 21300000, guid: 656180af548454ae482070a54de336b8, type: 3}
+  - Image: {fileID: 21300000, guid: 03d68169e737043e193fe10d094de546, type: 3}
     Header: Buy Pickaxe
     Name: Silver Pickaxe
     ItemType: 2
     PriceType: 1
-    Price: 10
+    Price: 1
     PurchaseAmount: 1
     IsPurchased: 0
     CanAfford: 0
-  - Image: {fileID: 21300000, guid: 7f7cfe38b8cca41f1acd8966da15467f, type: 3}
+  - Image: {fileID: 21300000, guid: 03d68169e737043e193fe10d094de546, type: 3}
     Header: Buy Pickaxe
-    Name: Golden Pickaxe
+    Name: Gold Pickaxe
     ItemType: 2
     PriceType: 1
-    Price: 25
+    Price: 5
     PurchaseAmount: 1
     IsPurchased: 0
     CanAfford: 0

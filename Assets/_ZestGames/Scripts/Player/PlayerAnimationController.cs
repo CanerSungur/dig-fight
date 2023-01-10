@@ -75,8 +75,8 @@ namespace ZestGames
             UpdatePushSpeed();
             Land();
 
-            PlayerEvents.OnSetCurrentPickaxeSpeed += UpdateDigSpeed;
-            PlayerEvents.OnSetCurrentPickaxeSpeed += UpdatePushSpeed;
+            PlayerEvents.OnSetCurrentDigSpeed += UpdateDigSpeed;
+            PlayerEvents.OnSetCurrentDigSpeed += UpdatePushSpeed;
 
             PlayerEvents.OnMove += Move;
             PlayerEvents.OnIdle += Idle;
@@ -98,8 +98,8 @@ namespace ZestGames
         {
             if (_player == null) return;
 
-            PlayerEvents.OnSetCurrentPickaxeSpeed -= UpdateDigSpeed;
-            PlayerEvents.OnSetCurrentPickaxeSpeed -= UpdatePushSpeed;
+            PlayerEvents.OnSetCurrentDigSpeed -= UpdateDigSpeed;
+            PlayerEvents.OnSetCurrentDigSpeed -= UpdatePushSpeed;
 
             PlayerEvents.OnMove -= Move;
             PlayerEvents.OnIdle -= Idle;
@@ -161,7 +161,7 @@ namespace ZestGames
         }
         private void StopDigging() => _animator.SetBool(_diggingID, false);
         private void Stagger() => _animator.SetTrigger(_staggerID);
-        private void UpdateDigSpeed() => _animator.SetFloat(_digSpeedID, DataManager.PickaxeSpeed + (DataManager.PickaxeSpeed * _player.PowerUpHandler.SpeedRate));
+        private void UpdateDigSpeed() => _animator.SetFloat(_digSpeedID, DataManager.DigSpeed + (DataManager.DigSpeed * _player.PowerUpHandler.SpeedRate));
         private void UpdatePushSpeed()
         {
             _animator.SetFloat(_pushSpeedRateID, 2f + (1f * _player.PowerUpHandler.SpeedRate));

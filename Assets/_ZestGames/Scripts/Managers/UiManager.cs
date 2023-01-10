@@ -19,6 +19,7 @@ namespace ZestGames
         [SerializeField] private PowerUpCanvas _powerUpCanvas;
         [SerializeField] private ReviveCanvas _reviveCanvas;
         [SerializeField] private ShopCanvas _shopCanvas;
+        [SerializeField] private PickaxeUpgradeCanvas _pickaxeUpgradeCanvas;
 
         [Header("-- UI DELAY SETUP --")]
         [SerializeField, Tooltip("The delay in seconds between the game is won and the win screen is loaded.")]
@@ -38,6 +39,7 @@ namespace ZestGames
             _powerUpCanvas.Init(this);
             _reviveCanvas.Init(this);
             _shopCanvas.Init(this);
+            _pickaxeUpgradeCanvas.Init(this);
 
             PlayerUpgradeEvents.OnOpenCanvas?.Invoke();
 
@@ -119,6 +121,13 @@ namespace ZestGames
             _reviveCanvas.gameObject.SetActive(true);
             _reviveCanvas.OpenCanvas();
         }
+        #endregion
+
+        #region PUBLICS
+        public void OpenShopTab() => _shopCanvas.OpenShopTab();
+        public void CloseShopTab() => _shopCanvas.CloseShopTab();
+        public void OpenPickaxeUpgradeTab() => _pickaxeUpgradeCanvas.OpenPickaxeUpgradeTab();
+        public void ClosePickaxeUpgradeTab() => _pickaxeUpgradeCanvas.ClosePickaxeUpgradeTab();
         #endregion
     }
 }

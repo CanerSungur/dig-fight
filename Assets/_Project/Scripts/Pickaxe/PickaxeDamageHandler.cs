@@ -38,7 +38,7 @@ namespace DigFight
                 AiEvents.OnSetCurrentPickaxePower -= UpdateDamage;
         }
 
-        private void UpdateDamage() => _damage = _isItPlayer == true ? DataManager.PickaxePower + (DataManager.PickaxePower * _pickaxe.Player.PowerUpHandler.PowerRate)
+        private void UpdateDamage() => _damage = _isItPlayer == true ? _pickaxe.Stats.Power + (_pickaxe.Stats.Power * _pickaxe.Player.PowerUpHandler.PowerRate)
             : AiStats.PickaxePower + (AiStats.PickaxePower * _pickaxe.Ai.PowerUpHandler.PowerRate);
     }
 }

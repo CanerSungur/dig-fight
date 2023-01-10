@@ -28,7 +28,7 @@ namespace DigFight
                 _pickaxe = pickaxe;
                 _isItPlayer = isItPlayer;
             }
-            _maxDurability = _isItPlayer == true ? DataManager.PickaxeDurability : AiStats.PickaxeDurability;
+            _maxDurability = _isItPlayer == true ? _pickaxe.Stats.Durability : AiStats.PickaxeDurability;
             _currentDurability = _maxDurability;
 
             if (_isItPlayer)
@@ -86,7 +86,7 @@ namespace DigFight
         }
         private void ResetPickaxe()
         {
-            _maxDurability = _isItPlayer == true ? DataManager.PickaxeDurability : AiStats.PickaxeDurability;
+            _maxDurability = _isItPlayer == true ? _pickaxe.Stats.Durability : AiStats.PickaxeDurability;
             _currentDurability = _maxDurability;
             _durabilityBar.ResetBar();
         }
@@ -94,7 +94,7 @@ namespace DigFight
         #region EVENT HANDLER FUNCTIONS
         private void UpdateDurability()
         {
-            _maxDurability = _isItPlayer == true ? DataManager.PickaxeDurability : AiStats.PickaxeDurability;
+            _maxDurability = _isItPlayer == true ? _pickaxe.Stats.Durability : AiStats.PickaxeDurability;
             _currentDurability = _maxDurability;
             if (_isItPlayer) _durabilityBar.UpdateBar();
         }
