@@ -52,7 +52,7 @@ namespace DigFight
         #endregion
 
         #region DATA
-        private const float PICKAXE_UPGRADE_ITEM_HEIGHT = 250f;
+        private const float PICKAXE_UPGRADE_ITEM_HEIGHT = 255f;
         private const float HEADER_HEIGHT = 69f;
         private const float SEPERATOR_HEIGHT = 128f;
         private int _upgradeItemCount, _headerCount, _seperatorCount = 0;
@@ -113,8 +113,10 @@ namespace DigFight
         }
         private void ClosePickaxeUpgrade() 
         {
-            _uiManager.OpenShopTab();
-            _animator.SetTrigger(_closePickaxeUpgradeID);
+            AdEventHandler.OnInterstitialActivateForMenuChange?.Invoke(() => {
+                _uiManager.OpenShopTab();
+                _animator.SetTrigger(_closePickaxeUpgradeID);
+            });
         } 
         #endregion
 

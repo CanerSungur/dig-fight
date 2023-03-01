@@ -33,7 +33,7 @@ namespace ZestGames
     public static class UiEvents
     {
         public static Action<int> OnUpdateLevelText, OnUpdateCoinText;
-        public static Action<float> OnUpdateCollectableText;
+        public static Action<float> OnUpdateMoneyText;
         public static Action<string, FeedBackUi.Colors> OnGiveFeedBack;
     }
 

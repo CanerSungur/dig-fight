@@ -1,3 +1,4 @@
+using System.Data.Common;
 using UnityEngine;
 using DigFight;
 
@@ -102,7 +103,7 @@ namespace ZestGames
         private void IncreaseTotalMoney(float amount)
         {
             TotalMoney += amount;
-            UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
+            UiEvents.OnUpdateMoneyText?.Invoke(TotalMoney);
             PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
 
             ShopCanvas.OnCollectMoney?.Invoke(amount);
@@ -110,7 +111,7 @@ namespace ZestGames
         private void DecreaseTotalMoney(float amount)
         {
             TotalMoney -= amount;
-            UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
+            UiEvents.OnUpdateMoneyText?.Invoke(TotalMoney);
             PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
 
             PickaxeUpgradeCanvas.OnSpendMoney?.Invoke(amount);
@@ -122,6 +123,8 @@ namespace ZestGames
             UiEvents.OnUpdateCoinText?.Invoke(TotalCoin);
 
             ShopCanvas.OnCollectCoin?.Invoke(amount);
+
+            Debug.Log("Coin: " + TotalCoin);
         }
         private void DecreaseTotalCoin(int amount)
         {
@@ -188,7 +191,7 @@ namespace ZestGames
                 DecreaseTotalMoney(MovementSpeedCost);
                 MovementSpeedLevel++;
                 PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
-                UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
+                UiEvents.OnUpdateMoneyText?.Invoke(TotalMoney);
             }
         }
         private void IncreaseMoneyValueLevel(bool isItAd)
@@ -205,7 +208,7 @@ namespace ZestGames
                 DecreaseTotalMoney(MoneyValueCost);
                 MoneyValueLevel++;
                 PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
-                UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
+                UiEvents.OnUpdateMoneyText?.Invoke(TotalMoney);
             }
         }
         private void IncreaseDigSpeedLevel(bool isItAd)
@@ -222,7 +225,7 @@ namespace ZestGames
                 DecreaseTotalMoney(DigSpeedCost);
                 DigSpeedLevel++;
                 PlayerUpgradeEvents.OnUpdateUpgradeTexts?.Invoke();
-                UiEvents.OnUpdateCollectableText?.Invoke(TotalMoney);
+                UiEvents.OnUpdateMoneyText?.Invoke(TotalMoney);
             }
         }
         #endregion

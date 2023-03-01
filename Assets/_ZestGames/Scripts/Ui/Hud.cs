@@ -33,7 +33,7 @@ namespace ZestGames
             _powerPowerUpIndicator.gameObject.SetActive(false);
 
             UiEvents.OnUpdateLevelText += UpdateLevelText;
-            UiEvents.OnUpdateCollectableText += UpdateMoneyText;
+            UiEvents.OnUpdateMoneyText += UpdateMoneyText;
             UiEvents.OnUpdateCoinText += UpdateCoinText;
 
             CollectableHUDTransform = collectableText.transform.parent;
@@ -51,7 +51,7 @@ namespace ZestGames
             if (GameManager.GameState == Enums.GameState.WaitingToStart) return;
 
             UiEvents.OnUpdateLevelText -= UpdateLevelText;
-            UiEvents.OnUpdateCollectableText -= UpdateMoneyText;
+            UiEvents.OnUpdateMoneyText -= UpdateMoneyText;
             UiEvents.OnUpdateCoinText -= UpdateCoinText;
 
             PlayerEvents.OnActivatePickaxeSpeed -= ActivateSpeedIndicator;

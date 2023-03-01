@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PoolStamp: 16
   Prefabs:
-  - {fileID: 6083867932833872700, guid: 49d0041c131364edea0b9930efee94ea, type: 3}
-  Size: 20
+  - {fileID: 6083867932833872700, guid: 4deb676dda26d4dda90bad005911fd62, type: 3}
+  Size: 10

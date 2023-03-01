@@ -1,7 +1,7 @@
+using System.Transactions;
 using UnityEngine;
 using ZestGames;
 using UnityEngine.UI;
-using System.Collections;
 using DG.Tweening;
 using System;
 
@@ -9,16 +9,6 @@ namespace DigFight
 {
     public class PickaxeDurabilityBar : MonoBehaviour
     {
-        public enum SequenceType
-        {
-            Shake,
-            Enable,
-            Disable,
-            GetDamaged,
-            GetRepaired,
-            FillRemainingDurability
-        }
-
         private PickaxeDurabilityHandler _durabilityHandler;
 
         [Header("-- COLOR SETUP --")]
@@ -47,20 +37,24 @@ namespace DigFight
 
         public void Init(PickaxeDurabilityHandler durabilityHandler)
         {
-            if (_durabilityHandler == null)
+            if (_changedDurabilityImage == null)
             {
-                _durabilityHandler = durabilityHandler;
                 _changedDurabilityImage = transform.GetChild(2).GetComponent<Image>();
                 _remainingDurabilityImage = transform.GetChild(3).GetComponent<Image>();
                 _pickaxeEnableAnim = transform.GetChild(0).GetChild(1).GetComponent<Animation>();
             }
 
+            _durabilityHandler = durabilityHandler;
+
             _changedDurabilityImage.fillAmount = _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();
             _changedDurabilityImage.color = _damagedColor;
             _deactivationCountdown = DEACTIVATION_TIMER;
 
-            transform.localScale = Vector3.zero;
-            _glowPS.Stop();
+            if (GameManager.GameState == Enums.GameState.WaitingToStart) // on first start of the game
+            {
+                transform.localScale = Vector3.zero;
+                _glowPS.Stop();
+            }
 
             GameEvents.OnGameStart += EnableBar;
             GameEvents.OnGameEnd += DisableBar;
@@ -68,7 +62,7 @@ namespace DigFight
 
         private void OnDisable()
         {
-            if (_durabilityHandler == null) return;
+            if (_changedDurabilityImage == null) return;
             GameEvents.OnGameStart -= EnableBar;
             GameEvents.OnGameEnd -= DisableBar;
         }
@@ -87,17 +81,12 @@ namespace DigFight
         public void GetDamaged()
         {
             _changedDurabilityImage.fillAmount = _remainingDurabilityImage.fillAmount;
-
-            //StartShakeSequence();
             StartGetDamagedSequence();
-
             _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();
         }
         public void GetRepaired()
         {
             _changedDurabilityImage.fillAmount = GetDurabilityNormalized();
-
-            //StartShakeSequence();
             StartGetRepairedSequence();
         }
         public void UpdateBar() => _changedDurabilityImage.fillAmount = _remainingDurabilityImage.fillAmount = GetDurabilityNormalized();

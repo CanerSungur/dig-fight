@@ -20,6 +20,7 @@ namespace ZestGames
         [SerializeField] private ReviveCanvas _reviveCanvas;
         [SerializeField] private ShopCanvas _shopCanvas;
         [SerializeField] private PickaxeUpgradeCanvas _pickaxeUpgradeCanvas;
+        [SerializeField] private PickaxeRewardCanvas _pickaxeRewardCanvas;
 
         [Header("-- UI DELAY SETUP --")]
         [SerializeField, Tooltip("The delay in seconds between the game is won and the win screen is loaded.")]
@@ -40,6 +41,7 @@ namespace ZestGames
             _reviveCanvas.Init(this);
             _shopCanvas.Init(this);
             _pickaxeUpgradeCanvas.Init(this);
+            _pickaxeRewardCanvas.Init(this);
 
             PlayerUpgradeEvents.OnOpenCanvas?.Invoke();
 
@@ -57,8 +59,6 @@ namespace ZestGames
 
             GameEvents.OnLevelSuccess += HandleLevelSuccess;
             GameEvents.OnLevelFail += HandleLevelFail;
-
-            //PlayerEvents.OnRevive += HandleRevive;
         }
 
         private void OnDisable()
@@ -68,8 +68,6 @@ namespace ZestGames
 
             GameEvents.OnLevelSuccess -= HandleLevelSuccess;
             GameEvents.OnLevelFail -= HandleLevelFail;
-
-            //PlayerEvents.OnRevive -= HandleRevive;
         }
 
         #region EVENT HANDLER FUNCTIONS
@@ -93,7 +91,7 @@ namespace ZestGames
             {
                 if (GameManager.PlayerIsRevived)
                 {
-                    AdEventHandler.OnInterstitialActivate?.Invoke(() => {
+                    AdEventHandler.OnInterstitialActivateForGameEnd?.Invoke(() => {
                         GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
                     });
                 }
@@ -108,11 +106,6 @@ namespace ZestGames
         }
         private void HandleLevelSuccess() => Delayer.DoActionAfterDelay(this, successScreenDelay, () => levelSuccess.gameObject.SetActive(true));
         private void HandleLevelFail() => Delayer.DoActionAfterDelay(this, failScreenDelay, () => levelFail.gameObject.SetActive(true));
-        private void HandleRevive()
-        {
-            hud.gameObject.SetActive(true);
-            settings.gameObject.SetActive(true);
-        }
         #endregion
 
         #region PRIVATES

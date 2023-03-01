@@ -26,23 +26,10 @@ namespace DigFight
         private Ai _ai;
         #endregion
 
-        #region BOOST VALUE DATA
-        //private const int CORE_DURABILITY_VALUE = 3;
-        //private const float CORE_SPEED_VALUE = 2f;
-        //private const int CORE_POWER_VALUE = 2;
-
-        //private int _durabilityValue => CORE_DURABILITY_VALUE + LevelHandler.Level;
-        //private float _speedValue => CORE_SPEED_VALUE + (LevelHandler.Level * 0.1f);
-        //private int _powerValue => CORE_POWER_VALUE + (LevelHandler.Level);
-        #endregion
-
         #region PROPERTIES
         public bool Triggered => _triggered;
         public PowerUp PowerUp => powerUp;
         public Enums.ChestType ChestType => _chestType;
-        //public int DurabilityValue => _durabilityValue;
-        //public float SpeedValue => _speedValue;
-        //public int PowerValue => _powerValue;
         #endregion
 
         #region SEQUENCE
@@ -72,10 +59,11 @@ namespace DigFight
         #endregion
 
         #region PUBLICS
-        //public void AssignHitter(Player player) => _player = player;
         public void GiveBoost()
         {
             StopHittersDiggingProcess();
+
+            CoinEvents.OnSpawnCoin?.Invoke(1, transform.position);
 
             AudioManager.PlayAudio(Enums.AudioType.HitChest);
             AudioManager.PlayAudio(Enums.AudioType.ChestOpen);
@@ -140,8 +128,6 @@ namespace DigFight
         #region DOTWEEN FUNCTIONS
         private void StartOpenChestSequence()
         {
-            //Init();
-
             CreateOpenChestSequence();
             _openChestSequence.Play();
         }
@@ -159,19 +145,7 @@ namespace DigFight
                     .Join(_chestTransform.DOScale(Vector3.one * 0.7f, OPEN_CHEST_DURATION))
                     .OnComplete(() => {
                         TriggerPickUp();
-
-                        //if (_chestType == Enums.ChestType.PickaxeDurability)
-                        //    PowerUpEvents.OnPickaxeDurabilityTaken?.Invoke(this, _durabilityValue);
-                        //else if (_chestType == Enums.ChestType.PickaxeSpeed)
-                        //    PowerUpEvents.OnPickaxeSpeedTaken?.Invoke(this, _speedValue);
-                        //else if (_chestType == Enums.ChestType.PickaxePower)
-                        //    PowerUpEvents.OnPickaxePowerTaken?.Invoke(this, _powerValue);
-
-                        //_animation.Play();
-                        //CameraManager.OnBoostPickedUp?.Invoke();
-
                         DeleteOpenChestSequence();
-                        //Destroy(gameObject);
                     });
             }
         }
@@ -183,10 +157,7 @@ namespace DigFight
         #endregion
 
         #region ANIMATION EVENT FUNCTIONS
-        public void Dispose()
-        {
-            Destroy(gameObject, 0.5f);
-        }
+        public void Dispose() => Destroy(gameObject, 0.5f);
         #endregion
 
         public abstract void TriggerPickUp();

@@ -54,7 +54,7 @@ namespace ZestGames
         public bool IsFlying { get; private set; }
         public bool UpwardsIsEmpty => !Physics.Raycast(Collider.bounds.center, Vector3.up, Collider.bounds.extents.y + 0.75f, walkableLayer);
         public bool IsTooHigh => !Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 2f, walkableLayer);
-        public bool IsGrounded => Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 0.01f, walkableLayer);
+        public bool IsGrounded => Physics.Raycast(Collider.bounds.center, Vector3.down, Collider.bounds.extents.y + 0.05f, walkableLayer);
         public bool CanFly => /*UpwardsIsEmpty && */InputHandler.IsMovingUp && !IsPushing;
         public TimerForAction TimerForAction => timerForAction;
         #endregion

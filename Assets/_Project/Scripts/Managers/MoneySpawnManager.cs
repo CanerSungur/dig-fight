@@ -12,13 +12,21 @@ namespace DigFight
         public void Init(GameManager gameManager)
         {
             CollectableEvents.OnSpawnMoney += SpawnMoney;
+            CoinEvents.OnSpawnCoin += SpawnCoin;
         }
 
         private void OnDisable()
         {
             CollectableEvents.OnSpawnMoney -= SpawnMoney;
+            CoinEvents.OnSpawnCoin -= SpawnCoin;
         }
 
+        #region EVENT HANDLER FUNCTIONS
+        private void SpawnCoin(int amount, Vector3 boxPosition)
+        {
+            for (int i = 0; i < amount; i++)
+                MoneyCanvas.Instance.SpawnCollectCoin(boxPosition + _textOffset);
+        }
         private void SpawnMoney(int amount, Vector3 boxPosition)
         {
             for (int i = 0; i < amount; i++)
@@ -26,6 +34,9 @@ namespace DigFight
 
             SpawnMoneyText(amount, boxPosition);
         }
+        #endregion
+
+        #region HELPERS
         private void SpawnMoneyText(int amount, Vector3 boxPosition)
         {
             TextMeshPro moneyText = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.MoneyTextDisplay, boxPosition + _textOffset, Quaternion.identity).GetComponentInChildren<TextMeshPro>();
@@ -34,5 +45,6 @@ namespace DigFight
             moneyTextAnimation.Play();
             moneyText.text = "+" + amount * DataManager.MoneyValue;
         }
+        #endregion
     }
 }

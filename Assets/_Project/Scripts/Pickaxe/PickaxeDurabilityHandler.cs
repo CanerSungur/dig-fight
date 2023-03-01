@@ -23,11 +23,8 @@ namespace DigFight
 
         public void Init(Pickaxe pickaxe, bool isItPlayer)
         {
-            if (_pickaxe == null)
-            {
-                _pickaxe = pickaxe;
-                _isItPlayer = isItPlayer;
-            }
+            _pickaxe = pickaxe;
+            _isItPlayer = isItPlayer;
             _maxDurability = _isItPlayer == true ? _pickaxe.Stats.Durability : AiStats.PickaxeDurability;
             _currentDurability = _maxDurability;
 

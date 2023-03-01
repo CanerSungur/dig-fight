@@ -52,7 +52,7 @@ namespace DigFight
         #endregion
 
         #region DATA
-        private const float SHOP_ITEM_HEIGHT = 250f;
+        private const float SHOP_ITEM_HEIGHT = 255f;
         private const float HEADER_HEIGHT = 69f;
         private const float SEPERATOR_HEIGHT = 128f;
         private int _headerCount, _seperatorCount = 0;
@@ -106,14 +106,8 @@ namespace DigFight
         }
 
         #region OPEN-CLOSE FUNCTIONS
-        public void OpenShopTab() 
-        {
-            _animator.SetBool(_openTabID, true);
-        }
-        public void CloseShopTab() 
-        {
-            _animator.SetBool(_openTabID, false);
-        }
+        public void OpenShopTab() => _animator.SetBool(_openTabID, true);
+        public void CloseShopTab() => _animator.SetBool(_openTabID, false);
         private void OpenShop()
         {
             _uiManager.ClosePickaxeUpgradeTab();
@@ -123,8 +117,10 @@ namespace DigFight
         }
         private void CloseShop() 
         {
-            _uiManager.OpenPickaxeUpgradeTab();
-            _animator.SetTrigger(_closeShopID);
+            AdEventHandler.OnInterstitialActivateForMenuChange?.Invoke(() => {
+                _uiManager.OpenPickaxeUpgradeTab();
+                _animator.SetTrigger(_closeShopID);
+            });
         }
         #endregion
 

@@ -190,23 +190,6 @@ namespace DigFight
             VFXVoxel vfxVoxel;
             vfxVoxel = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.VFX_Voxel_Stone, transform.position + vfxVoxelOffset, Quaternion.Euler(-90f, 0f, 0f)).GetComponent<VFXVoxel>();
             vfxVoxel.Init(affectedHitPower);
-            //if (_boxType == Enums.BoxType.Stone)
-            //{
-            //    vfxVoxel = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.VFX_Voxel_Stone, transform.position + vfxVoxelOffset, Quaternion.Euler(-90f, 0f, 0f)).GetComponent<VFXVoxel>();
-            //    vfxVoxel.Init(affectedHitPower);
-            //}
-            //else if (_boxType == Enums.BoxType.Copper)
-            //{
-            //    vfxVoxel = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.VFX_Voxel_Copper, transform.position + vfxVoxelOffset, Quaternion.Euler(-90f, 0f, 0f)).GetComponent<VFXVoxel>();
-            //    vfxVoxel.Init(affectedHitPower);
-            //}
-            //else if (_boxType == Enums.BoxType.Diamond)
-            //{
-            //    vfxVoxel = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.VFX_Voxel_Diamond, transform.position + vfxVoxelOffset, Quaternion.Euler(-90f, 0f, 0f)).GetComponent<VFXVoxel>();
-            //    vfxVoxel.Init(affectedHitPower);
-            //}
-            //else
-            //    Debug.Log("Unknown BOX TYPE!");
 
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxEffect, transform.position + new Vector3(0f, 0f, -1f), Quaternion.identity);
             PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.HitBoxSmokeSquare, transform.position, Quaternion.identity);

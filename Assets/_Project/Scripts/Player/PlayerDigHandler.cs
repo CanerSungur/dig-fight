@@ -9,7 +9,10 @@ namespace DigFight
         private Enums.BoxTriggerDirection _currentBoxTriggerDirection;
 
         [Header("-- SETUP --")]
-        [SerializeField] private Pickaxe pickaxe;
+        [SerializeField] private Pickaxe _regularPickaxe;
+        [SerializeField] private Pickaxe _silverPickaxe;
+        [SerializeField] private Pickaxe _goldPickaxe;
+        private Pickaxe _currentPickaxe;
 
         private bool _notDiggingForAWhile = false;
         private const float NOT_DIGGING_FOR_A_WHILE_TIME = 10f;
@@ -23,7 +26,7 @@ namespace DigFight
         #region PROPERTIES
         public Player Player => _player;
         public Enums.BoxTriggerDirection CurrentBoxTriggerDirection => _currentBoxTriggerDirection;
-        public Pickaxe Pickaxe => pickaxe;
+        public Pickaxe Pickaxe => _currentPickaxe;
         #endregion
 
         public void Init(Player player)
@@ -32,22 +35,25 @@ namespace DigFight
                 _player = player;
 
             _notDiggingTimer = NOT_DIGGING_FOR_A_WHILE_TIME;
-            pickaxe.Init(this);
-            //EnablePickaxe();
+
+            SwitchPickaxe(_regularPickaxe);
         }
 
         private void Update()
         {
             if ((int)_player.InputHandler.DigDirection == (int)_currentBoxTriggerDirection && _player.IsInDigZone && !_player.IsDigging && !_player.IsPushing && Time.time >= _delayedTime)
-            {
                 _player.StartedDigging();
-                //PlayerEvents.OnStartDigging?.Invoke();
-                //Debug.Log("started digging");
-            }
 
             CheckForDigIterruption();
 
             UpdateNotDiggingForAWhileState();
+
+            if (Input.GetKeyDown(KeyCode.R))
+                SwitchPickaxe(_regularPickaxe);
+            if (Input.GetKeyDown(KeyCode.S))
+                SwitchPickaxe(_silverPickaxe);
+            if (Input.GetKeyDown(KeyCode.G))
+                SwitchPickaxe(_goldPickaxe);
         }
 
         #region PRIVATES
@@ -87,23 +93,27 @@ namespace DigFight
                 CameraManager.OnPushInCamera?.Invoke();
             }
         }
+        private void SwitchPickaxe(Pickaxe selectedPickaxe)
+        {
+            _regularPickaxe.gameObject.SetActive(false);
+            _silverPickaxe.gameObject.SetActive(false);
+            _goldPickaxe.gameObject.SetActive(false);
+
+            _currentPickaxe = selectedPickaxe;
+            _currentPickaxe.gameObject.SetActive(true);
+            _currentPickaxe.Init(this);
+        }
         #endregion
 
         #region PUBLICS
         public void StartDiggingProcess(Enums.BoxTriggerDirection triggerDirection)
         {
-            //EnablePickaxe();
-            //_player.PushHandler.StopPushingProcess();
-
             _currentBoxTriggerDirection = triggerDirection;
             _player.EnteredDigZone();
             _delayedTime = Time.time + DIG_DELAY;
-
-            //Debug.Log("Side: " + triggerDirection);
         }
         public void StopDiggingProcess()
         {
-            //DisablePickaxe();
             _currentBoxTriggerDirection = Enums.BoxTriggerDirection.None;
             _player.ExitedDigZone();
         }

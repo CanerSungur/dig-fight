@@ -24,15 +24,10 @@ namespace ZestGames
         #endregion
 
         #region COLLECT COIN
-        public void SpawnCollectCoin(RectTransform rectTransform)
+        public void SpawnCollectCoin(Vector3 spawnPosition)
         {
             CollectCoin2D coin = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.CoinCollect2D, Vector3.zero, Quaternion.identity, transform).GetComponent<CollectCoin2D>();
-            coin.Init(this, rectTransform);
-        }
-        public void SpawnCollectShopCoin(RectTransform spawnerRect, RectTransform targetRect)
-        {
-            CollectShopCoin2D coin = PoolManager.Instance.SpawnFromPool(Enums.PoolStamp.ShopCoinCollect2D, Vector3.zero, Quaternion.identity, transform).GetComponent<CollectShopCoin2D>();
-            coin.Init(this, spawnerRect, targetRect);
+            coin.Init(this, spawnPosition);
         }
         #endregion
 

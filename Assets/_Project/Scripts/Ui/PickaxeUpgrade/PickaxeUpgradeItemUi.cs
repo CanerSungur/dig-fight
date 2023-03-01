@@ -14,6 +14,10 @@ namespace DigFight
         [SerializeField] private RectTransform _purchaseButtonImageRect;
         [SerializeField] private TextMeshProUGUI _levelText;
 
+        [Header("-- DISABLE --")]
+        [SerializeField] private Transform _disableBgTransform;
+        [SerializeField] private TextMeshProUGUI _disableText;
+
         [Header("-- INFO --")]
         [SerializeField] private TextMeshProUGUI _infoTitleText;
         [SerializeField] private TextMeshProUGUI _infoDescriptionText;
@@ -30,8 +34,8 @@ namespace DigFight
         #endregion
 
         #region SEQUENCE
-        private Sequence _cantAffordSequence;
-        private Guid _cantAffordSequenceID;
+        private Sequence _cantAffordSequence, _disableBgSequence;
+        private Guid _cantAffordSequenceID, _disableBgSequenceID;
         private Color _defaultColor;
         private Color _redColor = Color.red;
         #endregion
@@ -53,18 +57,25 @@ namespace DigFight
             SetPrice(_pickaxeUpgrade);
             SetInfo(_pickaxeUpgrade);
             SetLevel(_pickaxeUpgrade);
+            CheckForDisable(_pickaxeUpgrade);
 
-            UiEvents.OnUpdateCollectableText += CheckCanAfford;
+            UiEvents.OnUpdateMoneyText += CheckCanAfford;
             UiEvents.OnUpdateCoinText += CheckCanAfford;
 
             _purchaseButton.onClick.AddListener(() => _purchaseButton.TriggerClick(PurchaseButtonPressed));
+        }
+
+        private void OnEnable() 
+        {
+            if (_pickaxeUpgrade == null) return;
+            CheckForDisable(_pickaxeUpgrade);    
         }
 
         private void OnDisable()
         {
             if (_pickaxeUpgradeCanvas == null) return;
 
-            UiEvents.OnUpdateCollectableText -= CheckCanAfford;
+            UiEvents.OnUpdateMoneyText -= CheckCanAfford;
             UiEvents.OnUpdateCoinText -= CheckCanAfford;
             
             _purchaseButton.onClick.RemoveListener(() => _purchaseButton.TriggerClick(PurchaseButtonPressed));
@@ -133,6 +144,30 @@ namespace DigFight
             _infoDescriptionText.text = item.Description;
         }
         private void SetLevel(PickaxeUpgrade item) => _levelText.text = "Level " + item.Level;
+        private void CheckForDisable(PickaxeUpgrade item)
+        {
+            if (item.OwnerType == Enums.PickaxeType.Regular && (DataManager.HasGoldPickaxe || DataManager.HasSilverPickaxe))
+            {
+                TriggerDisableBgSequence();
+                _disableText.text = "OLD\nPICKAXE";
+            }
+            else if (item.OwnerType == Enums.PickaxeType.Silver && (DataManager.HasGoldPickaxe || !DataManager.HasSilverPickaxe))
+            {
+                if (!DataManager.HasSilverPickaxe)
+                    _disableText.text = "LOCKED";
+                else if (DataManager.HasGoldPickaxe)
+                    _disableText.text = "OLD\nPICKAXE";
+                
+                TriggerDisableBgSequence();
+            }
+            else if (item.OwnerType == Enums.PickaxeType.Gold && (!DataManager.HasGoldPickaxe))
+            {
+                TriggerDisableBgSequence();
+                _disableText.text = "LOCKED";
+            }
+            else
+                _disableBgTransform.gameObject.SetActive(false);
+        }
         #endregion
 
         #region DOTWEEN FUNCTIONS
@@ -158,6 +193,34 @@ namespace DigFight
         {
             DOTween.Kill(_cantAffordSequenceID);
             _cantAffordSequence = null;
+        }
+        // ######################
+        private void TriggerDisableBgSequence()
+        {
+            DeleteDisableBgSequence();
+            CreateDisableBgSequence();
+            _disableBgSequence.Play();
+        }
+        private void CreateDisableBgSequence()
+        {
+            if (_disableBgSequence == null)
+            {
+                _disableBgSequence = DOTween.Sequence();
+                _disableBgSequenceID = Guid.NewGuid();
+                _disableBgSequence.id = _disableBgSequenceID;
+
+                _disableBgTransform.gameObject.SetActive(true);      
+                _disableBgTransform.localScale = Vector3.zero;
+
+                _disableBgSequence.Append(_disableBgTransform.DOShakePosition(1f, new Vector3(5f, 0f, 0f), 10, 0))
+                .Join(_disableBgTransform.DOScale(Vector3.one, 1f)).SetEase(Ease.OutBounce)
+                    .OnComplete(DeleteDisableBgSequence);
+            }
+        }
+        private void DeleteDisableBgSequence()
+        {
+            DOTween.Kill(_disableBgSequenceID);
+            _disableBgSequence = null;
         }
         #endregion
     }

@@ -12,7 +12,10 @@ namespace DigFight
         [Header("-- GENERAL --")]
         [SerializeField] private Image _itemImage;
         [SerializeField] private RectTransform _purchaseButtonImageRect;
+
+        [Header("-- DISABLE --")]
         [SerializeField] private Transform _disableBgTransform;
+        [SerializeField] private TextMeshProUGUI _disableText;
 
         [Header("-- INFO --")]
         [SerializeField] private TextMeshProUGUI _infoAmount;
@@ -54,17 +57,23 @@ namespace DigFight
             SetInfo(_item);
             CheckForDisable(_item);
 
-            UiEvents.OnUpdateCollectableText += CheckCanAfford;
+            UiEvents.OnUpdateMoneyText += CheckCanAfford;
             UiEvents.OnUpdateCoinText += CheckCanAfford;
 
             _purchaseButton.onClick.AddListener(() => _purchaseButton.TriggerClick(PurchaseButtonPressed));
+        }
+
+        private void OnEnable() 
+        {
+            if (_item == null) return;
+            CheckForDisable(_item);    
         }
 
         private void OnDisable()
         {
             if (_shopCanvas == null) return;
 
-            UiEvents.OnUpdateCollectableText -= CheckCanAfford;
+            UiEvents.OnUpdateMoneyText -= CheckCanAfford;
             UiEvents.OnUpdateCoinText -= CheckCanAfford;
             
             _purchaseButton.onClick.RemoveListener(() => _purchaseButton.TriggerClick(PurchaseButtonPressed));
@@ -163,7 +172,10 @@ namespace DigFight
         private void CheckForDisable(ShopItem item)
         {
             if (item.ItemType == ShopItem.ItemTypeEnum.PurchasePickaxe && item.IsPurchased)
+            {
                 TriggerDisableBgSequence();
+                _disableText.text = "ALREADY\nUNLOCKED";
+            }
             else
                 _disableBgTransform.gameObject.SetActive(false);
         }

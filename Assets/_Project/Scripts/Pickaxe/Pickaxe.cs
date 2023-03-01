@@ -14,6 +14,7 @@ namespace DigFight
         private AiDigHandler _aiDigHandler;
 
         [Header("-- VISUAL SETUP --")]
+        [SerializeField] private GameObject idleMesh;
         [SerializeField] private GameObject defaultPickaxe;
         [SerializeField] private GameObject leftPickaxe;
         [SerializeField] private GameObject rightPickaxe;
@@ -43,20 +44,20 @@ namespace DigFight
         public void Init(PlayerDigHandler playerDigHandler)
         {
             if (_playerDigHandler == null)
-            {
                 _playerDigHandler = playerDigHandler;
-                InitializeParticles();
 
-                Stats.Init(this);
-                DamageHandler.Init(this, true);
-                DurabilityHandler.Init(this, true);
-            }
+            InitializeParticles();
+
+            Stats.Init(this);
+            DamageHandler.Init(this, true);
+            DurabilityHandler.Init(this, true);
 
             CanHit = IsBroken = false;
-            EnableDefaultPickaxe();
+            EnableIdleMesh();
 
             PlayerEvents.OnStartDigging += SelectRelevantPickaxe;
-            PlayerEvents.OnStopDigging += EnableDefaultPickaxe;
+            PlayerEvents.OnStopDigging += EnableIdleMesh;
+            PlayerEvents.OnRevive += ResetPickaxe;
 
             OnCanHit += EnableCanHit;
             OnCannotHit += DisableCanHit;
@@ -74,10 +75,10 @@ namespace DigFight
             }
 
             CanHit = IsBroken = false;
-            EnableDefaultPickaxe();
+            EnableIdleMesh();
 
             AiEvents.OnStartDigging += SelectRelevantPickaxe;
-            AiEvents.OnStopDigging += EnableDefaultPickaxe;
+            AiEvents.OnStopDigging += EnableIdleMesh;
 
             OnCanHit += EnableCanHit;
             OnCannotHit += DisableCanHit;
@@ -91,7 +92,8 @@ namespace DigFight
             if (_playerDigHandler)
             {
                 PlayerEvents.OnStartDigging -= SelectRelevantPickaxe;
-                PlayerEvents.OnStopDigging -= EnableDefaultPickaxe;
+                PlayerEvents.OnStopDigging -= EnableIdleMesh;
+                PlayerEvents.OnRevive -= ResetPickaxe;
             }
             else if (_aiDigHandler)
             {
@@ -113,6 +115,7 @@ namespace DigFight
         {
             CanHit = false;
         }
+        private void ResetPickaxe() => IsBroken = false;
         private void Break()
         {
             IsBroken = true;
@@ -136,6 +139,8 @@ namespace DigFight
         }
         private void SelectRelevantPickaxe()
         {
+            idleMesh.SetActive(false);
+
             if (_playerDigHandler)
             {
                 if (_playerDigHandler.CurrentBoxTriggerDirection == Enums.BoxTriggerDirection.Top)
@@ -158,26 +163,37 @@ namespace DigFight
         #endregion
 
         #region HELPERS
+        private void EnableIdleMesh()
+        {
+            idleMesh.SetActive(true);
+            defaultPickaxe.SetActive(false);
+            leftPickaxe.SetActive(false);
+            rightPickaxe.SetActive(false);
+        }
         private void EnableDefaultPickaxe()
         {
+            idleMesh.SetActive(false);
             defaultPickaxe.SetActive(true);
             leftPickaxe.SetActive(false);
             rightPickaxe.SetActive(false);
         }
         private void EnableLeftPickaxe()
         {
+            idleMesh.SetActive(false);
             defaultPickaxe.SetActive(false);
             leftPickaxe.SetActive(true);
             rightPickaxe.SetActive(false);
         }
         private void EnableRightPickaxe()
         {
+            idleMesh.SetActive(false);
             defaultPickaxe.SetActive(false);
             leftPickaxe.SetActive(false);
             rightPickaxe.SetActive(true);
         }
         private void DisablePickaxe()
         {
+            idleMesh.SetActive(false);
             defaultPickaxe.SetActive(false);
             leftPickaxe.SetActive(false);
             rightPickaxe.SetActive(false);

@@ -22,7 +22,7 @@ namespace ZestGames
                 AudioManager.PlayAudio(Enums.AudioType.CharacterPop);
                 if (GameManager.PlayerIsRevived)
                 {
-                    AdEventHandler.OnInterstitialActivate?.Invoke(() => {
+                    AdEventHandler.OnInterstitialActivateForGameEnd?.Invoke(() => {
                         GameEvents.OnGameEnd?.Invoke(Enums.GameEnd.Fail);
                     });
                 }

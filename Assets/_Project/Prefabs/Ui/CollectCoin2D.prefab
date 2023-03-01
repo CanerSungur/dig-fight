@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5119659772200606939
 RectTransform:
   m_ObjectHideFlags: 0
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c36edbad47b734d4eaf4ac2e9866acc6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 799cbb0d8919746edb139f8f9697cc66, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 6083867932833872695}
   - component: {fileID: 6083867932833872688}
   - component: {fileID: 6083867932833872690}
-  - component: {fileID: 6473473062766693094}
+  - component: {fileID: 6252138777757178937}
   m_Layer: 0
   m_Name: CollectCoin2D
   m_TagString: Untagged
@@ -113,7 +113,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -400, y: -711}
-  m_SizeDelta: {x: 80, y: 80}
+  m_SizeDelta: {x: 130, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6083867932833872695
 CanvasRenderer:
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f5f7558382825433daf7447c10d58926, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 48eee3e7911ef4796bb839b10a51f94c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -160,7 +160,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6083867932833872700}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
   m_EffectDistance: {x: 3.5, y: -0.5}
   m_UseGraphicAlpha: 1
---- !u!114 &6473473062766693094
+--- !u!114 &6252138777757178937
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

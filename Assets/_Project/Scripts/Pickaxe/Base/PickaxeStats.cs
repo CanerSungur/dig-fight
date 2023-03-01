@@ -49,17 +49,16 @@ namespace DigFight
         private void UpdateDurability()
         {
             Durability = _durabilityUpgrade.Value;
-            Debug.Log(_pickaxe.name + " durability level: " + _durabilityUpgrade.Level);
-            Debug.Log(_pickaxe.name + " durability price: " + _durabilityUpgrade.Price);
-            Debug.Log(_pickaxe.name + " durability: " + Durability);
+            // Debug.Log(_pickaxe.name + " durability level: " + _durabilityUpgrade.Level);
+            // Debug.Log(_pickaxe.name + " durability price: " + _durabilityUpgrade.Price);
+            // Debug.Log(_pickaxe.name + " durability: " + Durability);
         }
         private void UpdatePower()
         {
             Power = _powerUpgrade.Value;
-
-            Debug.Log(_pickaxe.name + " power level: " + _powerUpgrade.Level);
-            Debug.Log(_pickaxe.name + " power price: " + _powerUpgrade.Price);
-            Debug.Log(_pickaxe.name + " power: " + Power);
+            // Debug.Log(_pickaxe.name + " power level: " + _powerUpgrade.Level);
+            // Debug.Log(_pickaxe.name + " power price: " + _powerUpgrade.Price);
+            // Debug.Log(_pickaxe.name + " power: " + Power);
         }
     }
 }

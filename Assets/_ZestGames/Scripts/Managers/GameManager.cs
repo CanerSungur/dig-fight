@@ -60,7 +60,7 @@ namespace ZestGames
             _adEventHandler.Init(this);
             //_postProcessManager.Init(this);
 
-            UiEvents.OnUpdateCollectableText?.Invoke(DataManager.TotalMoney);
+            UiEvents.OnUpdateMoneyText?.Invoke(DataManager.TotalMoney);
             UiEvents.OnUpdateCoinText?.Invoke(DataManager.TotalCoin);
             UiEvents.OnUpdateLevelText?.Invoke(LevelHandler.Level);
 
